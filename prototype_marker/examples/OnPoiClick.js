@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, Dimensions,Button } from 'react-native';
 
 import MapView, { Callout, Marker, ProviderPropType } from 'react-native-maps';
 const { width, height } = Dimensions.get('window');
@@ -10,28 +10,34 @@ const LONGITUDE = -122.4324;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
+import Geolocation from '@react-native-community/geolocation';
 class OnPoiClick extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      region: {
+      source: {
         latitude: LATITUDE,
         longitude: LONGITUDE,
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
       },
+      destination: {
+              latitude: LATITUDE,
+              longitude: LONGITUDE,
+              latitudeDelta: LATITUDE_DELTA,
+              longitudeDelta: LONGITUDE_DELTA,
+            },
       poi: null,
     };
-
     this.onPoiClick = this.onPoiClick.bind(this);
   }
 
   
-  /*getLocation = () =>{
+  getlocation(){
     Geolocation.getCurrentPosition(position =>
       this.setState({
-        region: {
+        source: {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
           latitudeDelta: LATITUDE_DELTA,
@@ -39,13 +45,19 @@ class OnPoiClick extends React.Component {
         }
       }),
       );
-  }*/
+  }
 
   onPoiClick(e) {
     const poi = e.nativeEvent;
 
     this.setState({
-      poi,
+     destination: {
+               latitude: poi.coordinate.latitude,
+               longitude: poi.coordinate.longitude,
+               latitudeDelta: LATITUDE_DELTA,
+               longitudeDelta: LONGITUDE_DELTA,
+             },
+      poi:poi,
     });
 
     console.log(poi)
@@ -57,12 +69,12 @@ class OnPoiClick extends React.Component {
         <MapView
           provider={this.props.provider}
           style={styles.map}
-          initialRegion={this.state.region}
+          initialRegion={this.state.source}
           onPoiClick={this.onPoiClick}
-          region={this.props.coordinate}
-          showsUserLocation = {true}
+          showsUserLocation={true}
           showsMyLocationButton = {true}
         >
+
           {this.state.poi && (
             <Marker coordinate={this.state.poi.coordinate}>
               <Callout>
@@ -75,6 +87,7 @@ class OnPoiClick extends React.Component {
           )}
 
         </MapView>
+        <Button title="hello" onPress={this.getlocation.bind(this)}/>
       </View>
     );
   }
