@@ -1,15 +1,30 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Dimensions,ScrollView, Button, Image, SafeAreaView } from 'react-native';
 import Menu, {
   MenuContext,
   MenuTrigger,
   MenuOptions,
   MenuOption,
-  renderers
+  renderers,
+  MenuProvider
 } from 'react-native-popup-menu';
+import SearchBar from 'react-native-search-bar';
+import { List, ListItem } from 'react-native-elements'
 
+const list = [
+  {
+    title: 'option 1'
+  },
+  {
+    title: 'option 2'
+  },
+  {
+    title: 'option 3'
+  }
+]
 let unique = 0;
 const { SlideInMenu } = renderers;
+var {height, width} = Dimensions.get('window');
 
 export default class Search extends Component {
     static navigationOptions = {
@@ -20,17 +35,17 @@ export default class Search extends Component {
         super(props, ctx);
         this.state = { log: [] };
       }
-    
+
       selectNumber(value) {
         this.addLog(`selecting number: ${value}`);
       }
-    
+
       selectOptionType(value) {
         const v = typeof value === 'object' ? JSON.stringify(value) : value;
         this.addLog(`selecting type: ${v}`);
         return value !== 'Do not close';
       }
-    
+
       addLog(value) {
         this.setState({
           log: [...this.state.log, {
@@ -39,7 +54,7 @@ export default class Search extends Component {
           }]
         });
       }
-    
+
       toggleHighlight(id) {
         const log = this.state.log.map(l => {
           if (l.id === id) {
@@ -49,72 +64,83 @@ export default class Search extends Component {
         })
         this.setState({ log });
       }
-    
+
       deleteLogItem(id) {
         const log = this.state.log.filter(l => l.id !== id);
         this.setState({ log });
       }
-    
+
       render() {
         return (
-          <MenuContext style={{flex: 1}}>
+          <MenuProvider style={{flex: 1}}>
             <View style={styles.container}>
-    
+
               <View style={styles.topbar}>
-                <Menu name="numbers" renderer={SlideInMenu} onSelect={value => this.selectNumber(value)}>
-                  <MenuTrigger style={styles.trigger}>
-                    <Text style={styles.triggerText}>Slide-in menu...</Text>
-                  </MenuTrigger>
-                  <MenuOptions>
-                    <MenuOption value={1} text='Option one' />
-                    <MenuOption value={2} text='Option two' />
-                    <MenuOption value={3} text='Option three' />
-                    <MenuOption value={4} text='Option four' />
-                    { null /* conditional not rendered option */ }
-                    <MenuOption value={5} text='Option five' />
-                  </MenuOptions>
-                </Menu>
-                <View style={{flex:1}}></View>
-                <Menu name="types" onSelect={value => this.selectOptionType(value)}
-                  onBackdropPress={() => this.addLog('menu will be closed by backdrop')}
-                  onOpen={() => this.addLog('menu is opening')}
-                  onClose={() => this.addLog('menu is closing')}
-                  >
-                  <MenuTrigger style={styles.trigger}>
-                    <Text style={styles.triggerText}>Context menu...</Text>
-                  </MenuTrigger>
-                  <MenuOptions>
-                    <MenuOption value="Normal" text='Normal' />
-                    <MenuOption value="Disabled" disabled={true} text='Disabled' />
-                    <MenuOption value="Do not close" text='Do not close' />
-                    <View style={styles.divider}/>
-                    <MenuOption value={{ text: 'Hello world!' }} text='Object as value' />
-                  </MenuOptions>
-                </Menu>
+                  <View style={{flex:3}}>
+                  </View>
+                  <View style={{flex:3}}>
+                    <Text style={{color:'black',
+                                  fontSize:20,
+                                  fontWeight:'bold',
+                                  textShadowColor:'#C0C0C0',
+                                  textShadowRadius:2,
+                                  textShadowOffset:{width:2,height:2}}}>KLEIO</Text>
+                  </View>
+                  <View style={{flex:1}}>
+                    <Menu name="numbers" renderer={SlideInMenu} onSelect={value => this.selectNumber(value)}>
+                    <MenuTrigger style={styles.trigger}>
+                      <Text style={styles.triggerText}>menu</Text>
+                    </MenuTrigger>
+                    <MenuOptions>
+                      <MenuOption value={1} text='Option one' />
+                      <MenuOption value={2} text='Option two' />
+                      <MenuOption value={3} text='Option three' />
+                      <MenuOption value={4} text='Option four' />
+                      { null /* conditional not rendered option */ }
+                      <MenuOption value={5} text='Option five' />
+                    </MenuOptions>
+                    </Menu>
+                  </View>
+
               </View>
-    
-              <ScrollView style={styles.logView}>
-                {this.state.log.map((l, i) => {
-                  const wrapperStyle = {backgroundColor: i % 2 ? 'white' : 'whitesmoke'};
-                  const textStyle = {color: l.highlighted ? 'red' : 'gray'};
-                  return (
-                    <View style={[styles.logItem, wrapperStyle]} key={l.id}>
-                      <Text style={textStyle}>{l.value}</Text>
-                      <View style={{flex:1}}></View>
-                      <Menu>
-                        <MenuTrigger text='edit' />
-                        <MenuOptions>
-                          <MenuOption onSelect={() => this.toggleHighlight(l.id)} text={l.highlighted ? 'Unhighlight' : 'Highlight'} />
-                          <MenuOption onSelect={() => this.deleteLogItem(l.id)} text='Delete' />
-                        </MenuOptions>
-                      </Menu>
-                    </View>
-                  );
-                })}
-              </ScrollView>
-    
+              <View>
+                <SearchBar
+                  ref="searchBar"
+                  placeholder="Search"
+                />
+              </View>
+              <View style={{height:height*0.05}}/>
+              <View style={{flexDirection:'row'}}>
+                <Text style={{width:width*0.2, color:'transparent'}}></Text>
+                <SafeAreaView style={{flex:1, height:height*0.6, width:width*0.6, backgroundColor:'lightgray'}}>
+                    <ScrollView>
+                    {
+                        list.map((l, i) => (
+                          <ListItem
+                            key={i}
+                            title={l.title}
+                            icon={l.iocn}
+                            bottomDivider
+                          />
+                        ))
+                      }
+                    </ScrollView>
+                </SafeAreaView>
+                <Text style={{width:width*0.2, color:'transparent'}}></Text>
+              </View>
+
+              <View style={{flexDirection:'row'}}>
+                <Text style={{width:width*0.4, color:'transparent'}}></Text>
+                <Button
+                title="my position"
+                color="#841584"
+                />
+                <Text style={{width:width*0.45, color:'transparent'}}></Text>
+              </View>
+
+
             </View>
-          </MenuContext>
+          </MenuProvider>
         );
       }
     }
@@ -123,11 +149,11 @@ export default class Search extends Component {
       container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: 'lightgray',
+        backgroundColor: 'orange',
       },
       topbar: {
         flexDirection: 'row',
-        backgroundColor: 'dimgray',
+        backgroundColor: 'darkorange',
         paddingTop : 15,
       },
       trigger: {
@@ -135,7 +161,12 @@ export default class Search extends Component {
         margin: 5,
       },
       triggerText: {
-        color: 'white',
+        color:'black',
+        fontSize:15,
+        fontWeight:'bold',
+        textShadowColor:'#C0C0C0',
+        textShadowRadius:2,
+        textShadowOffset:{width:2,height:2}
       },
       disabled: {
         color: '#ccc',
