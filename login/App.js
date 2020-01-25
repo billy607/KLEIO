@@ -9,10 +9,6 @@ import Search from './Search';
 var {height, width} = Dimensions.get('window');
 
 class HelloWorldApp extends Component {
-    static navigationOptions = {
-        //To hide the ActionBar/NavigationBar
-        header: null,
-    };
     constructor(props) {
      super(props);
      this.state = {
@@ -161,6 +157,9 @@ const RootStack = createStackNavigator(
   },
      {
        initialRouteName: 'Home',
+       defaultNavigationOptions: {
+        header: null
+      },
      }
    );
 

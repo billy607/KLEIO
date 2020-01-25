@@ -1,188 +1,209 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Dimensions,ScrollView, Button, Image, SafeAreaView } from 'react-native';
-import Menu, {
-  MenuContext,
-  MenuTrigger,
-  MenuOptions,
-  MenuOption,
-  renderers,
-  MenuProvider
-} from 'react-native-popup-menu';
-import SearchBar from 'react-native-search-bar';
-import { List, ListItem } from 'react-native-elements'
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+  SafeAreaView,
+  ScrollView,
+} from 'react-native';
+import SideMenu from 'react-native-side-menu';
+import Menu from './Menu';
+import {Icon, SearchBar, ListItem} from 'react-native-elements';
+import { createAppContainer} from 'react-navigation'
+import { createStackNavigator } from 'react-navigation-stack';
+import MainPage from './MainPage';
+
+const image = require('./image/menu.png');
+var {height, width} = Dimensions.get('window'); 
 
 const list = [
   {
-    title: 'option 1'
+    name: 'UNIVERSITY OF FLORIDA',
   },
   {
-    title: 'option 2'
+    name: 'STANFORD',
   },
   {
-    title: 'option 3'
-  }
+    name: 'HARVARD'
+  },
+  {
+    name: 'HARVARD'
+  },
+  {
+    name: 'HARVARD'
+  },
+  {
+    name: 'HARVARD'
+  },
+  {
+    name: 'HARVARD'
+  },
+  {
+    name: 'HARVARD'
+  },
 ]
-let unique = 0;
-const { SlideInMenu } = renderers;
-var {height, width} = Dimensions.get('window');
 
-export default class Search extends Component {
-    static navigationOptions = {
-      //To hide the ActionBar/NavigationBar
-      header: null,
+class SearchPage extends Component {
+  constructor(props) {
+    super(props);
+
+    this.toggle = this.toggle.bind(this);
+
+    this.state = {
+      isOpen: false,
+      selectedItem: 'About',
+      search:'',
     };
-    constructor(props, ctx) {
-        super(props, ctx);
-        this.state = { log: [] };
-      }
+  }
 
-      selectNumber(value) {
-        this.addLog(`selecting number: ${value}`);
-      }
-
-      selectOptionType(value) {
-        const v = typeof value === 'object' ? JSON.stringify(value) : value;
-        this.addLog(`selecting type: ${v}`);
-        return value !== 'Do not close';
-      }
-
-      addLog(value) {
-        this.setState({
-          log: [...this.state.log, {
-            value,
-            id: ++unique
-          }]
-        });
-      }
-
-      toggleHighlight(id) {
-        const log = this.state.log.map(l => {
-          if (l.id === id) {
-            return Object.assign({}, l, {highlighted: !l.highlighted});
-          }
-          return l;
-        })
-        this.setState({ log });
-      }
-
-      deleteLogItem(id) {
-        const log = this.state.log.filter(l => l.id !== id);
-        this.setState({ log });
-      }
-
-      render() {
-        return (
-          <MenuProvider style={{flex: 1}}>
-            <View style={styles.container}>
-
-              <View style={styles.topbar}>
-                  <View style={{flex:3}}>
-                  </View>
-                  <View style={{flex:3}}>
-                    <Text style={{color:'black',
-                                  fontSize:20,
-                                  fontWeight:'bold',
-                                  textShadowColor:'#C0C0C0',
-                                  textShadowRadius:2,
-                                  textShadowOffset:{width:2,height:2}}}>KLEIO</Text>
-                  </View>
-                  <View style={{flex:1}}>
-                    <Menu name="numbers" renderer={SlideInMenu} onSelect={value => this.selectNumber(value)}>
-                    <MenuTrigger style={styles.trigger}>
-                      <Text style={styles.triggerText}>menu</Text>
-                    </MenuTrigger>
-                    <MenuOptions>
-                      <MenuOption value={1} text='Option one' />
-                      <MenuOption value={2} text='Option two' />
-                      <MenuOption value={3} text='Option three' />
-                      <MenuOption value={4} text='Option four' />
-                      { null /* conditional not rendered option */ }
-                      <MenuOption value={5} text='Option five' />
-                    </MenuOptions>
-                    </Menu>
-                  </View>
-
-              </View>
-              <View>
-                <SearchBar
-                  ref="searchBar"
-                  placeholder="Search"
-                />
-              </View>
-              <View style={{height:height*0.05}}/>
-              <View style={{flexDirection:'row'}}>
-                <Text style={{width:width*0.2, color:'transparent'}}></Text>
-                <SafeAreaView style={{flex:1, height:height*0.6, width:width*0.6, backgroundColor:'lightgray'}}>
-                    <ScrollView>
-                    {
-                        list.map((l, i) => (
-                          <ListItem
-                            key={i}
-                            title={l.title}
-                            icon={l.iocn}
-                            bottomDivider
-                          />
-                        ))
-                      }
-                    </ScrollView>
-                </SafeAreaView>
-                <Text style={{width:width*0.2, color:'transparent'}}></Text>
-              </View>
-
-              <View style={{flexDirection:'row'}}>
-                <Text style={{width:width*0.4, color:'transparent'}}></Text>
-                <Button
-                title="my position"
-                color="#841584"
-                />
-                <Text style={{width:width*0.45, color:'transparent'}}></Text>
-              </View>
-
-
-            </View>
-          </MenuProvider>
-        );
-      }
-    }
-    
-    const styles = StyleSheet.create({
-      container: {
-        flex: 1,
-        flexDirection: 'column',
-        backgroundColor: 'orange',
-      },
-      topbar: {
-        flexDirection: 'row',
-        backgroundColor: 'darkorange',
-        paddingTop : 15,
-      },
-      trigger: {
-        padding: 5,
-        margin: 5,
-      },
-      triggerText: {
-        color:'black',
-        fontSize:15,
-        fontWeight:'bold',
-        textShadowColor:'#C0C0C0',
-        textShadowRadius:2,
-        textShadowOffset:{width:2,height:2}
-      },
-      disabled: {
-        color: '#ccc',
-      },
-      divider: {
-        marginVertical: 5,
-        marginHorizontal: 2,
-        borderBottomWidth: 1,
-        borderColor: '#ccc'
-      },
-      logView: {
-        flex: 1,
-        flexDirection: 'column',
-      },
-      logItem: {
-        flexDirection: 'row',
-        padding: 8,
-      },
+  toggle() {
+    this.setState({
+      isOpen: !this.state.isOpen,
     });
+  }
+
+  updateMenuState(isOpen) {
+    this.setState({ isOpen });
+  }
+
+  onMenuItemSelected = item =>
+    this.setState({
+      isOpen: false,
+      selectedItem: item,
+    });
+  
+  updateSearch = search =>{
+    this.setState({search: search});
+  }
+
+  render() {
+    const menu = <Menu onItemSelected={this.onMenuItemSelected} />;
+    const { search } = this.state;
+
+    return (
+      <SideMenu
+        menu={menu}
+        isOpen={this.state.isOpen}
+        onChange={isOpen => this.updateMenuState(isOpen)}
+      >
+        <View style={styles.container}/>
+        <View style={styles.searchbar}>
+          <SearchBar
+            placeholder="Explore"
+            onChangeText={this.updateSearch}
+            value={search}
+            inputContainerStyle={{backgroundColor: 'white'}}
+            containerStyle={{backgroundColor: 'white', borderWidth: 1, borderRadius: 5}}
+            leftIconContainerStyle={{backgroundColor:'white'}}
+          />
+        </View>
+        <View style={styles.container}>
+          <Icon
+            raised
+            name='crosshairs'
+            type='font-awesome'
+            color='#f50'
+            onPress={() => {
+              this.props.navigation.navigate('MainPage');
+            }}/>
+        </View>
+        <SafeAreaView style={styles.SafeAreaView}>
+          <ScrollView style={styles.ScrollView}>
+            {
+              list.map((l, i) => (
+                <ListItem
+                  key={i}
+                  title={l.name}
+                  bottomDivider
+                  containerStyle={styles.ScrollView}
+                />
+              ))
+            }
+
+          </ScrollView>
+        </SafeAreaView>
+        
+          
+        <TouchableOpacity
+          onPress={this.toggle}
+          style={styles.button}
+        >
+          <Image
+            source={image}
+            style={{ width: 32, height: 32 }}
+          />
+        </TouchableOpacity>
+      </SideMenu>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  button: {
+    position: 'absolute',
+    top: 20,
+    padding: 10,
+  },
+  caption: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    alignItems: 'center',
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'darkorange',
+  },
+  searchbar: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'darkorange',
+    padding: 0.1*width,
+  },
+  SafeAreaView: {
+    flex: 6,
+    justifyContent: 'center',
+    backgroundColor: 'darkorange',
+    padding: 0.1*width,
+  },
+  ScrollView: {
+    borderRadius: 10,
+    backgroundColor: 'white',
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+  },
+});
+
+const RootStack = createStackNavigator(
+  {
+    Search: SearchPage,
+    MainPage: MainPage,
+  },
+  {
+    initialRouteName: 'Search',
+    defaultNavigationOptions: {
+      header: null
+    },
+  }
+);
+const AppContainer = createAppContainer(RootStack);
+
+
+
+export default class Search extends React.Component {
+  render() {
+    return <AppContainer />;
+  }
+}
