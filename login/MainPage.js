@@ -9,83 +9,58 @@ import {
   SafeAreaView,
   ScrollView,
 } from 'react-native';
-import {ButtonGroup} from 'react-native-elements';
-import SideMenu from 'react-native-side-menu';
-import Menu from './Menu';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+  MenuProvider,
+} from 'react-native-popup-menu';
+import {ButtonGroup,Header,Button, Icon} from 'react-native-elements';
+import {createAppContainer } from 'react-navigation';
+import {createDrawerNavigator} from 'react-navigation-drawer'
+import MenuPage from './Menu';
 
 const image = require('./image/menu.png');
 var {height, width} = Dimensions.get('window'); 
 
-export default class MainPage extends Component {
+
+class MainPage extends Component {
     static navigationOptions = {
         //To hide the ActionBar/NavigationBar
         header: null,
     };
     constructor(props) {
-    super(props);
-
-    this.toggle = this.toggle.bind(this);
-
-    this.state = {
-        isOpen: false,
-        selectedItem: 'About',
-        selectedIndex: 2
-    };
+      super(props);
+      this.state = { selection: 'welcome, please make selection' };
     }
-
-    updateIndex (selectedIndex) {
-        this.setState({selectedIndex})
-    }
-
-    toggle() {
-    this.setState({
-        isOpen: !this.state.isOpen,
-    });
-    }
-
-    updateMenuState(isOpen) {
-    this.setState({ isOpen });
-    }
-
-    onMenuItemSelected = item =>
-    this.setState({
-        isOpen: false,
-        selectedItem: item,
-    });
-    
-    updateSearch = search =>{
-    this.setState({search: search});
-    }
-
     render() {
-        const menu = <Menu onItemSelected={this.onMenuItemSelected} />;
-        const buttons = ['Hello', 'World', 'Buttons']
-        const { selectedIndex } = this.state
-    
         return (
-            <SideMenu
-                menu={menu}
-                isOpen={this.state.isOpen}
-                onChange={isOpen => this.updateMenuState(isOpen)}
-            >
-                <View style={styles.container}>
-                    <ButtonGroup
-                        onPress={this.updateIndex}
-                        selectedIndex={selectedIndex}
-                        buttons={buttons}
-                        containerStyle={{height: 30}}
-                    />
-                </View>
-                <TouchableOpacity
-                    onPress={this.toggle}
-                    style={styles.button}
-                    >
-                    <Image
-                        source={image}
-                        style={{ width: 32, height: 32 }}
-                    />
-                </TouchableOpacity>
-            </SideMenu>
+          <MenuProvider>
+          <View style={styles.container}>
+            <Header
+              leftComponent={ <Icon name='bars' type='font-awesome' onPress={() => this.props.navigation.openDrawer()} color='white'/>}
+              centerComponent={{ text: 'KLEIO', style: { color: 'white' } }}
+              rightComponent={
+              <Menu>
+              <MenuTrigger><Icon name='ellipsis-v' type='font-awesome' color='white'/></MenuTrigger>
+                <MenuOptions>
+                  <MenuOption onSelect={() => this.setState({selection:'OverView'})} text='OverView' />
+                  <MenuOption onSelect={() => this.setState({selection:'Map'})} text='Map'/>
+                  <MenuOption onSelect={() => this.setState({selection:'Sites'})} text='Sites' />
+                </MenuOptions>
+              </Menu>
+              }
+              rightContainerStyle={{padding:10}}
+              backgroundColor='darkorange'
+            />
+            <View style={styles.container}>
+            <Text style={{color:'white', fontSize: 20}}>{this.state.selection}</Text>
+            </View>
+            
+          </View>
+          </MenuProvider>
+          
         )};
 }
 const styles = StyleSheet.create({
@@ -94,41 +69,35 @@ const styles = StyleSheet.create({
       top: 20,
       padding: 10,
     },
-    caption: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      alignItems: 'center',
-    },
     container: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: 'darkorange',
     },
-    searchbar: {
-      flex: 1,
+    main: {
+      flex: 9,
       justifyContent: 'center',
+      alignItems: 'center',
       backgroundColor: 'darkorange',
-      padding: 0.1*width,
     },
-    SafeAreaView: {
-      flex: 6,
-      justifyContent: 'center',
-      backgroundColor: 'darkorange',
-      padding: 0.1*width,
+    buttongroup:{
+      position: 'absolute',
+      height: 50,
+      width: width,
+      bottom: -5,
     },
-    ScrollView: {
-      borderRadius: 10,
-      backgroundColor: 'white',
-    },
-    welcome: {
-      fontSize: 20,
-      textAlign: 'center',
-      margin: 10,
-    },
-    instructions: {
-      textAlign: 'center',
-      color: '#333333',
-      marginBottom: 5,
-    },
+
   });
+
+  const AppNavigator = createDrawerNavigator({
+    Home: {
+      screen: MainPage,
+    },
+    Settings: {
+      screen: MenuPage,
+    },
+
+  });
+  
+  export default createAppContainer(AppNavigator);

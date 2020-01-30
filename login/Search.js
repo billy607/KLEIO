@@ -10,10 +10,11 @@ import {
   ScrollView,
 } from 'react-native';
 import SideMenu from 'react-native-side-menu';
-import Menu from './Menu';
-import {Icon, SearchBar, ListItem} from 'react-native-elements';
-import { createAppContainer} from 'react-navigation'
+import MenuPage from './Menu';
+import {Icon, SearchBar, ListItem, Header} from 'react-native-elements';
+import { createAppContainer,createSwitchNavigator} from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack';
+import {createDrawerNavigator} from 'react-navigation-drawer';
 import MainPage from './MainPage';
 
 const image = require('./image/menu.png');
@@ -49,47 +50,27 @@ const list = [
 class SearchPage extends Component {
   constructor(props) {
     super(props);
-
-    this.toggle = this.toggle.bind(this);
-
     this.state = {
-      isOpen: false,
-      selectedItem: 'About',
       search:'',
     };
   }
-
-  toggle() {
-    this.setState({
-      isOpen: !this.state.isOpen,
-    });
-  }
-
-  updateMenuState(isOpen) {
-    this.setState({ isOpen });
-  }
-
-  onMenuItemSelected = item =>
-    this.setState({
-      isOpen: false,
-      selectedItem: item,
-    });
   
   updateSearch = search =>{
     this.setState({search: search});
   }
 
   render() {
-    const menu = <Menu onItemSelected={this.onMenuItemSelected} />;
     const { search } = this.state;
 
     return (
-      <SideMenu
-        menu={menu}
-        isOpen={this.state.isOpen}
-        onChange={isOpen => this.updateMenuState(isOpen)}
-      >
-        <View style={styles.container}/>
+      <View style={{flex: 1, backgroundColor:'darkorange'}}>
+        <Header
+          leftComponent={ <Icon name='bars' type='font-awesome' onPress={() => this.props.navigation.openDrawer()} color='white'/>}
+          centerComponent={{ text: 'KLEIO', style: { color: 'white' } }}
+          backgroundColor='darkorange'
+          containerStyle={{shadowColor:'transparent'}}
+        />
+      
         <View style={styles.searchbar}>
           <SearchBar
             placeholder="Explore"
@@ -125,18 +106,7 @@ class SearchPage extends Component {
 
           </ScrollView>
         </SafeAreaView>
-        
-          
-        <TouchableOpacity
-          onPress={this.toggle}
-          style={styles.button}
-        >
-          <Image
-            source={image}
-            style={{ width: 32, height: 32 }}
-          />
-        </TouchableOpacity>
-      </SideMenu>
+      </View>
     );
   }
 }
@@ -198,12 +168,22 @@ const RootStack = createStackNavigator(
     },
   }
 );
-const AppContainer = createAppContainer(RootStack);
 
+const AppNavigator = createDrawerNavigator({
+  Home: {
+    screen: RootStack,
+  },
+  Settings: {
+    screen: MenuPage,
+  },
+
+});
+const AppContainer= createAppContainer(AppNavigator);
 
 
 export default class Search extends React.Component {
   render() {
-    return <AppContainer />;
+    return (
+        <AppContainer/>);
   }
 }

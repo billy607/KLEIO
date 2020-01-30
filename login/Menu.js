@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Menu({ onItemSelected }) {
+export default function MenuPage({ onItemSelected }) {
   return (
     <ScrollView scrollsToTop={false} style={styles.menu}>
       <View style={styles.avatarContainer}>
@@ -70,6 +70,6 @@ export default function Menu({ onItemSelected }) {
   );
 }
 
-Menu.propTypes = {
+MenuPage.propTypes = {
   onItemSelected: PropTypes.func.isRequired,
 };
