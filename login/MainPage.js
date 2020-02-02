@@ -3,11 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
-  TouchableOpacity,
   Dimensions,
-  SafeAreaView,
-  ScrollView,
 } from 'react-native';
 import {
   Menu,
@@ -16,10 +12,11 @@ import {
   MenuTrigger,
   MenuProvider,
 } from 'react-native-popup-menu';
-import {ButtonGroup,Header,Button, Icon} from 'react-native-elements';
+import {Header, Icon} from 'react-native-elements';
 import {createAppContainer } from 'react-navigation';
 import {createDrawerNavigator} from 'react-navigation-drawer'
 import MenuPage from './Menu';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 
 const image = require('./image/menu.png');
 var {height, width} = Dimensions.get('window'); 
@@ -32,7 +29,31 @@ class MainPage extends Component {
     };
     constructor(props) {
       super(props);
-      this.state = { selection: 'welcome, please make selection' };
+      this.state = { selection: 'OverView' };
+    }
+    makeselection(selection){
+      if(selection=="OverView"){
+        return <View><Text style={{fontSize:20,color:'white'}}>OverView</Text></View>
+      }
+      else if(selection=="Map"){
+        return(
+        <View style={styles.mapcontainer}>
+        <MapView
+           provider={PROVIDER_GOOGLE} // remove if not using Google Maps
+           style={styles.map}
+           region={{
+             latitude: 37.78825,
+             longitude: -122.4324,
+             latitudeDelta: 0.015,
+             longitudeDelta: 0.0121,
+           }}
+         >
+         </MapView>
+       </View>)
+      }
+      else{
+        return <View><Text style={{fontSize:20,color:'white'}}>Sites</Text></View>
+      }
     }
     render() {
         return (
@@ -51,19 +72,34 @@ class MainPage extends Component {
                 </MenuOptions>
               </Menu>
               }
+              containerStyle={{height:height*0.1}}
               rightContainerStyle={{padding:10}}
               backgroundColor='darkorange'
             />
-            <View style={styles.container}>
-            <Text style={{color:'white', fontSize: 20}}>{this.state.selection}</Text>
-            </View>
+            {this.makeselection(this.state.selection)}
             
-          </View>
-          </MenuProvider>
+           </View>
+           </MenuProvider>
           
         )};
 }
 const styles = StyleSheet.create({
+    mapcontainer: {
+      position: 'absolute',
+      top: height*0.1,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+    },
+    map: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+    },
     button: {
       position: 'absolute',
       top: 20,
@@ -71,8 +107,6 @@ const styles = StyleSheet.create({
     },
     container: {
       flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
       backgroundColor: 'darkorange',
     },
     main: {

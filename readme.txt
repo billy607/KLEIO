@@ -1,4 +1,4 @@
-17/12/2019
+﻿17/12/2019
 complete front end of the login page.
 resource：
 	1. React Native FBSDK：https://github.com/facebook/react-native-fbsdk
@@ -8,3 +8,6 @@ resource：
 fix the bug of google signin button. Now if click this button, it will show the google account login page.
 implement the page jumps and value transfer between different pages.
 implement the example of react-native-popup-menu which provided by it's official website: https://github.com/instea/react-native-popup-menu
+
+02/01/2020
+Before using geofencing, open the setting of android emulator. Setting -> security&location -> location -> advanced -> allow google location accuracy.

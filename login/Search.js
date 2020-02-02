@@ -68,7 +68,7 @@ class SearchPage extends Component {
           leftComponent={ <Icon name='bars' type='font-awesome' onPress={() => this.props.navigation.openDrawer()} color='white'/>}
           centerComponent={{ text: 'KLEIO', style: { color: 'white' } }}
           backgroundColor='darkorange'
-          containerStyle={{shadowColor:'transparent'}}
+          containerStyle={{shadowColor:'transparent', height: height*0.1}}
         />
       
         <View style={styles.searchbar}>
