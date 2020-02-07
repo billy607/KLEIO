@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Text, View, TextInput, Dimensions, StyleSheet, Button, TouchableHighlight } from 'react-native';
+import { Text, View, TextInput, Dimensions, StyleSheet, TouchableHighlight } from 'react-native';
 import { LoginButton, AccessToken } from 'react-native-fbsdk';
 import { GoogleSignin, GoogleSigninButton } from '@react-native-community/google-signin';
 import { createAppContainer} from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack';
 import Search from './Search';
+import { Input, Button, SocialIcon } from 'react-native-elements';
 
 var {height, width} = Dimensions.get('window');
 
@@ -97,58 +98,61 @@ class HelloWorldApp extends Component {
     };
     render() {
         return (
-              <View  style={{flex: 1, flexDirection: 'column'}}>
-                    <View  backgroundColor='darkorange' style={{ flex: 2, justifyContent: "center", alignItems: "center" }}>
-                        <Text style={{color:'black',
-                                     fontSize:40,
-                                     fontWeight:'bold',
-                                     textShadowColor:'#C0C0C0',
-                                     textShadowRadius:2,
-                                     textShadowOffset:{width:2,height:2}}}>Welcome!</Text>
-                    </View>
-                    <View backgroundColor='darkorange' style={{flex: 4, justifyContent: "center", alignItems: "center"}}>
-                        <Text style={{color:'black',
-                                       fontSize:20,
-                                       fontWeight:'bold',
-                                       textShadowColor:'#C0C0C0',
-                                       textShadowRadius:2,
-                                       textShadowOffset:{width:2,height:2}}}>please login with username and password{"\n"}</Text>
-                        <TextInput
-                            style={{padding:0, paddingLeft:10, width:width-100, borderRadius: 20, borderWidth: 1, height: 40, marginBottom: 20}}
-                            placeholder="username"
-                            borderColor='black'
-                            onChangeText={(text) => this.setState({username:text})}
-                        />
-                        <TextInput
-                            style={{padding:0, paddingLeft:10, width:width-100, borderRadius: 20, borderWidth: 1, height: 40, marginBottom: 20}}
-                            placeholder="password"
-                            borderColor='black'
-                            secureTextEntry={true}
-                            onChangeText={(text) => this.setState({password:text})}
-                        />
-                        <View style={{width: width-1000, flexDirection:'row'}}>
-                        <Button title="login" onPress={() => {
-                                                          this.props.navigation.navigate('Search', {
-                                                            username: this.state.username,
-                                                            password: this.state.password,
-                                                          });
-                                                        }}/>
-                        <Text>     </Text>
-                        <Button title="register"/>
-                        </View>
-                    </View>
-                    <View backgroundColor='darkorange' style={{flex: 2, justifyContent: "center", alignItems: "center", flexDirection: 'column'}}>
-                        <LoginButton/>
-                        <GoogleSigninButton style={{ width: 192, height: 48 }}
-                                                size={GoogleSigninButton.Size.Wide}
-                                                color={GoogleSigninButton.Color.Dark}
-                                                onPress={this._signIn}
-                                                disabled={false} />
-                    </View>
+              <View style={styles.container}>
+                <Text style={styles.text}>WELCOME TO KLEIO</Text>
+                <Input
+                  placeholder=' your email address'
+                  leftIcon={{ type: 'font-awesome', name: 'envelope',color:"white" }}
+                  inputStyle={{color:"white"}}
+                />
+                <Input 
+                  placeholder=' your password'
+                  leftIcon={{ type: 'font-awesome', name: 'key',color:"white" }}
+                  inputStyle={{color:"white"}}
+                />
+                <Text>    </Text>
+                <View style={{flexDirection: "row"}}>
+                  <Button title="login" 
+                    onPress={() => {
+                      this.props.navigation.navigate('Search');
+                    }}/>
+                  <Text style={{width: width*0.2}}/>
+                  <Button title="register"/>
+                </View>
+                <View style={styles.iconcontainer}>
+                  <SocialIcon
+                    type='facebook'
+                  />
+                  <Text>        </Text>
+                  <SocialIcon
+                    type='google'
+                  />
+                </View>
               </View>
         );
     }
 }
+
+const styles = StyleSheet.create({
+  container:{
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'darkorange',
+    padding: 20
+  },
+  text:{
+    color: "white",
+    fontSize: 20,
+    position: "absolute",
+    top:100
+  },
+  iconcontainer:{
+    flexDirection: "row",
+    position: 'absolute',
+    bottom: 50
+  }
+})
 
 const RootStack = createStackNavigator(
   {
