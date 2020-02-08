@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, TextInput, Dimensions, StyleSheet, TouchableHighlight } from 'react-native';
 import { LoginButton, AccessToken } from 'react-native-fbsdk';
 import { GoogleSignin, GoogleSigninButton } from '@react-native-community/google-signin';
-import { createAppContainer} from 'react-navigation'
+import { createAppContainer, createSwitchNavigator} from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack';
 import Search from './Search';
 import { Input, Button, SocialIcon } from 'react-native-elements';
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   }
 })
 
-const RootStack = createStackNavigator(
+const RootStack = createSwitchNavigator(
   {
     Home: HelloWorldApp,
     Search: Search,
@@ -164,6 +164,7 @@ const RootStack = createStackNavigator(
        defaultNavigationOptions: {
         header: null
       },
+      backBehavior: 'none',
      }
    );
 
