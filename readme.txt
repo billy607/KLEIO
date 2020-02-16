@@ -11,3 +11,5 @@ implement the example of react-native-popup-menu which provided by it's official
 
 02/01/2020
 Before using geofencing, open the setting of android emulator. Setting -> security&location -> location -> advanced -> allow google location accuracy.
+
+*While test on the real device. Need to add NSLocationWhenInUseUsageDescription key in Info.plist to enable geolocation in order to make showsUserLocation enable.

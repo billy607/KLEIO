@@ -12,12 +12,55 @@ import {createAppContainer } from 'react-navigation';
 import {createDrawerNavigator} from 'react-navigation-drawer'
 import MenuPage from './Menu';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import Boundary, {Events} from 'react-native-boundary';
 
 const image = require('./image/menu.png');
 var {height, width} = Dimensions.get('window'); 
 
 
+<<<<<<< HEAD
 class MainPage extends PureComponent {
+=======
+class MainPage extends Component {
+  componentDidMount() {
+    Boundary.add({
+      lat: 29.6463,
+      lng: -82.3477,
+      radius: 100, // in meters
+      id: "Reitz Union",
+    })
+      .then(() => console.log("success!"))
+      .catch(e => console.error("error :(", e));
+   
+    Boundary.on(Events.ENTER, id => {
+      // Prints 'Get out of my Chipotle!!'
+      console.log(`Get out of my ${id}!!`);
+    });
+    
+    Boundary.on(Events.EXIT, id => {
+      // Prints 'Ya! You better get out of my Chipotle!!'
+      console.log(`Ya! You better get out of my ${id}!!`)
+    });
+      // .then(() => console.log("exit function fired!"))
+      // .catch(e => console.error("error on exit :(", e))
+  }
+
+  componentWillUnmount() {
+    // Remove the events
+    Boundary.off(Events.ENTER)
+    Boundary.off(Events.EXIT)
+
+    // Remove the boundary from native API´s
+    Boundary.remove('Reitz Union')
+      .then(() => console.log('Remove boundary on RU'))
+      .catch(e => console.log('Failed to delete RU :)', e))
+  }
+
+  onPoiClick(e) {
+    const poi = e.nativeEvent;
+    console.log(poi.name);
+  }
+>>>>>>> 28aefd0739418ae291d28e07211a1b4e7c60e9ed
     static navigationOptions = {
         //To hide the ActionBar/NavigationBar
         header: null,
@@ -26,8 +69,14 @@ class MainPage extends PureComponent {
       super(props);
       this.state = { selection: 'OverView' };
     }
+<<<<<<< HEAD
     
     _makeselection(selection){
+=======
+
+
+    makeselection(selection){
+>>>>>>> 28aefd0739418ae291d28e07211a1b4e7c60e9ed
       if(selection=="OverView"){
         return <View><Text style={{fontSize:20,color:'white'}}>OverView</Text></View>
       }
@@ -38,11 +87,13 @@ class MainPage extends PureComponent {
            provider={PROVIDER_GOOGLE} // remove if not using Google Maps
            style={styles.map}
            region={{
-             latitude: 37.78825,
-             longitude: -122.4324,
-             latitudeDelta: 0.015,
-             longitudeDelta: 0.0121,
+             latitude: 29.6463,  
+             longitude: -82.3477,
+             latitudeDelta: 0.020,
+             longitudeDelta: 0.020,
            }}
+           showsUserLocation={true}
+           onPoiClick={this.onPoiClick}
          >
          </MapView>
        </View>)
