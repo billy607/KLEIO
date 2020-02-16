@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component,PureComponent } from 'react';
 import { Text, View, TextInput, Dimensions, StyleSheet, TouchableHighlight } from 'react-native';
 import { LoginButton, AccessToken } from 'react-native-fbsdk';
 import { GoogleSignin, GoogleSigninButton } from '@react-native-community/google-signin';
@@ -9,7 +9,7 @@ import { Input, Button, SocialIcon } from 'react-native-elements';
 
 var {height, width} = Dimensions.get('window');
 
-class HelloWorldApp extends Component {
+class HelloWorldApp extends PureComponent {
     constructor(props) {
      super(props);
      this.state = {

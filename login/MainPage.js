@@ -1,17 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component,PureComponent } from 'react';
 import {
   StyleSheet,
   Text,
   View,
   Dimensions,
 } from 'react-native';
-import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-  MenuProvider,
-} from 'react-native-popup-menu';
+import PopoverTooltip from 'react-native-popover-tooltip';
+
 import {Header, Icon} from 'react-native-elements';
 import {createAppContainer } from 'react-navigation';
 import {createDrawerNavigator} from 'react-navigation-drawer'
@@ -22,7 +17,7 @@ const image = require('./image/menu.png');
 var {height, width} = Dimensions.get('window'); 
 
 
-class MainPage extends Component {
+class MainPage extends PureComponent {
     static navigationOptions = {
         //To hide the ActionBar/NavigationBar
         header: null,
@@ -31,7 +26,8 @@ class MainPage extends Component {
       super(props);
       this.state = { selection: 'OverView' };
     }
-    makeselection(selection){
+    
+    _makeselection(selection){
       if(selection=="OverView"){
         return <View><Text style={{fontSize:20,color:'white'}}>OverView</Text></View>
       }
@@ -57,29 +53,37 @@ class MainPage extends Component {
     }
     render() {
         return (
-          <MenuProvider>
+          // <MenuProvider>
           <View style={styles.container}>
             <Header
               leftComponent={ <Icon name='bars' type='font-awesome' onPress={() => this.props.navigation.openDrawer()} color='white'/>}
               centerComponent={{ text: 'KLEIO', style: { color: 'white' } }}
               rightComponent={
-              <Menu>
-              <MenuTrigger><Icon name='ellipsis-v' type='font-awesome' color='white'/></MenuTrigger>
-                <MenuOptions>
-                  <MenuOption onSelect={() => this.setState({selection:'OverView'})} text='OverView' />
-                  <MenuOption onSelect={() => this.setState({selection:'Map'})} text='Map'/>
-                  <MenuOption onSelect={() => this.setState({selection:'Sites'})} text='Sites' />
-                </MenuOptions>
-              </Menu>
+                <PopoverTooltip
+                  ref='tooltip1'
+                  buttonComponent={
+                    <Icon name='ellipsis-v' type='font-awesome' color='white'/>
+                  }
+                  items={[
+                    {
+                      label: 'Overview',
+                      onPress: () => {this.setState({selection:'OverView'})}
+                    },
+                    {
+                      label: 'Map',
+                      onPress: () => {this.setState({selection:'Map'})}
+                    }
+                  ]}
+                  />
               }
               containerStyle={{height:height*0.1}}
               rightContainerStyle={{padding:10}}
               backgroundColor='darkorange'
             />
-            {this.makeselection(this.state.selection)}
+            {this._makeselection(this.state.selection)}
             
            </View>
-           </MenuProvider>
+          //  </MenuProvider>
           
         )};
 }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component,PureComponent } from 'react';
 import {
   StyleSheet,
   Text,
@@ -47,7 +47,7 @@ const list = [
   },
 ]
 
-class SearchPage extends Component {
+class SearchPage extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
