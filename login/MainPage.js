@@ -4,24 +4,68 @@ import {
   Text,
   View,
   Dimensions,
+  Modal,
+  Animated,
 } from 'react-native';
 import PopoverTooltip from 'react-native-popover-tooltip';
 
-import {Header, Icon} from 'react-native-elements';
+import {Header, Icon, Tooltip, Button} from 'react-native-elements';
 import {createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import {createDrawerNavigator} from 'react-navigation-drawer'
 import MenuPage from './Menu';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Callout, Marker,PROVIDER_GOOGLE } from 'react-native-maps';
 import Boundary, {Events} from 'react-native-boundary';
+import {
+  PanGestureHandler,
+  ScrollView,
+  State,
+} from 'react-native-gesture-handler';
+import { Popupmenu } from './popup-menu';
+
 
 const image = require('./image/menu.png');
 var {height, width} = Dimensions.get('window'); 
+const circleRadius = 30;
 
+const ASPECT_RATIO = width / height;
+const LATITUDE = 29.6463;  
+const LONGITUDE = -82.3477;
+const LATITUDE_DELTA = 0.0922;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-<<<<<<< HEAD
 class MainPage extends PureComponent {
-=======
-class MainPage extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      selection: 'Map',
+      destination: {
+              latitude: LATITUDE,
+              longitude: LONGITUDE,
+              latitudeDelta: LATITUDE_DELTA,
+              longitudeDelta: LONGITUDE_DELTA,
+            },
+      poi: null,
+      modalVisible: false,
+      uparrow: true,
+    };  
+    this.onPoiClick = this.onPoiClick.bind(this);
+    this._translateY = new Animated.Value(0);
+    this._translateY.setOffset(400);
+    this._lastOffset = {y: 400 };
+    this._onGestureEvent = Animated.event(
+      [
+        {
+          nativeEvent: {
+            translationY: this._translateY
+          },
+        },
+      ],
+      { useNativeDriver: true }
+    );
+  }
+
   componentDidMount() {
     Boundary.add({
       lat: 29.6463,
@@ -58,25 +102,39 @@ class MainPage extends Component {
 
   onPoiClick(e) {
     const poi = e.nativeEvent;
-    console.log(poi.name);
+
+    this.setState({
+      destination: {
+                latitude: poi.coordinate.latitude,
+                longitude: poi.coordinate.longitude,
+                latitudeDelta: LATITUDE_DELTA,
+                longitudeDelta: LONGITUDE_DELTA,
+              },
+       poi:poi,
+     });
   }
->>>>>>> 28aefd0739418ae291d28e07211a1b4e7c60e9ed
     static navigationOptions = {
         //To hide the ActionBar/NavigationBar
         header: null,
     };
-    constructor(props) {
-      super(props);
-      this.state = { selection: 'OverView' };
-    }
-<<<<<<< HEAD
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
+    
+    _onHandlerStateChange = event => {
+      if (event.nativeEvent.oldState === State.ACTIVE) {
+        this._lastOffset.y += event.nativeEvent.translationY;
+        if(event.nativeEvent.translationY>10) this._lastOffset.y=400;
+        else if(event.nativeEvent.translationY<-10) this._lastOffset.y=0;
+        if(this._lastOffset.y<400) {
+          this.setState({uparrow: false});
+        }
+        else this.setState({uparrow: true});
+        this._translateY.setOffset(this._lastOffset.y);
+        this._translateY.setValue(0);
+        console.log(this._translateY);
+      }
+    };
     _makeselection(selection){
-=======
-
-
-    makeselection(selection){
->>>>>>> 28aefd0739418ae291d28e07211a1b4e7c60e9ed
       if(selection=="OverView"){
         return <View><Text style={{fontSize:20,color:'white'}}>OverView</Text></View>
       }
@@ -86,25 +144,66 @@ class MainPage extends Component {
         <MapView
            provider={PROVIDER_GOOGLE} // remove if not using Google Maps
            style={styles.map}
-           region={{
-             latitude: 29.6463,  
-             longitude: -82.3477,
-             latitudeDelta: 0.020,
-             longitudeDelta: 0.020,
+           initialRegion={{
+             latitude: LATITUDE,  
+             longitude: LONGITUDE,
+             latitudeDelta: LATITUDE_DELTA,
+             longitudeDelta: LONGITUDE_DELTA,
            }}
            showsUserLocation={true}
            onPoiClick={this.onPoiClick}
          >
+           {this.state.poi && (
+            <Marker 
+              coordinate={this.state.poi.coordinate}
+              title={"title"}
+              description={"description"}
+              onPress={()=>console.log('hello')}>
+            </Marker>
+          )}
          </MapView>
+         <View style={{width:width}}>
+         <PanGestureHandler onHandlerStateChange={this._onHandlerStateChange} onGestureEvent={this._onGestureEvent}>
+          <Animated.View style={{
+              position:'absolute', 
+              bottom: 0, 
+              width:width, 
+              height:500,
+              backgroundColor:'white',
+              borderTopLeftRadius: 20,
+              borderTopRightRadius:20,
+              opacity: this.state.poi? 1:0,
+              transform: [{translateY: this._translateY.interpolate({
+                inputRange:[0,400],
+                outputRange:[0,400],
+                extrapolate: 'clamp'
+              })}]}} >
+              <View style={{height:100}}>
+                {this.state.uparrow? 
+                  <Icon name='chevron-up' type='font-awesome' color='gray' containerStyle={{flex: 1, alignItems: 'center'}} />:
+                  <Icon name='chevron-down' type='font-awesome' color='gray' containerStyle={{flex: 1, alignItems: 'center'}}/>
+                } 
+                <Text>{this.state.poi && this.state.poi.name}</Text> 
+              </View>
+              <ScrollView >
+                <Text>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</Text> 
+              </ScrollView>
+          </Animated.View>
+        </PanGestureHandler>
+        </View>
        </View>)
       }
       else{
         return <View><Text style={{fontSize:20,color:'white'}}>Sites</Text></View>
       }
     }
+
+    setModalVisible(visible) {
+      this.setState({modalVisible: visible});
+    }
+
     render() {
         return (
-          // <MenuProvider>
           <View style={styles.container}>
             <Header
               leftComponent={ <Icon name='bars' type='font-awesome' onPress={() => this.props.navigation.openDrawer()} color='white'/>}
@@ -113,7 +212,7 @@ class MainPage extends Component {
                 <PopoverTooltip
                   ref='tooltip1'
                   buttonComponent={
-                    <Icon name='ellipsis-v' type='font-awesome' color='white'/>
+                    <Icon name='ellipsis-v' type='font-awesome' color='white' containerStyle={{width:20}}/>
                   }
                   items={[
                     {
@@ -134,7 +233,6 @@ class MainPage extends Component {
             {this._makeselection(this.state.selection)}
             
            </View>
-          //  </MenuProvider>
           
         )};
 }
@@ -179,9 +277,22 @@ const styles = StyleSheet.create({
 
   });
 
+  const RootStack = createStackNavigator(
+    {
+      MainPage: MainPage,
+      Popupmenu: Popupmenu,
+    },
+    {
+      initialRouteName: 'MainPage',
+      defaultNavigationOptions: {
+        header: null
+      },
+    }
+  );
+
   const AppNavigator = createDrawerNavigator({
     Home: {
-      screen: MainPage,
+      screen: RootStack,
     },
     Settings: {
       screen: MenuPage,
