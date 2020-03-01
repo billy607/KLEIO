@@ -52,8 +52,8 @@ class MainPage extends PureComponent {
     };  
     this.onPoiClick = this.onPoiClick.bind(this);
     this._translateY = new Animated.Value(0);
-    this._translateY.setOffset(400);
-    this._lastOffset = {y: 400 };
+    this._translateY.setOffset(height-100);
+    this._lastOffset = {y: height-100 };
     this._onGestureEvent = Animated.event(
       [
         {
@@ -123,9 +123,9 @@ class MainPage extends PureComponent {
     _onHandlerStateChange = event => {
       if (event.nativeEvent.oldState === State.ACTIVE) {
         this._lastOffset.y += event.nativeEvent.translationY;
-        if(event.nativeEvent.translationY>10) this._lastOffset.y=400;
+        if(event.nativeEvent.translationY>10) this._lastOffset.y=height-100;
         else if(event.nativeEvent.translationY<-10) this._lastOffset.y=0;
-        if(this._lastOffset.y<400) {
+        if(this._lastOffset.y<height-100) {
           this.setState({uparrow: false});
         }
         else this.setState({uparrow: true});
@@ -168,14 +168,14 @@ class MainPage extends PureComponent {
               position:'absolute', 
               bottom: 0, 
               width:width, 
-              height:500,
+              height:height,
               backgroundColor:'white',
               borderTopLeftRadius: 20,
               borderTopRightRadius:20,
               opacity: this.state.poi? 1:0,
               transform: [{translateY: this._translateY.interpolate({
-                inputRange:[0,400],
-                outputRange:[0,400],
+                inputRange:[0,height-100],
+                outputRange:[0,height-100],
                 extrapolate: 'clamp'
               })}]}} >
               <View style={{height:100}}>
