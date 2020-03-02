@@ -4,17 +4,17 @@ import {
   Text,
   View,
   Dimensions,
-  Modal,
   Animated,
+  StatusBar,
 } from 'react-native';
 import PopoverTooltip from 'react-native-popover-tooltip';
 
-import {Header, Icon, Tooltip, Button} from 'react-native-elements';
+import {Header, Icon} from 'react-native-elements';
 import {createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import {createDrawerNavigator} from 'react-navigation-drawer'
 import MenuPage from './Menu';
-import MapView, { Callout, Marker,PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, {Marker,PROVIDER_GOOGLE } from 'react-native-maps';
 import Boundary, {Events} from 'react-native-boundary';
 import {
   PanGestureHandler,
@@ -22,12 +22,25 @@ import {
   State,
 } from 'react-native-gesture-handler';
 import { Popupmenu } from './popup-menu';
+import Sound from 'react-native-sound';
 
-
-const image = require('./image/menu.png');
 var {height, width} = Dimensions.get('window'); 
-const circleRadius = 30;
-
+let demoAudio = require('./sound/test.mp3');
+const s = new Sound(demoAudio,(error) => {
+  if (error) {
+      console.log('failed');
+      return;
+  }
+  console.log('start');
+  console.log('duration in seconds: ' + s.getDuration() + 'number of channels: ' + s.getNumberOfChannels());
+  s.play((success) => {
+    if (success) {
+      console.log('successfully finished playing');
+    } else {
+      console.log('playback failed due to audio decoding errors');
+    }
+  });
+})
 const ASPECT_RATIO = width / height;
 const LATITUDE = 29.6463;  
 const LONGITUDE = -82.3477;
@@ -49,11 +62,12 @@ class MainPage extends PureComponent {
       poi: null,
       modalVisible: false,
       uparrow: true,
+      value: 0,
     };  
     this.onPoiClick = this.onPoiClick.bind(this);
     this._translateY = new Animated.Value(0);
-    this._translateY.setOffset(height-100);
-    this._lastOffset = {y: height-100 };
+    this._translateY.setOffset(height-50);
+    this._lastOffset = {y: height-50 };
     this._onGestureEvent = Animated.event(
       [
         {
@@ -102,41 +116,64 @@ class MainPage extends PureComponent {
 
   onPoiClick(e) {
     const poi = e.nativeEvent;
-
     this.setState({
       destination: {
-                latitude: poi.coordinate.latitude,
-                longitude: poi.coordinate.longitude,
-                latitudeDelta: LATITUDE_DELTA,
-                longitudeDelta: LONGITUDE_DELTA,
-              },
-       poi:poi,
-     });
+              latitude: poi.coordinate.latitude,
+              longitude: poi.coordinate.longitude,
+              latitudeDelta: LATITUDE_DELTA,
+              longitudeDelta: LONGITUDE_DELTA,
+            },
+      poi:poi,
+    });
   }
-    static navigationOptions = {
-        //To hide the ActionBar/NavigationBar
-        header: null,
-    };
+  onScreenClick= (e) => {
+    const loc = e.nativeEvent;
+    this.setState({
+      destination: {
+        latitude: loc.coordinate.latitude,
+        longitude: loc.coordinate.longitude,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
+      },
+      poi:null,
+    });
+  }
+  static navigationOptions = {
+      //To hide the ActionBar/NavigationBar
+      header: null,
+  };
+  Playaudio=()=>{
+    s.play((success) => {
+      if (success) {
+        console.log('successfully finished playing');
+      } else {
+        console.log('playback failed due to audio decoding errors');
+      }
+    });
+  }
+  Stopaudio=()=>{
+    s.stop();
+
+  }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     
     _onHandlerStateChange = event => {
       if (event.nativeEvent.oldState === State.ACTIVE) {
         this._lastOffset.y += event.nativeEvent.translationY;
-        if(event.nativeEvent.translationY>10) this._lastOffset.y=height-100;
-        else if(event.nativeEvent.translationY<-10) this._lastOffset.y=0;
-        if(this._lastOffset.y<height-100) {
+        if(event.nativeEvent.translationY>10) this._lastOffset.y=height-50;
+        else if(event.nativeEvent.translationY<-10) this._lastOffset.y=50+StatusBar.currentHeight;
+        if(this._lastOffset.y<height-50) {
           this.setState({uparrow: false});
         }
         else this.setState({uparrow: true});
         this._translateY.setOffset(this._lastOffset.y);
         this._translateY.setValue(0);
-        console.log(this._translateY);
       }
     };
-    _makeselection(selection){
+    _makeselection= selection =>{
       if(selection=="OverView"){
-        return <View><Text style={{fontSize:20,color:'white'}}>OverView</Text></View>
+        return <Popupmenu/>
       }
       else if(selection=="Map"){
         return(
@@ -152,6 +189,7 @@ class MainPage extends PureComponent {
            }}
            showsUserLocation={true}
            onPoiClick={this.onPoiClick}
+           onPress={this.onScreenClick}
          >
            {this.state.poi && (
             <Marker 
@@ -170,20 +208,32 @@ class MainPage extends PureComponent {
               width:width, 
               height:height,
               backgroundColor:'white',
-              borderTopLeftRadius: 20,
-              borderTopRightRadius:20,
+              borderTopLeftRadius: this._translateY.interpolate({
+                inputRange:[0,height-50],
+                outputRange:[0,20],
+                extrapolate: 'clamp'
+              }),
+              borderTopRightRadius: this._translateY.interpolate({
+                inputRange:[0,height-50],
+                outputRange:[0,20],
+                extrapolate: 'clamp'
+              }),
               opacity: this.state.poi? 1:0,
               transform: [{translateY: this._translateY.interpolate({
-                inputRange:[0,height-100],
-                outputRange:[0,height-100],
+                inputRange:[0,height-50],
+                outputRange:[0,height-50],
                 extrapolate: 'clamp'
               })}]}} >
-              <View style={{height:100}}>
+              <View style={{height:50}}>
                 {this.state.uparrow? 
                   <Icon name='chevron-up' type='font-awesome' color='gray' containerStyle={{flex: 1, alignItems: 'center'}} />:
                   <Icon name='chevron-down' type='font-awesome' color='gray' containerStyle={{flex: 1, alignItems: 'center'}}/>
                 } 
-                <Text>{this.state.poi && this.state.poi.name}</Text> 
+                <View style={{top:0, flexDirection:'row'}}>
+                  <Text>{this.state.poi && this.state.poi.name.replace(/\n/g, " ")}</Text> 
+                  <Icon name='play' type='font-awesome' color='blue' onPress={this.Playaudio}/>
+                  <Icon name='stop' type='font-awesome' color='blue' onPress={this.Stopaudio}/>
+                </View>
               </View>
               <ScrollView >
                 <Text>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</Text> 
@@ -206,13 +256,13 @@ class MainPage extends PureComponent {
         return (
           <View style={styles.container}>
             <Header
-              leftComponent={ <Icon name='bars' type='font-awesome' onPress={() => this.props.navigation.openDrawer()} color='white'/>}
-              centerComponent={{ text: 'KLEIO', style: { color: 'white' } }}
+              leftComponent={ <Icon name='bars' type='font-awesome' onPress={() => this.props.navigation.openDrawer()} color='white' containerStyle={{height:20}}/>}
+              centerComponent={{ text: 'KLEIO', style: { color: 'white', height:20} }}
               rightComponent={
                 <PopoverTooltip
                   ref='tooltip1'
                   buttonComponent={
-                    <Icon name='ellipsis-v' type='font-awesome' color='white' containerStyle={{width:20}}/>
+                    <Icon name='ellipsis-v' type='font-awesome' color='white' containerStyle={{height:20, width:20}}/>
                   }
                   items={[
                     {
@@ -226,8 +276,10 @@ class MainPage extends PureComponent {
                   ]}
                   />
               }
-              containerStyle={{height:height*0.1}}
-              rightContainerStyle={{padding:10}}
+              containerStyle={{height:50}}
+              leftContainerStyle={{top:-15}}
+              centerContainerStyle={{top:-15}}
+              rightContainerStyle={{top:-15}}
               backgroundColor='darkorange'
             />
             {this._makeselection(this.state.selection)}
@@ -239,7 +291,7 @@ class MainPage extends PureComponent {
 const styles = StyleSheet.create({
     mapcontainer: {
       position: 'absolute',
-      top: height*0.1,
+      top: 50,
       left: 0,
       right: 0,
       bottom: 0,
@@ -251,7 +303,7 @@ const styles = StyleSheet.create({
       top: 0,
       left: 0,
       right: 0,
-      bottom: 0,
+      bottom: 0
     },
     button: {
       position: 'absolute',
@@ -260,7 +312,7 @@ const styles = StyleSheet.create({
     },
     container: {
       flex: 1,
-      backgroundColor: 'darkorange',
+      backgroundColor: 'blue',
     },
     main: {
       flex: 9,
