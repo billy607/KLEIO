@@ -164,7 +164,8 @@ const styles = StyleSheet.create({
     Settings: {
       screen: MenuPage,
     },
-
+    },{
+        drawerLockMode: 'locked-closed'
   });
   
   export default createAppContainer(AppNavigator);
