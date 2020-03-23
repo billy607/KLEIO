@@ -2,13 +2,13 @@ import React, {PureComponent } from 'react';
 import {
   StyleSheet,
   Button,
-  Slider,
   Text,
   View,
   Dimensions,
   Animated,
   StatusBar,
 } from 'react-native';
+import Slider from '@react-native-community/slider';
 import {Icon} from 'react-native-elements';
 import MapView, {Marker,PROVIDER_GOOGLE } from 'react-native-maps';
 import Boundary, {Events} from 'react-native-boundary';
@@ -18,6 +18,7 @@ import {
   State,
 } from 'react-native-gesture-handler';
 import Sound from 'react-native-sound';
+
 
 var {height, width} = Dimensions.get('window'); 
 let demoAudio = require('./sound/test.mp3');
@@ -29,6 +30,7 @@ const s = new Sound(demoAudio,(error) => {
   console.log('start');
 //   console.log('duration in seconds: ' + s.getDuration() + 'number of channels: ' + s.getNumberOfChannels());
 })
+const pullUpMenuHeight=100;
 const ASPECT_RATIO = width / height;
 const LATITUDE = 29.6463;  
 const LONGITUDE = -82.3477;
@@ -55,8 +57,8 @@ export default class MapPage extends PureComponent {
         this.sliderEditing = false;
         this.onPoiClick = this.onPoiClick.bind(this);
         this._translateY = new Animated.Value(0);
-        this._translateY.setOffset(height-50);
-        this._lastOffset = {y: height-50 };
+        this._translateY.setOffset(height-pullUpMenuHeight);///////////////////
+        this._lastOffset = {y: height-pullUpMenuHeight };//////////////////////
         this._onGestureEvent = Animated.event(
         [
             {
@@ -69,6 +71,7 @@ export default class MapPage extends PureComponent {
         );
     }
     componentDidMount() {
+        console.log("call componentDidMount!!!!!!!!");
         if(s.isLoaded && this.state.audioState == 'playing' && !this.sliderEditing){
             s.getCurrentTime((seconds, isPlaying) => {
                 this.setState({audioSeconds:seconds});
@@ -173,18 +176,20 @@ export default class MapPage extends PureComponent {
     }
     onSliderEditing = value => {
         console.log("sliding!");
-        console.log("duration"+this.state.audioDuration);
+        console.log("audio was at "+this.state.audioSeconds);
         if(s){
+            console.log("!!");
             s.setCurrentTime(value);
             this.setState({audioSeconds:value});
         }
+        console.log("audio now at " + this.state.audioSeconds);
     }
     _onHandlerStateChange = event => {
         if (event.nativeEvent.oldState === State.ACTIVE) {
           this._lastOffset.y += event.nativeEvent.translationY;
-          if(event.nativeEvent.translationY>10) this._lastOffset.y=height-50;
+          if(event.nativeEvent.translationY>10) this._lastOffset.y=height-pullUpMenuHeight;///////////////////
           else if(event.nativeEvent.translationY<-10) this._lastOffset.y=50+StatusBar.currentHeight;
-          if(this._lastOffset.y<height-50) {
+          if(this._lastOffset.y<height-pullUpMenuHeight) {///////////////////////
             this.setState({uparrow: false});
           }
           else this.setState({uparrow: true});
@@ -217,6 +222,29 @@ export default class MapPage extends PureComponent {
             </Marker>
             )}
         </MapView>
+        <View style={{width:300,height:150,backgroundColor: 'white',opacity:0.7}}>
+            
+            <Slider
+                style={{width: 300, height: 40}}
+                onSlidingStart={this.onSliderEditStart}
+                onSlidingComplete={this.onSliderEditEnd}
+                onValueChange={this.onSliderEditing}
+                value={this.state.audioSeconds} 
+                maximumValue={this.state.audioDuration} 
+                minimumValue={0} 
+                maximumTrackTintColor='black' 
+                minimumTrackTintColor='grey' 
+            />
+            <View style={{flex:1,flexDirection:'row'}}>
+            <Icon name='backward' type='font-awesome' color='blue' containerStyle={{flex:1}}/> 
+            {this.state.audioState=='playing'?
+                <Icon name='pause' type='font-awesome' color='blue' onPress={this.pauseAudio} containerStyle={{flex:1}}/>:
+                <Icon name='play' type='font-awesome' color='blue' onPress={this.Playaudio} containerStyle={{flex:1}}/>
+            }
+            <Icon name='forward' type='font-awesome' color='blue' containerStyle={{flex:1}}/>
+            </View>
+        </View>
+        <View><Text></Text></View>
         <View style={{width:width}}>
         <PanGestureHandler onHandlerStateChange={this._onHandlerStateChange} onGestureEvent={this._onGestureEvent}>
         <Animated.View style={{
@@ -248,28 +276,9 @@ export default class MapPage extends PureComponent {
             } 
             <View style={{top:0, flexDirection:'row'}}>
                 <Text>{this.state.poi && this.state.poi.name.replace(/\n/g, " ")}</Text> 
-                <Icon name='play' type='font-awesome' color='blue' onPress={this.Playaudio}/>
-                <Icon name='pause' type='font-awesome' color='blue' onPress={this.pauseAudio}/>
                 
                 {/* <Icon name='stop' type='font-awesome' color='blue' onPress={this.Stopaudio}/> */}
-                
             </View>
-            <View>
-                <Slider
-                    //onTouchStart={this.onSliderEditStart}
-                    // onTouchMove={() => console.log('onTouchMove')}
-                    //onTouchEnd={this.onSliderEditEnd}
-                    // onTouchEndCapture={() => console.log('onTouchEndCapture')}
-                    // onTouchCancel={() => console.log('onTouchCancel')}
-                    onSlidingComplete={this.onSliderEditing}
-                    value={this.state.audioSeconds} 
-                    maximumValue={this.state.audioDuration} 
-                    minimumValue={0} 
-                    maximumTrackTintColor='black' 
-                    minimumTrackTintColor='grey' 
-                    //style={{flex:1, alignSelf:'center', width:1000}}
-                />
-                </View>
             </View>
             <ScrollView >
             <Text>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</Text> 

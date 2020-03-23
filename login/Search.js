@@ -14,7 +14,7 @@ import MenuPage from './Menu';
 import {Icon, SearchBar, ListItem, Header} from 'react-native-elements';
 import { createAppContainer,createSwitchNavigator} from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack';
-import {createDrawerNavigator} from 'react-navigation-drawer';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import MainPage from './MainPage';
 
 const image = require('./image/menu.png');
@@ -96,17 +96,17 @@ class SearchPage extends PureComponent {
         </View>
         <SafeAreaView style={styles.SafeAreaView}>
           <ScrollView style={styles.ScrollView}>
+            <View style={{padding:5}}>
             {
               list.map((l, i) => (
                 <ListItem
                   key={i}
                   title={l.name}
                   bottomDivider
-                  containerStyle={styles.ScrollView}
                 />
               ))
             }
-
+            </View>
           </ScrollView>
         </SafeAreaView>
       </View>
@@ -172,16 +172,16 @@ const RootStack = createStackNavigator(
   }
 );
 
-const AppNavigator = createDrawerNavigator({
-  Home: {
-    screen: RootStack,
-  },
-  Settings: {
-    screen: MenuPage,
-  },
+// const AppNavigator = createDrawerNavigator({
+//   Home: {
+//     screen: RootStack,
+//   },
+//   Settings: {
+//     screen: MenuPage,
+//   },
 
-});
-const AppContainer= createAppContainer(AppNavigator);
+// });
+const AppContainer= createAppContainer(RootStack);
 
 
 export default class Search extends React.Component {

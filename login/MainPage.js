@@ -53,7 +53,7 @@ class MainPage extends PureComponent {
 
     _makeselection= selection =>{
       if(selection=="OverView"){
-        return <Popupmenu/>
+        return this.props.navigation.navigate('Popupmenu');
       }
       else if(selection=="Map"){
         return(
@@ -157,15 +157,24 @@ const styles = StyleSheet.create({
     }
   );
 
-  const AppNavigator = createDrawerNavigator({
-    Home: {
-      screen: RootStack,
-    },
-    Settings: {
-      screen: MenuPage,
-    },
-    },{
-        drawerLockMode: 'locked-closed'
-  });
+  // const AppNavigator = createDrawerNavigator({
+  //   Home: {
+  //     screen: RootStack,
+  //   },
+  //   Settings: {
+  //     screen: MenuPage,
+  //   },
+  //   },{
+  //       drawerLockMode: 'locked-closed'
+  // });
   
-  export default createAppContainer(AppNavigator);
+  // export default createAppContainer(AppNavigator);
+  const AppContainer = createAppContainer(RootStack);
+
+
+
+export default class App extends React.Component {
+  render() {
+    return <AppContainer />;
+  }
+}
