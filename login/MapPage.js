@@ -72,13 +72,13 @@ export default class MapPage extends PureComponent {
     }
     componentDidMount() {
         console.log("call componentDidMount!!!!!!!!");
-        if(s.isLoaded && this.state.audioState == 'playing' && !this.sliderEditing){
-            s.getCurrentTime((seconds, isPlaying) => {
-                this.setState({audioSeconds:seconds});
-            })
-            console.log("in playing");
-        }
-
+        this.timeout = setInterval(() => {
+            if(this.state.audioState == 'playing' && !this.sliderEditing){
+                s.getCurrentTime((seconds) => {
+                    this.setState({audioSeconds:seconds});
+                })
+            }
+        }, 100);
         Boundary.add({
         lat: 29.6463,
         lng: -82.3477,
@@ -140,9 +140,10 @@ export default class MapPage extends PureComponent {
     };
     Playaudio=async()=>{
         if(s){
+            console.log('playing')
             console.log(this.state.audioDuration);
             s.play(this.playComplete);
-            this.setState({audioState: 'playing'});
+            this.setState({audioState: 'playing'});   
         }else{
             console.log("audio loaded failed");
         }
@@ -155,7 +156,7 @@ export default class MapPage extends PureComponent {
                 console.log('playback failed due to audio decoding errors');
                 Alert.alert('Notice', 'audio file error. (Error code : 2)');
             }
-            //this.setState({audioState:'paused', audioSeconds:0});
+            this.setState({audioState:'paused', audioSeconds:0});
             s.setCurrentTime(0);
         }
     }
@@ -171,19 +172,32 @@ export default class MapPage extends PureComponent {
     onSliderEditStart = () => {
         this.sliderEditing = true;
     }
-    onSliderEditEnd = () => {
+    onSliderEditEnd = (value) => {
         this.sliderEditing = false;
-    }
-    onSliderEditing = value => {
-        console.log("sliding!");
-        console.log("audio was at "+this.state.audioSeconds);
         if(s){
-            console.log("!!");
             s.setCurrentTime(value);
             this.setState({audioSeconds:value});
         }
-        console.log("audio now at " + this.state.audioSeconds);
     }
+    jumpPrevSeconds = () => {this.jumpSeconds(-5);}
+    jumpNextSeconds = () => {this.jumpSeconds(5);}
+    jumpSeconds = (secsDelta) => {
+        if(s){
+            s.getCurrentTime((secs) => {
+                let nextSecs = secs + secsDelta;
+                if(nextSecs < 0) nextSecs = 0;
+                else if(nextSecs > this.state.audioDuration) nextSecs = this.state.audioDuration;
+                s.setCurrentTime(nextSecs);
+                this.setState({audioSeconds:nextSecs});
+            })
+        }
+    }
+    // onSliderEditing = value => {
+    //     if(s){
+    //         s.setCurrentTime(value);
+    //         this.setState({audioSeconds:value});
+    //     }
+    // }
     _onHandlerStateChange = event => {
         if (event.nativeEvent.oldState === State.ACTIVE) {
           this._lastOffset.y += event.nativeEvent.translationY;
@@ -228,20 +242,20 @@ export default class MapPage extends PureComponent {
                 style={{width: 300, height: 40}}
                 onSlidingStart={this.onSliderEditStart}
                 onSlidingComplete={this.onSliderEditEnd}
-                onValueChange={this.onSliderEditing}
-                value={this.state.audioSeconds} 
+                // onValueChange={this.onSliderEditing} 
+                value={this.state.audioSeconds}
                 maximumValue={this.state.audioDuration} 
                 minimumValue={0} 
                 maximumTrackTintColor='black' 
                 minimumTrackTintColor='grey' 
             />
             <View style={{flex:1,flexDirection:'row'}}>
-            <Icon name='backward' type='font-awesome' color='blue' containerStyle={{flex:1}}/> 
+            <Icon name='backward' type='font-awesome' color='blue' containerStyle={{flex:1}} onPress={this.jumpPrevSeconds}/> 
             {this.state.audioState=='playing'?
                 <Icon name='pause' type='font-awesome' color='blue' onPress={this.pauseAudio} containerStyle={{flex:1}}/>:
                 <Icon name='play' type='font-awesome' color='blue' onPress={this.Playaudio} containerStyle={{flex:1}}/>
             }
-            <Icon name='forward' type='font-awesome' color='blue' containerStyle={{flex:1}}/>
+            <Icon name='forward' type='font-awesome' color='blue' containerStyle={{flex:1}} onPress={this.jumpNextSeconds}/>
             </View>
         </View>
         <View><Text></Text></View>

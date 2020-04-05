@@ -12,12 +12,13 @@ import {
 import SideMenu from 'react-native-side-menu';
 import MenuPage from './Menu';
 import {Icon, SearchBar, ListItem, Header} from 'react-native-elements';
-import { createAppContainer,createSwitchNavigator} from 'react-navigation'
-import { createStackNavigator } from 'react-navigation-stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import MainPage from './MainPage';
 
 const image = require('./image/menu.png');
+
 var {height, width} = Dimensions.get('window'); 
 
 const list = [
@@ -158,35 +159,30 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
-
-const RootStack = createStackNavigator(
-  {
-    Search: SearchPage,
-    MainPage: MainPage,
-  },
-  {
-    initialRouteName: 'Search',
-    defaultNavigationOptions: {
-      header: null
-    },
-  }
-);
-
-// const AppNavigator = createDrawerNavigator({
-//   Home: {
-//     screen: RootStack,
-//   },
-//   Settings: {
-//     screen: MenuPage,
-//   },
-
-// });
-const AppContainer= createAppContainer(RootStack);
-
-
+const Stack = createStackNavigator();
+function MyStack() {
+  return (
+    <Stack.Navigator initialRouteName='HomeScreen' headerMode='none'>
+      <Stack.Screen name="Home" component={MyDrawer} />
+      <Stack.Screen name="MainPage" component={MainPage} />
+    </Stack.Navigator>
+  );
+}
+const Drawer = createDrawerNavigator();
+function MyDrawer() {
+  return (
+    <Drawer.Navigator >
+      <Drawer.Screen name="Home" component={SearchPage}/>
+      <Drawer.Screen name="Setting" component={MenuPage} />
+    </Drawer.Navigator>
+  );
+}
 export default class Search extends React.Component {
   render() {
     return (
-        <AppContainer/>);
+      <NavigationContainer>
+      <MyStack/>
+    </NavigationContainer>
+      )
   }
 }

@@ -10,20 +10,14 @@ import {
 import PopoverTooltip from 'react-native-popover-tooltip';
 
 import {Header, Icon} from 'react-native-elements';
-import {createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
-import {createDrawerNavigator} from 'react-navigation-drawer'
-import MenuPage from './Menu';
-import MapView, {Marker,PROVIDER_GOOGLE } from 'react-native-maps';
-import Boundary, {Events} from 'react-native-boundary';
-import {
-  PanGestureHandler,
-  ScrollView,
-  State,
-} from 'react-native-gesture-handler';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Popupmenu } from './popup-menu';
 import Sound from 'react-native-sound';
 import MapPage from './MapPage';
+import MenuPage from './Menu';
+
 
 var {height, width} = Dimensions.get('window'); 
 let demoAudio = require('./sound/test.mp3');
@@ -143,38 +137,28 @@ const styles = StyleSheet.create({
 
   });
 
-  const RootStack = createStackNavigator(
-    {
-      MainPage: MainPage,
-      Popupmenu: Popupmenu,
-      MapPage: MapPage
-    },
-    {
-      initialRouteName: 'MainPage',
-      defaultNavigationOptions: {
-        header: null
-      },
-    }
-  );
-
-  // const AppNavigator = createDrawerNavigator({
-  //   Home: {
-  //     screen: RootStack,
-  //   },
-  //   Settings: {
-  //     screen: MenuPage,
-  //   },
-  //   },{
-  //       drawerLockMode: 'locked-closed'
-  // });
-  
-  // export default createAppContainer(AppNavigator);
-  const AppContainer = createAppContainer(RootStack);
-
-
-
-export default class App extends React.Component {
-  render() {
-    return <AppContainer />;
+  const Stack = createStackNavigator();
+  function MyStack() {
+    return (
+      <Stack.Navigator initialRouteName='MainPage' headerMode='none'>
+        <Stack.Screen name="Home" component={MainPage} />
+        <Stack.Screen name="Popupmenu" component={Popupmenu} />
+        <Stack.Screen name="MapPage" component={MapPage} />
+      </Stack.Navigator>
+    );
   }
-}
+  const Drawer = createDrawerNavigator();
+  function MyDrawer() {
+    return (
+      <Drawer.Navigator>
+        <Drawer.Screen name="Home" component={MainPage} options={{gestureEnabled: false}}/>
+      </Drawer.Navigator>
+    );
+  }
+  export default class App extends React.Component {
+    render() {
+      return (
+        <MyDrawer/>
+        )
+    }
+  }
