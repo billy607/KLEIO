@@ -51,8 +51,10 @@ export default class MapPage extends PureComponent {
           poi: null,
           uparrow: true,
           audioState:'paused', //playing, paused
-          audioSeconds:0,
-          audioDuration:s.getDuration(),
+          audioSeconds: 0,
+          audioDuration: s.getDuration(),
+          audioSpeed: 1,
+          entergeo: true
         };
         this.sliderEditing = false;
         this.onPoiClick = this.onPoiClick.bind(this);
@@ -90,12 +92,16 @@ export default class MapPage extends PureComponent {
     
         Boundary.on(Events.ENTER, id => {
         // Prints 'Get out of my Chipotle!!'
-        console.log(`Get out of my ${id}!!`);
+            console.log(`Get out of my ${id}!!`);
+            this.setState({entergeo:true});
+            // this.Playaudio();/////////////////////////////////////////////////////////////////////
         });
         
         Boundary.on(Events.EXIT, id => {
         // Prints 'Ya! You better get out of my Chipotle!!'
-        console.log(`Ya! You better get out of my ${id}!!`)
+            console.log(`Ya! You better get out of my ${id}!!`);
+            this.setState({entergeo:false});
+            this.pauseAudio();
         });
         // .then(() => console.log("exit function fired!"))
         // .catch(e => console.error("error on exit :(", e))
@@ -192,6 +198,19 @@ export default class MapPage extends PureComponent {
             })
         }
     }
+
+    speedUp = () =>{
+        var speed = this.state.audioSpeed
+        if(speed>=2){
+            speed = 1;
+        }else{
+            speed = speed + 0.5;
+        }
+        console.log(speed);
+        s.setSpeed(speed);
+        if(!s.isPlaying()) s.pause();
+        this.setState({audioSpeed: speed});
+    }
     // onSliderEditing = value => {
     //     if(s){
     //         s.setCurrentTime(value);
@@ -236,10 +255,9 @@ export default class MapPage extends PureComponent {
             </Marker>
             )}
         </MapView>
-        <View style={{width:300,height:150,backgroundColor: 'white',opacity:0.7}}>
-            
+        <View style={{width:width*0.8,height:height*0.2,backgroundColor: 'white',opacity:this.state.entergeo==true?0.7:0}}>
             <Slider
-                style={{width: 300, height: 40}}
+                style={{width: width*0.8, height: 40}}
                 onSlidingStart={this.onSliderEditStart}
                 onSlidingComplete={this.onSliderEditEnd}
                 // onValueChange={this.onSliderEditing} 
@@ -248,14 +266,19 @@ export default class MapPage extends PureComponent {
                 minimumValue={0} 
                 maximumTrackTintColor='black' 
                 minimumTrackTintColor='grey' 
+                thumbTintColor= 'rgb(20,134,245)'
             />
             <View style={{flex:1,flexDirection:'row'}}>
-            <Icon name='backward' type='font-awesome' color='blue' containerStyle={{flex:1}} onPress={this.jumpPrevSeconds}/> 
+            <Icon name='backward' type='font-awesome' color='rgb(20,134,245)' containerStyle={{flex:1}} onPress={this.jumpPrevSeconds}/> 
+            
             {this.state.audioState=='playing'?
-                <Icon name='pause' type='font-awesome' color='blue' onPress={this.pauseAudio} containerStyle={{flex:1}}/>:
-                <Icon name='play' type='font-awesome' color='blue' onPress={this.Playaudio} containerStyle={{flex:1}}/>
+                <Icon name='pause' type='font-awesome' color='rgb(20,134,245)' onPress={this.pauseAudio} containerStyle={{flex:1}}/>:
+                <Icon name='play' type='font-awesome' color='rgb(20,134,245)' onPress={this.Playaudio} containerStyle={{flex:1}}/>
             }
-            <Icon name='forward' type='font-awesome' color='blue' containerStyle={{flex:1}} onPress={this.jumpNextSeconds}/>
+
+            <Icon name='forward' type='font-awesome' color='rgb(20,134,245)' containerStyle={{flex:1}} onPress={this.jumpNextSeconds}/>
+
+        <View style={{paddingRight:10}}><View style={styles.speedup}><Text style={{textAlign:'center',fontWeight: 'bold'}} onPress={this.speedUp}>x{this.state.audioSpeed}</Text></View></View>
             </View>
         </View>
         <View><Text></Text></View>
@@ -306,19 +329,26 @@ export default class MapPage extends PureComponent {
 
 const styles = StyleSheet.create({
     mapcontainer: {
-      position: 'absolute',
-      top: 50,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      justifyContent: 'flex-end',
-      alignItems: 'center',
+        position: 'absolute',
+        top: 50,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
     },
     map: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0
+    },
+    speedup: {
+        borderWidth:1,
+        borderColor:'rgb(20,134,245)',
+        borderRadius:10,
+        height:25,
+        width:40
     },
 });

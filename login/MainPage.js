@@ -119,7 +119,10 @@ const styles = StyleSheet.create({
       padding: 10,
     },
     container: {
-      flex: 1,
+      position:'absolute',
+      top:0,
+      height:height,
+      width:width,
       backgroundColor: 'blue',
     },
     main: {

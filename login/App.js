@@ -135,7 +135,10 @@ class HelloWorldApp extends PureComponent {
 
 const styles = StyleSheet.create({
   container:{
-    flex: 1,
+    position:'absolute',
+    top:0,
+    height:height,
+    width:width,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'darkorange',

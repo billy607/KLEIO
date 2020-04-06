@@ -64,7 +64,7 @@ class SearchPage extends PureComponent {
     const { search } = this.state;
 
     return (
-      <View style={{flex: 1, backgroundColor:'darkorange'}}>
+      <View style={styles.maincontainer}>
         <Header
           leftComponent={ <Icon name='bars' type='font-awesome' onPress={() => this.props.navigation.openDrawer()} color='white'/>}
           centerComponent={{ text: 'KLEIO', style: { color: 'white' } }}
@@ -75,17 +75,15 @@ class SearchPage extends PureComponent {
           rightContainerStyle={{top:-15}}
         />
       
-        <View style={styles.searchbar}>
+        <View style={styles.container}>
           <SearchBar
             placeholder="Explore"
             onChangeText={this.updateSearch}
             value={search}
             inputContainerStyle={{backgroundColor: 'white'}}
-            containerStyle={{backgroundColor: 'white', borderWidth: 1, borderRadius: 5}}
+            containerStyle={{backgroundColor: 'white', borderWidth: 1, borderRadius: 5,}}
             leftIconContainerStyle={{backgroundColor:'white'}}
           />
-        </View>
-        <View style={styles.container}>
           <Icon
             raised
             name='crosshairs'
@@ -93,8 +91,8 @@ class SearchPage extends PureComponent {
             color='#f50'
             onPress={() => {
               this.props.navigation.navigate('MainPage');
-            }}/>
-        </View>
+            }}
+            containerStyle={styles.iconcontainer}/>
         <SafeAreaView style={styles.SafeAreaView}>
           <ScrollView style={styles.ScrollView}>
             <View style={{padding:5}}>
@@ -110,53 +108,43 @@ class SearchPage extends PureComponent {
             </View>
           </ScrollView>
         </SafeAreaView>
+        </View>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  button: {
-    position: 'absolute',
-    top: 20,
-    padding: 10,
+  maincontainer:{
+    backgroundColor:'darkorange', 
+    position:'absolute',
+    top:0,
+    height:height,
+    width:width
   },
-  caption: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    alignItems: 'center',
-  },
-  container: {
-    flex: 1,
+  iconcontainer: {
+    // flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'darkorange',
+    paddingBottom:height*0.05,
+    paddingTop:height*0.05
   },
-  searchbar: {
+  container: {
     flex: 1,
     justifyContent: 'center',
     backgroundColor: 'darkorange',
     padding: 0.1*width,
   },
   SafeAreaView: {
-    flex: 6,
-    justifyContent: 'center',
+    flex: 1,
+    // justifyContent: 'center',
     backgroundColor: 'darkorange',
-    padding: 0.1*width,
   },
   ScrollView: {
     borderRadius: 10,
+    width:width*0.8,
     backgroundColor: 'white',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
   },
 });
 const Stack = createStackNavigator();
