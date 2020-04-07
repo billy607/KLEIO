@@ -4,8 +4,7 @@ import {
   Text,
   View,
   Dimensions,
-  Animated,
-  StatusBar,
+  Button,
 } from 'react-native';
 import PopoverTooltip from 'react-native-popover-tooltip';
 
@@ -13,7 +12,7 @@ import {Header, Icon} from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Popupmenu } from './popup-menu';
+import Overview from './Overview';
 import Sound from 'react-native-sound';
 import MapPage from './MapPage';
 import MenuPage from './Menu';
@@ -47,7 +46,7 @@ class MainPage extends PureComponent {
 
     _makeselection= selection =>{
       if(selection=="OverView"){
-        return this.props.navigation.navigate('Popupmenu');
+        return (<Overview/>)
       }
       else if(selection=="Map"){
         return(
@@ -145,7 +144,7 @@ const styles = StyleSheet.create({
     return (
       <Stack.Navigator initialRouteName='MainPage' headerMode='none'>
         <Stack.Screen name="Home" component={MainPage} />
-        <Stack.Screen name="Popupmenu" component={Popupmenu} />
+        <Stack.Screen name="Overview" component={Overview} />
         <Stack.Screen name="MapPage" component={MapPage} />
       </Stack.Navigator>
     );
