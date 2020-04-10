@@ -8,12 +8,19 @@ import {
   SafeAreaView,
   ImageBackground
 } from 'react-native';
+import {Icon} from 'react-native-elements';
 import { createStackNavigator } from '@react-navigation/stack';
 import MapPage from './MapPage';
 import { ScrollView } from 'react-native-gesture-handler';
 
 var {height, width} = Dimensions.get('window'); 
 class Overview extends PureComponent {
+    constructor(props) {
+        super(props);
+    
+        this.state = {
+          show:false,
+        };}
     render() {
         return(
             <SafeAreaView style={styles.safeContainer}>
@@ -24,10 +31,15 @@ class Overview extends PureComponent {
                     <Image source={require('./image/gator.png')} style={{height: height*0.1}} resizeMode="contain"/>
                 </View>
                 </ImageBackground>
+                <View style={{flexDirection:"row"}}>
                 <Text style={styles.subTitle}>
                     Description
                 </Text>
-                <Text style={styles.body}>The University of Florida (commonly referred to as Florida or UF) is a public land-grant, sea-grant, and
+                {this.state.show? 
+                <Icon name='chevron-up' type='font-awesome' color='gray' containerStyle={{top:15}} onPress={()=>this.setState({show:false})}/>:
+                <Icon name='chevron-down' type='font-awesome' color='gray' containerStyle={{top:15}} onPress={()=>this.setState({show:true})}/>}
+                </View>
+                {this.state.show&&<Text style={styles.body}>The University of Florida (commonly referred to as Florida or UF) is a public land-grant, sea-grant, and
 space-grant research university in Gainesville, Florida. It is a senior member of the State University
 System of Florida. The university traces its origins to 1853 and has operated continuously on its
 Gainesville campus since September 1906.{'\n'}{'\n'}
@@ -52,7 +64,10 @@ nickname, compete in National Collegiate Athletic Association (NCAA) Division I 
 Conference (SEC). In their 111-year history, the university&#39;s varsity sports teams have won 40 national
 team championships, 35 of which are NCAA titles, and Florida athletes have won 275 individual national
 championships. In addition, University of Florida students and alumni have won 126 Olympic medals
-including 60 gold medals.{'\n'}</Text>
+including 60 gold medals.{'\n'}</Text>}
+                <Text style={styles.subTitle} onPress={()=>this.setState({show:true})}>
+                    Description
+                </Text>
             </ScrollView>
             </SafeAreaView>
         ) 
@@ -88,12 +103,12 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         textAlign: "left",
         lineHeight: 50,
-        paddingHorizontal:15
+        paddingLeft:15
     },
     body:{
         textAlign:"justify",
         fontSize: 16,
-        paddingHorizontal:15
+        paddingHorizontal:15,
     }
 })
 
