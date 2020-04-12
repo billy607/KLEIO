@@ -5,7 +5,8 @@ import {
     Text,
     StyleSheet,
     Dimensions,
-    Button
+    Button,
+    TouchableOpacity
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 var {height, width} = Dimensions.get('window'); 
@@ -19,24 +20,24 @@ export default class Panel extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            show: false,
-            view: styles.dropdown,
-            title: styles.subTitle,
-            test: true
-        };
-        this.Switch(this.props.level)
-    }
-
-    Switch(param){
-        switch(param){
+        switch(this.props.level){
             case '1':
                 console.log("case1");
-                this.updateStateFunction(styles.dropdown,styles.subTitle);
+                this.state = {
+                    show: false,
+                    view: styles.dropdown,
+                    title: styles.subTitle,
+                    test: true
+                };
                 return;
             case '2':
                 console.log("case2");
-                this.updateStateFunction(styles.secondLevelDropDown,styles.secLvlSubTitle);
+                this.state = {
+                    show: false,
+                    view: styles.secondLevelDropDown,
+                    title: styles.secLvlSubTitle,
+                    test: true
+                };
                 return;
             default:
                 console.log("error");
@@ -44,31 +45,25 @@ export default class Panel extends Component {
         }
     }
 
-    updateStateFunction = (mview,mtitle) => {
-        this.setState({
-           view: mview,
-           title: mtitle,
-           test:false
-        })
-     }
-
     render(){
         console.log(this.state.test)
+        
         return (
             <View>
-                <View style={this.state.view}>
+                <TouchableOpacity activeOpacity={1} style={this.state.view} onPress={()=>this.setState({show: !this.state.show})}>
                     <Text style={this.state.title}>
                         {this.props.title}
                     </Text>
                     {this.state.show? 
-                    <Icon name='chevron-up' type='font-awesome' color='gray' containerStyle={{position: 'absolute', top:15,right: width *.03}} onPress={()=>this.setState({show:false})}/>:
-                    <Icon name='chevron-down' type='font-awesome' color='gray' containerStyle={{position: 'absolute', top:15,right: width *.03}} onPress={()=>this.setState({show:true})}/>}
-                </View>
+                    <Icon name='chevron-up' type='font-awesome' color='gray' containerStyle={{position: 'absolute', top:15,right: width *.03}} />:
+                    <Icon name='chevron-down' type='font-awesome' color='gray' containerStyle={{position: 'absolute', top:15,right: width *.03}} />}
+                </TouchableOpacity>
                 {this.state.show?
                     <View>
+                        {this.props.content!=null&&
                         <Text style={styles.body}>
                             {this.props.content}
-                        </Text>
+                        </Text>}
                         {this.props.children}
                     </View>
                 :null }
