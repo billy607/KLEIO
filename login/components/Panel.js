@@ -22,18 +22,16 @@ export default class Panel extends Component {
         super(props);
         switch(this.props.level){
             case '1':
-                console.log("case1");
                 this.state = {
-                    show: false,
+                    show: this.props.show,
                     view: styles.dropdown,
                     title: styles.subTitle,
                     test: true
                 };
                 return;
             case '2':
-                console.log("case2");
                 this.state = {
-                    show: false,
+                    show: this.props.show,
                     view: styles.secondLevelDropDown,
                     title: styles.secLvlSubTitle,
                     test: true
@@ -46,7 +44,7 @@ export default class Panel extends Component {
     }
 
     render(){
-        console.log(this.state.test)
+        //console.log("test is :"+this.state.test)
         
         return (
             <View>
@@ -64,7 +62,9 @@ export default class Panel extends Component {
                         <Text style={styles.body}>
                             {this.props.content}
                         </Text>}
-                        {this.props.children}
+                        <View style={{paddingLeft: 15,}}>
+                            {this.props.children}
+                        </View>
                     </View>
                 :null }
             </View>
@@ -74,6 +74,7 @@ export default class Panel extends Component {
 
 Panel.defaultProps = {
     level: '1',
+    show: false
 }
 
 const styles = StyleSheet.create({
@@ -88,22 +89,23 @@ const styles = StyleSheet.create({
         textAlign:"justify",
         fontSize: 16,
         paddingHorizontal:15,
+        marginVertical:10
     },
     dropdown: {
         flexDirection:"row",
-        borderWidth: .5,
-        backgroundColor: "#c0c0c0",
+        borderTopWidth: .5,
+        backgroundColor: "#d3d3d3",
     },
     secondLevelDropDown: {
-        flexDirection:"row",
-        borderWidth: .5,
-        backgroundColor: "#d3d3d3",
+        flexDirection:"row"
+        // borderWidth: .5,
+        // backgroundColor: "#d3d3d3",
     },
     secLvlSubTitle: {
         fontSize: 20,
         textAlign: "left",
         lineHeight: 40,
-        paddingLeft: 35, 
+        paddingLeft:15,
         fontWeight: "bold",            
     },
 })

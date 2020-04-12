@@ -20,14 +20,7 @@ class Overview extends PureComponent {
     constructor(props) {
         super(props);
     
-        this.state = {
-          show:true,
-          show1:false,
-          show2:false,
-          subshow2_1:false,
-          subshow2_2:false,
-          subshow2_3:false,
-        };}
+    }
     render() {
         return(
             <SafeAreaView style={styles.safeContainer}>
@@ -40,19 +33,15 @@ class Overview extends PureComponent {
                 </ImageBackground>
 
                 {/*Beginging of content display dropdowns*/}
-                <Panel title="Description" level="1" content="The University of Florida was established in Gainesville in 1906. It is the third largest university in the state of Florida by student population, and the eighth largest single-campus university in the United States. 
+                <Panel show={true} title="Description" level="1" content="The University of Florida was established in Gainesville in 1906. It is the third largest university in the state of Florida by student population, and the eighth largest single-campus university in the United States. 
                     The University of Florida strives to achieve academic excellence by offering a wide range of undergraduate and graduate programs to students. 
                     The University encompasses sixteen colleges and over 150 research centers and Institutes. UF has been designated by the Florida Board of Governors as one of the three “preeminent universities” among the twelve universities of the State University System of Florida. 
                     Let’s explore the University of Florida!"/>
                 <Panel title="Ranking" level="1" content="#34 Nationally"/>
-                <Panel title="Acceptance" level="1">
+                <Panel title="Acceptance" level="1" content="abc">
                     <Panel title="Freshman" level="2" content="#34 Nationally"/>
                     <Panel title="Transfer Students" level="2" content="#34 Nationally"/>
                 </Panel>
-                
-                
-                
-                
             </ScrollView>
             </SafeAreaView>
         ) 
