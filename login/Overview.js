@@ -6,12 +6,14 @@ import {
   Dimensions,
   View,
   SafeAreaView,
-  ImageBackground
+  ImageBackground,
+  Table
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import { createStackNavigator } from '@react-navigation/stack';
 import MapPage from './MapPage';
 import { ScrollView } from 'react-native-gesture-handler';
+import Panel from './components/Panel';
 
 var {height, width} = Dimensions.get('window'); 
 class Overview extends PureComponent {
@@ -19,7 +21,12 @@ class Overview extends PureComponent {
         super(props);
     
         this.state = {
-          show:false,
+          show:true,
+          show1:false,
+          show2:false,
+          subshow2_1:false,
+          subshow2_2:false,
+          subshow2_3:false,
         };}
     render() {
         return(
@@ -31,43 +38,73 @@ class Overview extends PureComponent {
                     <Image source={require('./image/gator.png')} style={{height: height*0.1}} resizeMode="contain"/>
                 </View>
                 </ImageBackground>
-                <View style={{flexDirection:"row"}}>
+
+                {/*Beginging of content display dropdowns*/}
+                <Panel content="test content" title="Panel" level="1">
+                    <Panel content="test content2" title="Panel2" level="2"></Panel>
+                </Panel>
+                <View style={styles.dropdown}>
                 <Text style={styles.subTitle}>
                     Description
                 </Text>
                 {this.state.show? 
-                <Icon name='chevron-up' type='font-awesome' color='gray' containerStyle={{top:15}} onPress={()=>this.setState({show:false})}/>:
-                <Icon name='chevron-down' type='font-awesome' color='gray' containerStyle={{top:15}} onPress={()=>this.setState({show:true})}/>}
+                <Icon name='chevron-up' type='font-awesome' color='gray' containerStyle={{position: 'absolute', top:15,right: width *.03}}onPress={()=>this.setState({show:false})}/>:
+                <Icon name='chevron-down' type='font-awesome' color='gray'  containerStyle={{position: 'absolute', top:15,right:width *.03}} onPress={()=>this.setState({show:true})}/>}
                 </View>
-                {this.state.show&&<Text style={styles.body}>The University of Florida (commonly referred to as Florida or UF) is a public land-grant, sea-grant, and
-space-grant research university in Gainesville, Florida. It is a senior member of the State University
-System of Florida. The university traces its origins to 1853 and has operated continuously on its
-Gainesville campus since September 1906.{'\n'}{'\n'}
-The University of Florida is one of sixty-two elected member institutions of the Association of American
-Universities (AAU), the association of preeminent North American research universities, and the only
-AAU member university in Florida. The university is classified as a Research University with Very High
-Research by the Carnegie Foundation for the Advancement of Teaching. After the Florida state
-legislature&#39;s creation of performance standards in 2013, the Florida Board of Governors designated the
-University of Florida as one of the three &quot;preeminent universities&quot; among the twelve universities of the
-State University System of Florida. For 2019, U.S. News &amp; World Report ranked Florida as the eighth
-(tied) best public university in the United States.{'\n'}{'\n'}
-The university is accredited by the Southern Association of Colleges and Schools (SACS). It is the third
-largest Florida university by student population and is the eighth largest single-campus university in the
-United States with 54,906 students enrolled for the fall 2018 semester. The University of Florida is home
-to sixteen academic colleges and more than 150 research centers and institutes. It offers multiple graduate
-professional programs—including business administration, engineering, law, dentistry, medicine, and
-veterinary medicine—on one contiguous campus, and administers 123 master&#39;s degree programs and
-seventy-six doctoral degree programs in eighty-seven schools and departments. The university&#39;s seal is
-also the seal of the state of Florida which is on the state flag.{'\n'}{'\n'}
-The University of Florida&#39;s intercollegiate sports teams, commonly known by their &quot;Florida Gators&quot;
-nickname, compete in National Collegiate Athletic Association (NCAA) Division I and the Southeastern
-Conference (SEC). In their 111-year history, the university&#39;s varsity sports teams have won 40 national
-team championships, 35 of which are NCAA titles, and Florida athletes have won 275 individual national
-championships. In addition, University of Florida students and alumni have won 126 Olympic medals
-including 60 gold medals.{'\n'}</Text>}
-                <Text style={styles.subTitle} onPress={()=>this.setState({show:true})}>
-                    Description
+                {this.state.show&&<Text style={styles.body}>
+                    The University of Florida was established in Gainesville in 1906. It is the third largest university in the state of Florida by student population, and the eighth largest single-campus university in the United States. 
+                    The University of Florida strives to achieve academic excellence by offering a wide range of undergraduate and graduate programs to students. 
+                    The University encompasses sixteen colleges and over 150 research centers and Institutes. UF has been designated by the Florida Board of Governors as one of the three “preeminent universities” among the twelve universities of the State University System of Florida. 
+                    Let’s explore the University of Florida!
+                </Text>}
+                
+
+                <View style={styles.dropdown}>
+                <Text style={styles.subTitle}>
+                    Ranking
                 </Text>
+                {this.state.show1? 
+                <Icon name='chevron-up' type='font-awesome' color='gray' containerStyle={{position: 'absolute', top:15,right: width *.03}}onPress={()=>this.setState({show1:false})}/>:
+                <Icon name='chevron-down' type='font-awesome' color='gray'  containerStyle={{position: 'absolute', top:15,right:width *.03}} onPress={()=>this.setState({show1:true})}/>}
+                </View>
+                {this.state.show1&&<Text style={styles.body}>
+                    #34 Nationally
+                    </Text>}
+                
+
+                <View style={styles.dropdown}>
+                <Text style={styles.subTitle}>
+                    Acceptance
+                </Text>
+                {this.state.show2? 
+                <Icon name='chevron-up' type='font-awesome' color='gray' containerStyle={{position: 'absolute', top:15,right: width *.03}}onPress={()=>this.setState({show2:false})}/>:
+                <Icon name='chevron-down' type='font-awesome' color='gray'  containerStyle={{position: 'absolute', top:15,right:width *.03}} onPress={()=>this.setState({show2:true})}/>}
+                </View>
+                {this.state.show2&&<View style={styles.secondLevelDropDown}>
+                    <Text style={styles.contentheader}>
+                        Freshman
+                    </Text>
+                    {this.state.subshow2_1? 
+                    <Icon name='chevron-up' type='font-awesome' color='gray' containerStyle={{position: 'absolute', top:15,right: width *.03}}onPress={()=>this.setState({subshow2_1:false})}/>:
+                    <Icon name='chevron-down' type='font-awesome' color='gray'  containerStyle={{position: 'absolute', top:15,right:width *.03}} onPress={()=>this.setState({subshow2_1:true})}/>}
+                    </View>}
+                    {this.state.subshow2_1&&<Text style={styles.body}>
+                        #34 Nationally
+                    </Text>}
+                {this.state.show2&&<View style={styles.secondLevelDropDown}>
+                    <Text style={styles.contentheader}>
+                        Transfer Students
+                    </Text>
+                    {this.state.subshow2_2? 
+                    <Icon name='chevron-up' type='font-awesome' color='gray' containerStyle={{position: 'absolute', top:15,right: width *.03}}onPress={()=>this.setState({subshow2_2:false})}/>:
+                    <Icon name='chevron-down' type='font-awesome' color='gray'  containerStyle={{position: 'absolute', top:15,right:width *.03}} onPress={()=>this.setState({subshow2_2:true})}/>}
+                    </View>}
+                    {this.state.subshow2_2&&<Text style={styles.body}>
+                        #34 Nationally
+                    </Text>}
+                
+                
+                
             </ScrollView>
             </SafeAreaView>
         ) 
@@ -105,11 +142,31 @@ const styles = StyleSheet.create({
         lineHeight: 50,
         paddingLeft:15
     },
+    contentheader: {
+        fontSize: 20,
+        textAlign: "left",
+        lineHeight: 40,
+        paddingLeft: 35, 
+        fontWeight: "bold",            
+    },
+
     body:{
         textAlign:"justify",
         fontSize: 16,
         paddingHorizontal:15,
-    }
+        
+    },
+    dropdown: {
+        flexDirection:"row",
+        borderWidth: .5,
+        backgroundColor: "#c0c0c0",
+    },
+    secondLevelDropDown: {
+        flexDirection:"row",
+        borderWidth: .5,
+        backgroundColor: "#d3d3d3",
+    },
+
 })
 
 const Stack = createStackNavigator();
