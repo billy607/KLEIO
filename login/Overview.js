@@ -7,15 +7,18 @@ import {
   View,
   SafeAreaView,
   ImageBackground,
-  Table
+  Table,
+  StatusBar
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import { createStackNavigator } from '@react-navigation/stack';
 import MapPage from './MapPage';
 import { ScrollView } from 'react-native-gesture-handler';
 import Panel from './components/Panel';
+import Animated from 'react-native-reanimated';
 
 var {height, width} = Dimensions.get('window'); 
+const bottomBlank=200;
 class Overview extends PureComponent {
     constructor(props) {
         super(props);
@@ -24,7 +27,12 @@ class Overview extends PureComponent {
     render() {
         return(
             <SafeAreaView style={styles.safeContainer}>
-            <ScrollView style={styles.container}>
+            <ScrollView 
+                style={styles.container} 
+                ref={ref => {this.scrollView = ref}} 
+                onScrollEndDrag={(e)=>(e.nativeEvent.contentOffset.y)>(e.nativeEvent.contentSize.height-bottomBlank-(height-StatusBar.currentHeight-50))
+                    ?this.scrollView.scrollTo({y:e.nativeEvent.contentSize.height-bottomBlank-(height-StatusBar.currentHeight-50),animated:true})
+                    :null}>
                 <ImageBackground source={require('./image/stadium.png')} style={{resizeMode: "cover", justifyContent: "center"}} imageStyle={{opacity:0.4}}>
                     <Text style={styles.title}>University of Florida</Text>
                     <View style={styles.image}>
@@ -42,6 +50,8 @@ class Overview extends PureComponent {
                     <Panel title="Freshman" level="2" content="#34 Nationally"/>
                     <Panel title="Transfer Students" level="2" content="#34 Nationally"/>
                 </Panel>
+                <View style={{height:bottomBlank}}/>
+                
             </ScrollView>
             </SafeAreaView>
         ) 
