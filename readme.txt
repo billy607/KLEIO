@@ -13,3 +13,20 @@ implement the example of react-native-popup-menu which provided by it's official
 Before using geofencing, open the setting of android emulator. Setting -> security&location -> location -> advanced -> allow google location accuracy.
 
 *While test on the real device. Need to add NSLocationWhenInUseUsageDescription key in Info.plist to enable geolocation in order to make showsUserLocation enable.
+
+04/15/2020
+Add component Panel. (Use it the way you use View)
+	Props:
+		show: bool (default: false)
+		title: string
+		titleStyle:  Text.propType (default: styles.subTitle)
+		containerStyle:  ViewPropType (default: styles.dropdown)
+		
+	Example:
+		<Panel show = {true} title="Description">
+                    <Panel title="Freshman" containerStyle={//your container style} titleStyle={//your title style}>
+                        <Text style={//your text style}>
+                            #34 Nationally
+                        </Text>
+                    </Panel>
+                </Panel>
