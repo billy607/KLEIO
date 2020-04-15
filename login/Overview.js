@@ -41,14 +41,28 @@ class Overview extends PureComponent {
                 </ImageBackground>
 
                 {/*Beginging of content display dropdowns*/}
-                <Panel show={true} title="Description" level="1" content="The University of Florida was established in Gainesville in 1906. It is the third largest university in the state of Florida by student population, and the eighth largest single-campus university in the United States. 
+                <Panel show={true} title="Description">
+                        <Text style={styles.body}>The University of Florida was established in Gainesville in 1906. It is the third largest university in the state of Florida by student population, and the eighth largest single-campus university in the United States. 
                     The University of Florida strives to achieve academic excellence by offering a wide range of undergraduate and graduate programs to students. 
                     The University encompasses sixteen colleges and over 150 research centers and Institutes. UF has been designated by the Florida Board of Governors as one of the three “preeminent universities” among the twelve universities of the State University System of Florida. 
-                    Let’s explore the University of Florida!"/>
-                <Panel title="Ranking" level="1" content="#34 Nationally"/>
-                <Panel title="Acceptance" level="1" content="abc">
-                    <Panel title="Freshman" level="2" content="#34 Nationally"/>
-                    <Panel title="Transfer Students" level="2" content="#34 Nationally"/>
+                    Let’s explore the University of Florida!</Text>
+                </Panel>
+                <Panel title="Ranking" >
+                    <Text style={styles.body}>
+                        #34 Nationally
+                    </Text>
+                </Panel>
+                <Panel title="Acceptance">
+                    <Panel title="Freshman" containerStyle={styles.secondLevelDropDown} titleStyle={styles.secLvlSubTitle}>
+                        <Text style={styles.secLvlBody}>
+                            #34 Nationally
+                        </Text>
+                    </Panel>
+                    <Panel title="Transfer Students" containerStyle={styles.secondLevelDropDown} titleStyle={styles.secLvlSubTitle}>
+                        <Text style={styles.secLvlBody}>
+                        #34 Nationally
+                        </Text>
+                    </Panel>
                 </Panel>
                 <View style={{height:bottomBlank}}/>
                 
@@ -89,6 +103,13 @@ const styles = StyleSheet.create({
         lineHeight: 50,
         paddingLeft:15
     },
+    secLvlSubTitle: {
+        fontSize: 20,
+        textAlign: "left",
+        lineHeight: 40,
+        paddingLeft: 30,
+        fontWeight: "bold",            
+    },
     contentheader: {
         fontSize: 20,
         textAlign: "left",
@@ -100,8 +121,15 @@ const styles = StyleSheet.create({
     body:{
         textAlign:"justify",
         fontSize: 16,
-        paddingHorizontal:15,
-        
+        paddingHorizontal: 15,
+        marginVertical:10
+    },
+    secLvlBody:{
+        textAlign:"justify",
+        fontSize: 16,
+        paddingHorizontal: 15,
+        paddingLeft: 45,
+        marginVertical:10
     },
     dropdown: {
         flexDirection:"row",
@@ -110,8 +138,8 @@ const styles = StyleSheet.create({
     },
     secondLevelDropDown: {
         flexDirection:"row",
-        borderWidth: .5,
-        backgroundColor: "#d3d3d3",
+        //borderWidth: .5,
+        //backgroundColor: "#d3d3d3",
     },
 
 })

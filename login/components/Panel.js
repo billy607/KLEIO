@@ -1,11 +1,10 @@
 import React, {Component} from 'react';	
-import propTypes from 'prop-types';	 	
+import { ViewPropTypes } from 'react-native';	
 import {
     View,
     Text,
     StyleSheet,
     Dimensions,
-    Button,
     TouchableOpacity
 } from 'react-native';
 import {Icon} from 'react-native-elements';
@@ -13,43 +12,24 @@ var {height, width} = Dimensions.get('window');
 
 export default class Panel extends Component {
     static propTypes = {
-        title: propTypes.string,
-        content: propTypes.string,
-        level: propTypes.string						
+        titleStyle: Text.propTypes.style,
+        containerStyle: ViewPropTypes.style			
     }; 
 
     constructor(props) {
         super(props);
-        switch(this.props.level){
-            case '1':
-                this.state = {
-                    show: this.props.show,
-                    view: styles.dropdown,
-                    title: styles.subTitle,
-                    test: true
-                };
-                return;
-            case '2':
-                this.state = {
-                    show: this.props.show,
-                    view: styles.secondLevelDropDown,
-                    title: styles.secLvlSubTitle,
-                    test: true
-                };
-                return;
-            default:
-                console.log("error");
-                return;
-        }
+        this.state = {
+            show: this.props.show,
+        };
     }
 
     render(){
-        //console.log("test is :"+this.state.test)
+        console.log("style is :"+this.state.conte)
         
         return (
             <View>
-                <TouchableOpacity activeOpacity={1} style={this.state.view} onPress={()=>this.setState({show: !this.state.show})}>
-                    <Text style={this.state.title}>
+                <TouchableOpacity activeOpacity={1} style={this.props.containerStyle} onPress={()=>this.setState({show: !this.state.show})}>
+                    <Text style={this.props.titleStyle}>
                         {this.props.title}
                     </Text>
                     {this.state.show? 
@@ -58,11 +38,7 @@ export default class Panel extends Component {
                 </TouchableOpacity>
                 {this.state.show?
                     <View>
-                        {this.props.content!=null&&
-                        <Text style={styles.body}>
-                            {this.props.content}
-                        </Text>}
-                        <View style={{paddingLeft: 15,}}>
+                        <View>
                             {this.props.children}
                         </View>
                     </View>
@@ -70,11 +46,6 @@ export default class Panel extends Component {
             </View>
         )
     }
-}
-
-Panel.defaultProps = {
-    level: '1',
-    show: false
 }
 
 const styles = StyleSheet.create({
@@ -109,3 +80,9 @@ const styles = StyleSheet.create({
         fontWeight: "bold",            
     },
 })
+
+Panel.defaultProps = {
+    titleStyle: styles.subTitle,
+    containerStyle: styles.dropdown,
+    show: false
+}
