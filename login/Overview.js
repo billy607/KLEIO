@@ -7,32 +7,47 @@ import {
   View,
   SafeAreaView,
   ImageBackground,
-  Table,
-  StatusBar
+  StatusBar,
+  Linking
 } from 'react-native';
-import {Icon} from 'react-native-elements';
 import { createStackNavigator } from '@react-navigation/stack';
 import MapPage from './MapPage';
 import { ScrollView } from 'react-native-gesture-handler';
 import Panel from './components/Panel';
-import Animated from 'react-native-reanimated';
+import { Table, Row, Rows } from 'react-native-table-component';
 
 var {height, width} = Dimensions.get('window'); 
+var tableData = [
+    ['Application', 'November 1'],
+    ['SSAR', 'December 1'],
+    ['Test Scores', 'December 15']
+  ];
+var tableTitle = ['Requirement', 'Deadline'];
+
+var table2Data = [
+    ['In-State Tuition', '6,380$', '12,740$'],
+    ['Out of State Tuition', '28,658$', '30,134$'],
+    ['Housing (on-campus)', '5,990$', '7,130$']
+  ];
+
+var table2Title = ['','Requirement', 'Deadline'];
 const bottomBlank=200;
-class Overview extends PureComponent {
+class Overview extends Component {
     constructor(props) {
         super(props);
-    
     }
     render() {
+        const state = this.state;
         return(
             <SafeAreaView style={styles.safeContainer}>
             <ScrollView 
                 style={styles.container} 
+                showsVerticalScrollIndicator={null}
                 ref={ref => {this.scrollView = ref}} 
-                onScrollEndDrag={(e)=>(e.nativeEvent.contentOffset.y)>(e.nativeEvent.contentSize.height-bottomBlank-(height-StatusBar.currentHeight-50))
+                onMomentumScrollEnd={(e)=>(e.nativeEvent.contentOffset.y)>(e.nativeEvent.contentSize.height-bottomBlank-(height-StatusBar.currentHeight-50))
                     ?this.scrollView.scrollTo({y:e.nativeEvent.contentSize.height-bottomBlank-(height-StatusBar.currentHeight-50),animated:true})
-                    :null}>
+                    :null}
+                >
                 <ImageBackground source={require('./image/stadium.png')} style={{resizeMode: "cover", justifyContent: "center"}} imageStyle={{opacity:0.4}}>
                     <Text style={styles.title}>University of Florida</Text>
                     <View style={styles.image}>
@@ -41,29 +56,82 @@ class Overview extends PureComponent {
                 </ImageBackground>
 
                 {/*Beginging of content display dropdowns*/}
+                
                 <Panel show={true} title="Description">
-                        <Text style={styles.body}>The University of Florida was established in Gainesville in 1906. It is the third largest university in the state of Florida by student population, and the eighth largest single-campus university in the United States. 
+                        <Text style={styles.contentBody1}>The University of Florida was established in Gainesville in 1906. It is the third largest university in the state of Florida by student population, and the eighth largest single-campus university in the United States. 
                     The University of Florida strives to achieve academic excellence by offering a wide range of undergraduate and graduate programs to students. 
                     The University encompasses sixteen colleges and over 150 research centers and Institutes. UF has been designated by the Florida Board of Governors as one of the three “preeminent universities” among the twelve universities of the State University System of Florida. 
                     Let’s explore the University of Florida!</Text>
                 </Panel>
                 <Panel title="Ranking" >
-                    <Text style={styles.body}>
+                    <Text style={styles.contentBody1}>
                         #34 Nationally
                     </Text>
                 </Panel>
                 <Panel title="Acceptance">
                     <Panel title="Freshman" containerStyle={styles.secondLevelDropDown} titleStyle={styles.secLvlSubTitle}>
-                        <Text style={styles.secLvlBody}>
-                            #34 Nationally
-                        </Text>
+                        
+                        <Text style={styles.contentBody1}>Freshman Applications open each year in August.</Text>
+                        <View style = {{paddingHorizontal: 15}}>
+                            <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
+                                <Row data={tableTitle} style={styles.head} textStyle={styles.text}/>
+                                <Rows data={tableData} textStyle={styles.text}/>
+                            </Table>
+                        </View>
+                        <Text style={styles.contentBody1}>SAT (Min Requirement):</Text>
+                        <Text style={styles.contentBody2}> Reading = 24 </Text>
+                        <Text style={styles.contentBody2}> Writing and Language = 25</Text>
+                        <Text style={styles.contentBody2}> Math = 24</Text>
+                        
+                        <Text style={styles.contentBody1}>ACT (Min Requirement):</Text>
+                        <Text style={styles.contentBody2}> Writing and Language = 25 </Text>
+                        <Text style={styles.contentBody2}> Math = 24</Text>
                     </Panel>
                     <Panel title="Transfer Students" containerStyle={styles.secondLevelDropDown} titleStyle={styles.secLvlSubTitle}>
-                        <Text style={styles.secLvlBody}>
-                        #34 Nationally
-                        </Text>
+                        
+                        <Text style={styles.contentBody1}>Requirement:</Text>
+                        <Text style={styles.contentBody2}>Minimum of 60 transferable semester credit hours from a regionally accredited institution </Text>
+                        <Text style={styles.contentBody2}>OR</Text>
+                        <Text style={styles.contentBody2}>Associate of Arts Degree from a Florida Public Institution</Text>
+
+                        <Text style={styles.contentBody1}>Foreign Language Proficiency: </Text>
+                        <Text style={styles.contentBody2}>High school transcript showing that you completed two years of the same foreign language</Text>
+                        <Text style={styles.contentBody2}>OR</Text>
+                        <Text style={styles.contentBody2}>completing 8-10 semester hours of the same foreign language</Text>
+
+                        <Text style={styles.contentBody1}>2.0 Overall GPA and a Minimum 2.0 GPA from last attended institution</Text>
+
+                        <Text style={styles.contentBody1}>Completed or will complete specific requirements for your intended major before attending UF</Text>
+
+                        <Text style={styles.contentBody1}>You are in good standing and eligible to return to any institution previously attended</Text>
                     </Panel>
+
+                    <Panel title="Foreign Students" containerStyle={styles.secondLevelDropDown} titleStyle={styles.secLvlSubTitle}></Panel>
                 </Panel>
+                
+                <Panel title="Colleges">
+                    <Text style={styles.contentBody1}>Majors/Minors for colleges</Text>
+                    <Text style={styles.contentBody1}>Graduate/Undergraduate</Text>
+                    <Text style={styles.contentBody1}>Individual college acceptance requirements</Text>
+                </Panel>
+
+                <Panel title="Tuition Cost">
+                    <View style = {{paddingHorizontal: 15,marginVertical: 10}}>
+                        <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
+                            <Row data={table2Title} style={styles.head} textStyle={styles.text}/>
+                            <Rows data={table2Data} textStyle={styles.text}/>
+                        </Table>
+                    </View>
+                </Panel>
+
+                <Panel title='Organizations'>
+                    <Text style={styles.contentBody1}>Academic/Honor Organizations</Text>
+                    <Text style={styles.contentBody1}>Fraternities {'&'} Cultural Organizations:</Text>
+                    <Text style={styles.contentBody1}>Introductions to Clubs</Text>
+                    <Text style={styles.contentBody2}>There are over 1000 Clubs and organizations at the University of Florida and we want to help you find the right one for you!</Text>
+                    <Text style={styles.url} onPress={() => Linking.openURL('https://studentinvolvement.ufl.edu/')}>(https://studentinvolvement.ufl.edu/)</Text>
+                </Panel>
+
                 <View style={{height:bottomBlank}}/>
                 
             </ScrollView>
@@ -75,7 +143,7 @@ class Overview extends PureComponent {
 const styles = StyleSheet.create({
     safeContainer: {
         flex: 1,
-        marginBottom:20,
+        marginBottom:25,
         
     },
     container:{
@@ -101,13 +169,13 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         textAlign: "left",
         lineHeight: 50,
-        paddingLeft:15
+        paddingLeft: 15
     },
     secLvlSubTitle: {
         fontSize: 20,
         textAlign: "left",
         lineHeight: 40,
-        paddingLeft: 30,
+        paddingLeft: 15,
         fontWeight: "bold",            
     },
     contentheader: {
@@ -118,11 +186,25 @@ const styles = StyleSheet.create({
         fontWeight: "bold",            
     },
 
-    body:{
+    contentBody1:{
         textAlign:"justify",
         fontSize: 16,
         paddingHorizontal: 15,
         marginVertical:10
+    },
+    contentBody2:{
+        textAlign:"justify",
+        fontSize: 16,
+        paddingLeft: 30,
+        paddingRight: 15,
+        marginVertical:5
+    },
+    url:{
+        textAlign:"justify",
+        fontSize: 16,
+        paddingLeft: 30,
+        paddingRight: 15,
+        color:'blue'
     },
     secLvlBody:{
         textAlign:"justify",
@@ -141,7 +223,8 @@ const styles = StyleSheet.create({
         //borderWidth: .5,
         //backgroundColor: "#d3d3d3",
     },
-
+    head: { height: 40, backgroundColor: '#f1f8ff' },
+    text: { margin: 6 }
 })
 
 const Stack = createStackNavigator();

@@ -34,7 +34,7 @@ const LONGITUDE = -82.3477;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-class MainPage extends PureComponent {
+class MainPage extends Component {
   constructor(props) {
     super(props);
 
@@ -67,6 +67,7 @@ class MainPage extends PureComponent {
               centerComponent={{ text: 'KLEIO', style: { color: 'white', height:20} }}
               rightComponent={
                 <PopoverTooltip
+                  delayLongPress={0}
                   ref='tooltip1'
                   buttonComponent={
                     <Icon name='ellipsis-v' type='font-awesome' color='white' containerStyle={{height:20, width:20}}/>
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
   function MyDrawer() {
     return (
       <Drawer.Navigator>
-        <Drawer.Screen name="Home" component={MainPage} options={{gestureEnabled: false}}/>
+        <Drawer.Screen name="Home" component={MainPage} options={{gestureEnabled: true}}/>
       </Drawer.Navigator>
     );
   }
