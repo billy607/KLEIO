@@ -23,6 +23,7 @@
     "react-native-fbsdk": "^1.1.1",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-maps": "^0.26.1",
+    "react-native-maps-directions": "^1.8.0",
     "react-native-popover-tooltip": "^1.1.4",
     "react-native-popup-menu": "^0.15.6",
     "react-native-reanimated": "^1.7.0",

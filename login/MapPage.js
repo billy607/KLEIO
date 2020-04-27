@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import {Icon} from 'react-native-elements';
-import MapView, {Marker,PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, {Polyline,Marker,PROVIDER_GOOGLE } from 'react-native-maps';
 import Boundary, {Events} from 'react-native-boundary';
 import {
   PanGestureHandler,
@@ -18,7 +18,17 @@ import {
   State,
 } from 'react-native-gesture-handler';
 import Sound from 'react-native-sound';
+import MapViewDirections from 'react-native-maps-directions';
 
+//Variable for drawing route on map
+
+
+const waypoint1 = {latitude: 29.6450, longitude:  -82.3395};
+
+const origin1 = {latitude: 29.6526, longitude: -82.3386};
+const origin = {latitude: 29.6480,  longitude: -82.3439};
+const destination = {latitude: 29.6463, longitude: -82.3477};
+const GOOGLE_MAPS_APIKEY = 'AIzaSyAwEASOqU1llLDKrblaktUWaec_zGuJnwU';
 
 var {height, width} = Dimensions.get('window'); 
 let demoAudio = require('./sound/test.mp3');
@@ -246,6 +256,25 @@ export default class MapPage extends Component {
            onPoiClick={this.onPoiClick}
            onPress={this.onScreenClick}
         >
+            <Polyline
+                coordinates={[
+                    origin1,
+                    waypoint1,
+                    destination
+                ]}
+                strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
+                
+                strokeWidth={6}
+            />
+
+            <MapViewDirections
+                origin={origin1}
+                destination={destination}
+                apikey={GOOGLE_MAPS_APIKEY}
+                mode={"WALKING"}
+                strokeWidth={3}
+                strokeColor="hotpink"
+            />
             {this.state.poi && (
             <Marker 
               coordinate={this.state.poi.coordinate}
