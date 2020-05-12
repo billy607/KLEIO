@@ -140,16 +140,16 @@ const styles = StyleSheet.create({
 
   });
 
-  const Stack = createStackNavigator();
-  function MyStack() {
-    return (
-      <Stack.Navigator initialRouteName='MainPage' headerMode='none'>
-        <Stack.Screen name="Home" component={MainPage} />
-        <Stack.Screen name="Overview" component={Overview} />
-        <Stack.Screen name="MapPage" component={MapPage} />
-      </Stack.Navigator>
-    );
-  }
+  // const Stack = createStackNavigator();
+  // function MyStack() {
+  //   return (
+  //     <Stack.Navigator initialRouteName='MainPage' headerMode='none'>
+  //       <Stack.Screen name="Home" component={MainPage} />
+  //       <Stack.Screen name="Overview" component={Overview} />
+  //       <Stack.Screen name="MapPage" component={MapPage} />
+  //     </Stack.Navigator>
+  //   );
+  // }
   const Drawer = createDrawerNavigator();
   function MyDrawer() {
     return (

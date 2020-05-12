@@ -117,8 +117,8 @@ class SearchPage extends PureComponent {
 const styles = StyleSheet.create({
   maincontainer:{
     backgroundColor:'darkorange', 
-    position:'absolute',
-    top:0,
+    // position:'absolute',
+    // top:0,
     height:height,
     width:width
   },
