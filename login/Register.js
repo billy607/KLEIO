@@ -1,17 +1,11 @@
 import React, { Component,PureComponent } from 'react';
 import { Text, View, TextInput, Dimensions, StyleSheet, TouchableHighlight } from 'react-native';
-import { LoginButton, AccessToken } from 'react-native-fbsdk';
-import { GoogleSignin, GoogleSigninButton } from '@react-native-community/google-signin';
-import { createAppContainer, createSwitchNavigator} from 'react-navigation'
-import { createStackNavigator } from 'react-navigation-stack';
-import Search from './Search';
 import { Input, Button, SocialIcon } from 'react-native-elements';
-
 
 
 var {height, width} = Dimensions.get('window');
 
-class register extends Component {
+export default class RegisterPage extends Component {
     constructor(props) {
      super(props);
      this.state = {
@@ -22,7 +16,7 @@ class register extends Component {
      };
     }
 
-    render() {
+    render() {  
         return (
               <View style={styles.container}>
                 <Text style={styles.text}>Register</Text>
@@ -41,9 +35,9 @@ class register extends Component {
                   <Button title="register"/>
                   <Text style={{width: width*0.2}}/>
                   <Button title="cancel"
-                  onPress={() => 
-                    this.props.navigation.goback(null)
-                  }/>
+                    onPress={() => {
+                      this.props.navigation.goBack();
+                    }}/>
                 </View>
                 
               </View>
@@ -77,27 +71,11 @@ const styles = StyleSheet.create({
   }
 })
 
-const RootStack = createSwitchNavigator(
-  {
-    Home: register,
-    Search: Search,
-  },
-     {
-       initialRouteName: 'Home',
-       defaultNavigationOptions: {
-        header: null
-      },
-      backBehavior: 'none',
-     }
-   );
-
-const AppContainer = createAppContainer(RootStack);
 
 
-
-export default class Register extends React.Component {
-  render() {
-    return <AppContainer />;
-  }
-}
+// export default class Register extends React.Component {
+//   render() {
+//     return <RegisterPage />;
+//   }
+// }
 

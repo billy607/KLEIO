@@ -1,21 +1,17 @@
-import React, { Component,PureComponent } from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
   View,
   Dimensions,
-  Button,
+  BackHandler
 } from 'react-native';
 import PopoverTooltip from 'react-native-popover-tooltip';
 
 import {Header, Icon} from 'react-native-elements';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import Overview from './Overview';
 import Sound from 'react-native-sound';
 import MapPage from './MapPage';
-import MenuPage from './Menu';
 
 
 var {height, width} = Dimensions.get('window'); 
@@ -34,7 +30,7 @@ const LONGITUDE = -82.3477;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-class MainPage extends Component {
+export default class MainPage extends Component {
   constructor(props) {
     super(props);
 
@@ -43,7 +39,20 @@ class MainPage extends Component {
     };  
   }
 
+  backAction = () => {//android back button action
+    this.props.navigation.navigate('Search')
+    return true;
+  };
+  componentDidMount() {
+    this.backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      this.backAction
+    );
+  }
 
+  componentWillUnmount() {
+    this.backHandler.remove();
+  }
     _makeselection= selection =>{
       if(selection=="OverView"){
         return (<Overview/>)
@@ -139,29 +148,3 @@ const styles = StyleSheet.create({
     },
 
   });
-
-  // const Stack = createStackNavigator();
-  // function MyStack() {
-  //   return (
-  //     <Stack.Navigator initialRouteName='MainPage' headerMode='none'>
-  //       <Stack.Screen name="Home" component={MainPage} />
-  //       <Stack.Screen name="Overview" component={Overview} />
-  //       <Stack.Screen name="MapPage" component={MapPage} />
-  //     </Stack.Navigator>
-  //   );
-  // }
-  const Drawer = createDrawerNavigator();
-  function MyDrawer() {
-    return (
-      <Drawer.Navigator>
-        <Drawer.Screen name="Home" component={MainPage} options={{gestureEnabled: true}}/>
-      </Drawer.Navigator>
-    );
-  }
-  export default class App extends React.Component {
-    render() {
-      return (
-        <MyDrawer/>
-        )
-    }
-  }

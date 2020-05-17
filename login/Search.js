@@ -1,21 +1,14 @@
 import React, { Component,PureComponent } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
-  Image,
-  TouchableOpacity,
   Dimensions,
   SafeAreaView,
   ScrollView,
+  BackHandler,
+  Alert 
 } from 'react-native';
-import SideMenu from 'react-native-side-menu';
-import MenuPage from './Menu';
 import {Icon, SearchBar, ListItem, Header} from 'react-native-elements';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import MainPage from './MainPage';
 
 const image = require('./image/menu.png');
 
@@ -48,14 +41,35 @@ const list = [
   },
 ]
 
-class SearchPage extends PureComponent {
+
+export default class SearchPage extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       search:'',
     };
   }
-  
+  backAction = () => {//android back button action
+    Alert.alert("Hold on!", "Are you sure you want to go back?", [
+      {
+        text: "Cancel",
+        onPress: () => null,
+        style: "cancel"
+      },
+      { text: "YES", onPress: () => BackHandler.exitApp() }
+    ]);
+    return true;
+  };
+  componentDidMount() {
+    this.backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      this.backAction
+    );
+  }
+
+  componentWillUnmount() {
+    this.backHandler.remove();
+  }
   updateSearch = search =>{
     this.setState({search: search});
   }
@@ -147,30 +161,28 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
 });
-const Stack = createStackNavigator();
-function MyStack() {
-  return (
-    <Stack.Navigator initialRouteName='HomeScreen' headerMode='none'>
-      <Stack.Screen name="Home" component={MyDrawer} />
-      <Stack.Screen name="MainPage" component={MainPage} />
-    </Stack.Navigator>
-  );
-}
-const Drawer = createDrawerNavigator();
-function MyDrawer() {
-  return (
-    <Drawer.Navigator >
-      <Drawer.Screen name="Home" component={SearchPage}/>
-      <Drawer.Screen name="Setting" component={MenuPage} />
-    </Drawer.Navigator>
-  );
-}
-export default class Search extends React.Component {
-  render() {
-    return (
-      <NavigationContainer>
-      <MyStack/>
-    </NavigationContainer>
-      )
-  }
-}
+// const Stack = createStackNavigator();
+// function MyStack() {
+//   return (
+//     <Stack.Navigator initialRouteName='HomeScreen' headerMode='none'>
+//       <Stack.Screen name="Home" component={MyDrawer} />
+//       <Stack.Screen name="MainPage" component={MainPage} />
+//     </Stack.Navigator>
+//   );
+// }
+// const Drawer = createDrawerNavigator();
+// function MyDrawer() {
+//   return (
+//     <Drawer.Navigator >
+//       <Drawer.Screen name="Home" component={SearchPage}/>
+//       <Drawer.Screen name="Setting" component={MenuPage} />
+//     </Drawer.Navigator>
+//   );
+// }
+// export default class Search extends React.Component {
+//   render() {
+//     return (
+//       <MyStack/>
+//       )
+//   }
+// }
