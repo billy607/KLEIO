@@ -6,6 +6,7 @@ import {
   Dimensions,
   Animated,
   TextInput,
+  Alert
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import AsyncStorage from '@react-native-community/async-storage'
@@ -62,7 +63,7 @@ export default class MapPage extends Component {
           audioSeconds: 0,
           audioDuration: s.getDuration(),
           audioSpeed: 1,
-          entergeo: true,
+          entergeo: false,
           note:false,
           noteContent:null
         };
@@ -79,19 +80,41 @@ export default class MapPage extends Component {
             }
         }, 100);
         Boundary.add({
-        lat: 29.6463,
-        lng: -82.3477,
-        radius: 100, // in meters
-        id: "Reitz Union",
+            lat: 29.6513, 
+            lng: -82.3402,
+            radius: 20, // in meters
+            id: "Bryan Hall",
         })
-        .then(() => console.log("success!"))
+        .then(() => console.log("success1!"))
         .catch(e => console.error("error :(", e));
+
+        Boundary.add(
+            {
+                lat: 29.6508, 
+                lng: -82.3401,
+                radius: 20, // in meters
+                id: "Gerson Hall",
+            })
+            .then(() => console.log("success2!"))
+            .catch(e => console.error("error :(", e));
+
+        Boundary.add(
+        {
+            lat: 29.6463,
+            lng: -82.3477,
+            radius: 100, // in meters
+            id: "Reitz Union",
+        })
+        .then(() => console.log("success3!"))
+        .catch(e => console.error("error :(", e));
+
     
         Boundary.on(Events.ENTER, id => {
         // Prints 'Get out of my Chipotle!!'
             console.log(`Get out of my ${id}!!`);
             this.setState({entergeo:true});
-            // this.Playaudio();/////////////////////////////////////////////////////////////////////
+            this.Playaudio("onEnter "+ id);/////////////////////////////////////////////////////////////////////
+            Alert.alert(`You have entered ${id}`)
         });
         
         Boundary.on(Events.EXIT, id => {
@@ -141,7 +164,8 @@ export default class MapPage extends Component {
         //To hide the ActionBar/NavigationBar
         header: null,
     };
-    Playaudio=async()=>{
+    Playaudio=async(param)=>{
+        console.log(param)
         if(s){
             console.log('playing')
             console.log(this.state.audioDuration);
@@ -293,7 +317,7 @@ export default class MapPage extends Component {
             
             {this.state.audioState=='playing'?
                 <Icon name='pause' type='font-awesome' color='rgb(20,134,245)' onPress={this.pauseAudio} containerStyle={{flex:1}}/>:
-                <Icon name='play' type='font-awesome' color='rgb(20,134,245)' onPress={this.Playaudio} containerStyle={{flex:1}}/>
+                <Icon name='play' type='font-awesome' color='rgb(20,134,245)' onPress={()=>this.Playaudio("press play button")} containerStyle={{flex:1}}/>
             }
 
             <Icon name='forward' type='font-awesome' color='rgb(20,134,245)' containerStyle={{flex:1}} onPress={this.jumpNextSeconds}/>
