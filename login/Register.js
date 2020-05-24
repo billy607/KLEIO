@@ -16,7 +16,7 @@ export default class RegisterPage extends Component {
      };
     }
 
-    render() {  
+    render() { 
         return (
               <View style={styles.container}>
                 <Text style={styles.text}>Register</Text>

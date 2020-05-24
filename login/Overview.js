@@ -8,13 +8,14 @@ import {
   SafeAreaView,
   ImageBackground,
   StatusBar,
-  Linking
+  Linking,TouchableOpacity
 } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import MapPage from './MapPage';
 import { ScrollView } from 'react-native-gesture-handler';
 import Panel from './components/Panel';
 import { Table, Row, Rows } from 'react-native-table-component';
+import { useNavigation } from '@react-navigation/native';
 
 var {height, width} = Dimensions.get('window'); 
 var tableData = [
@@ -32,7 +33,7 @@ var table2Data = [
 
 var table2Title = ['','Requirement', 'Deadline'];
 const bottomBlank=200;
-class Overview extends Component {
+export default class Overview extends Component {
     constructor(props) {
         super(props);
     }
@@ -51,7 +52,9 @@ class Overview extends Component {
                 <ImageBackground source={require('./image/stadium.png')} style={{resizeMode: "cover", justifyContent: "center"}} imageStyle={{opacity:0.4}}>
                     <Text style={styles.title}>University of Florida</Text>
                     <View style={styles.image}>
+                    <TouchableOpacity  onPress={() => {this.props.navigation.push('MainPage',{select:'Map'});}}>
                     <Image source={require('./image/gator.png')} style={{height: height*0.1}} resizeMode="contain"/>
+                    </TouchableOpacity>
                 </View>
                 </ImageBackground>
 
@@ -227,20 +230,3 @@ const styles = StyleSheet.create({
     text: { margin: 6 }
 })
 
-const Stack = createStackNavigator();
-function MyStack() {
-    return (
-      <Stack.Navigator initialRouteName='Overview' headerMode='none'>
-        <Stack.Screen name="Home" component={Overview} />
-        <Stack.Screen name="MapPage" component={MapPage} />
-      </Stack.Navigator>
-    );
-  }
-
-export default class App extends React.Component {
-render() {
-    return (
-    <MyStack/>
-    )
-}
-}

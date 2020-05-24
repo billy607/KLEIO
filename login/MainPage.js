@@ -33,9 +33,10 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 export default class MainPage extends Component {
   constructor(props) {
     super(props);
-
+    const {select}=this.props.route.params
+    console.log(select)
     this.state = {
-      selection: 'Map',
+      selection: select,
     };  
   }
 
@@ -55,7 +56,7 @@ export default class MainPage extends Component {
   }
     _makeselection= selection =>{
       if(selection=="OverView"){
-        return (<Overview/>)
+        return <Overview navigation={this.props.navigation}/>
       }
       else if(selection=="Map"){
         return(
@@ -69,6 +70,9 @@ export default class MainPage extends Component {
 
 
     render() {
+      
+      // const { select } = this.props.route.params;
+      // this.setState({selection:select});
         return (
           <View style={styles.container}>
             <Header
