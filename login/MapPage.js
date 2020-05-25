@@ -354,7 +354,7 @@ export default class MapPage extends Component {
 const styles = StyleSheet.create({
     mapcontainer: {
         position: 'absolute',
-        top: 50,
+        top: 0,
         left: 0,
         right: 0,
         bottom: 0,

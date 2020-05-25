@@ -40,7 +40,7 @@ export default class Popupmenu extends Component {
         if (event.nativeEvent.oldState === State.ACTIVE) {
           this._lastOffset.y += event.nativeEvent.translationY;
           if(event.nativeEvent.translationY>0) this._lastOffset.y=height-pullUpMenuHeight;///////////////////
-          else if(event.nativeEvent.translationY<0) this._lastOffset.y=50;//StatusBar.currentHeight
+          else if(event.nativeEvent.translationY<0) this._lastOffset.y=0;//StatusBar.currentHeight
           if(this._lastOffset.y<height-pullUpMenuHeight) {///////////////////////
             this.setState({uparrow: false});
           }

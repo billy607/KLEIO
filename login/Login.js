@@ -54,7 +54,7 @@ export default class HelloWorldApp extends PureComponent {
                       this.props.navigation.navigate('Search');
                     }}/>
                   <Text style={{width: width*0.2}}/>
-                  <Button title="register"
+                  <Button title="register" 
                   onPress={() => {
                     this.props.navigation.navigate('Register');
                     }}/>

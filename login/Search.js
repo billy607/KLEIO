@@ -78,8 +78,8 @@ export default class SearchPage extends PureComponent {
     const { search } = this.state;
 
     return (
-      <View style={styles.maincontainer}>
-        <Header
+      // <View style={styles.maincontainer}>
+        /* <Header
           leftComponent={ <Icon name='bars' type='font-awesome' onPress={() => this.props.navigation.openDrawer()} color='white'/>}
           centerComponent={{ text: 'KLEIO', style: { color: 'white' } }}
           backgroundColor='darkorange'
@@ -87,7 +87,7 @@ export default class SearchPage extends PureComponent {
           leftContainerStyle={{top:-15}}
           centerContainerStyle={{top:-15}}
           rightContainerStyle={{top:-15}}
-        />
+        /> */
       
         <View style={styles.container}>
           <SearchBar
@@ -107,23 +107,23 @@ export default class SearchPage extends PureComponent {
               this.props.navigation.navigate('MainPage',{select:'OverView'});
             }}
             containerStyle={styles.iconcontainer}/>
-        <SafeAreaView style={styles.SafeAreaView}>
-          <ScrollView style={styles.ScrollView}>
-            <View style={{padding:5}}>
-            {
-              list.map((l, i) => (
-                <ListItem
-                  key={i}
-                  title={l.name}
-                  bottomDivider
-                />
-              ))
-            }
-            </View>
-          </ScrollView>
-        </SafeAreaView>
+          <SafeAreaView style={styles.SafeAreaView}>
+            <ScrollView style={styles.ScrollView}>
+              <View style={{padding:5}}>
+              {
+                list.map((l, i) => (
+                  <ListItem
+                    key={i}
+                    title={l.name}
+                    bottomDivider
+                  />
+                ))
+              }
+              </View>
+            </ScrollView>
+          </SafeAreaView>
         </View>
-      </View>
+      // </View>
     );
   }
 }

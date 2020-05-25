@@ -41,7 +41,7 @@ export default class MainPage extends Component {
   }
 
   backAction = () => {//android back button action
-    this.props.navigation.navigate('Search')
+    this.props.navigation.goBack()
     return true;
   };
   componentDidMount() {
@@ -75,7 +75,7 @@ export default class MainPage extends Component {
       // this.setState({selection:select});
         return (
           <View style={styles.container}>
-            <Header
+            {/* <Header
               leftComponent={ <Icon name='bars' type='font-awesome' onPress={() => this.props.navigation.openDrawer()} color='white' containerStyle={{height:20}}/>}
               centerComponent={{ text: 'KLEIO', style: { color: 'white', height:20} }}
               rightComponent={
@@ -102,7 +102,7 @@ export default class MainPage extends Component {
               centerContainerStyle={{top:-15}}
               rightContainerStyle={{top:-15}}
               backgroundColor='darkorange'
-            />
+            /> */}
             {this._makeselection(this.state.selection)}
             
            </View>
