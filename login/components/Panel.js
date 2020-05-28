@@ -28,13 +28,13 @@ export default class Panel extends Component {
         
         return (
             <View>
-                <TouchableOpacity activeOpacity={1} style={this.props.containerStyle} onPress={()=>this.setState({show: !this.state.show})}>
+                <TouchableOpacity activeOpacity={0.5} style={this.props.containerStyle} onPress={()=>this.setState({show: !this.state.show})}>
                     <Text style={this.props.titleStyle}>
                         {this.props.title}
                     </Text>
                     {this.state.show? 
-                    <Icon name='chevron-up' type='font-awesome' color='gray' containerStyle={{position: 'absolute', top:15,right: width *.03}} />:
-                    <Icon name='chevron-down' type='font-awesome' color='gray' containerStyle={{position: 'absolute', top:15,right: width *.03}} />}
+                    <Icon name='chevron-up' size = {12} type='font-awesome' color='gray' containerStyle={{flex: 1,justifyContent:'center', alignItems:'flex-end', paddingRight:width*0.03}} />:
+                    <Icon name='chevron-down' size = {12} type='font-awesome' color='gray' containerStyle={{flex: 1,justifyContent:'center', alignItems:'flex-end', paddingRight:width*0.03}} />}
                 </TouchableOpacity>
                 {this.state.show?
                     <View>
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontWeight: "bold",
         textAlign: "left",
-        lineHeight: 50,
+        textAlignVertical: "center",
         paddingLeft:15
     },
     body:{
@@ -66,22 +66,12 @@ const styles = StyleSheet.create({
         flexDirection:"row",
         borderTopWidth: .5,
         backgroundColor: "#d3d3d3",
-    },
-    secondLevelDropDown: {
-        flexDirection:"row"
-        // borderWidth: .5,
-        // backgroundColor: "#d3d3d3",
-    },
-    secLvlSubTitle: {
-        fontSize: 20,
-        textAlign: "left",
-        lineHeight: 40,
-        paddingLeft:15,
-        fontWeight: "bold",            
+        height: height*(1/15)
     },
 })
 
 Panel.defaultProps = {
+    title:"null",
     titleStyle: styles.subTitle,
     containerStyle: styles.dropdown,
     show: false

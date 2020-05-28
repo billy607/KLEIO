@@ -12,6 +12,7 @@ import {Header, Icon} from 'react-native-elements';
 import Overview from './Overview';
 import Sound from 'react-native-sound';
 import MapPage from './MapPage';
+import Colleges from './Colleges'
 
 
 var {height, width} = Dimensions.get('window'); 
@@ -62,6 +63,10 @@ export default class MainPage extends Component {
         return(
           <MapPage/>
       )
+      }else if(selection=="Colleges"){
+        return(
+          <Colleges/>
+        )
       }
       else{
         return <View><Text style={{fontSize:20,color:'white'}}>Sites</Text></View>
@@ -88,11 +93,15 @@ export default class MainPage extends Component {
                   items={[
                     {
                       label: 'Overview',
-                      onPress: () => {this.setState({selection:'OverView'})}
+                      onPress: () => {this.setState({selection:'Overview'})}
                     },
                     {
                       label: 'Map',
                       onPress: () => {this.setState({selection:'Map'})}
+                    },
+                    {
+                      label: 'Colleges',
+                      onPress: () => {this.setState({selection:'Colleges'})}
                     }
                   ]}
                   />

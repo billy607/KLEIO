@@ -8,6 +8,7 @@ import RegisterPage from './Register'
 import HelloWorldApp from './Login'
 import MainPage from './MainPage'
 import MenuPage from './Menu'
+import CollegeDetails from './CollegesDetail'
 import {Icon} from 'react-native-elements'
 /////////////// navigation logic
 const Stack = createStackNavigator();
@@ -19,6 +20,20 @@ function MyStack({navigation}) {
         name="Home" 
         component={HelloWorldApp} 
         options={{headerShown:false}}/>
+      <Stack.Screen 
+        name="CollegeDetails" 
+        component={CollegeDetails}
+        options={({navigation}) => ({
+          headerRight: () => (
+            <Icon name='cog' type='font-awesome' color='white' containerStyle={{padding:10}} onPress={()=>navigation.navigate('Setting')}/>
+          ),
+          headerTintColor:'white', 
+          headerTitleAlign:'center', 
+          headerTitle:'KLEIO', 
+          headerStyle:{
+            height:50,           
+            backgroundColor:'darkorange',
+          }})}/>
       <Stack.Screen 
         name="Search" 
         component={SearchPage} 
@@ -56,6 +71,12 @@ function MyStack({navigation}) {
         name="Setting"
         component={MenuPage}
       />
+    {/* <Stack.Navigator initialRouteName='CollegesDetail' headerMode='none'>
+      <Stack.Screen name="CollegesDetail" component={CollegesDetail} />
+      <Stack.Screen name="Home" component={HelloWorldApp} />
+      <Stack.Screen name="Search" component={SDrawer} />
+      <Stack.Screen name='Register' component={RegisterPage} />
+      <Stack.Screen name="MainPage" component={MDrawer} /> */}
     </Stack.Navigator>
   );
 }

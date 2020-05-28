@@ -113,9 +113,101 @@ export default class Overview extends Component {
                 </Panel>
                 
                 <Panel title="Colleges">
-                    <Text style={styles.contentBody1}>Majors/Minors for colleges</Text>
-                    <Text style={styles.contentBody1}>Graduate/Undergraduate</Text>
-                    <Text style={styles.contentBody1}>Individual college acceptance requirements</Text>
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown}>
+                        <Text style={styles.contentBody1}>
+                            AGRICULTURAL AND LIFE SCIENCES
+                        </Text>    
+                    </TouchableOpacity>
+
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown} onPress={()=>this.props.navigation.push("CollegeDetails")}>
+                        <Text style={styles.contentBody1}>
+                            ARTS
+                        </Text>    
+                    </TouchableOpacity>
+
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown}>
+                        <Text style={styles.contentBody1}>
+                            BUSINESS, WARRINGTON COLLEGE
+                        </Text>    
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown}>
+                        <Text style={styles.contentBody1}>
+                            DENTISTRY
+                        </Text>    
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown}>
+                        <Text style={styles.contentBody1}>
+                            DESIGN, CONSTRUCTION AND PLANNING
+                        </Text>    
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown}>
+                        <Text style={styles.contentBody1}>
+                            EDUCATION
+                        </Text>    
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown}>
+                        <Text style={styles.contentBody1}>
+                            ENGINEERING, HERBERT WERTHEIM COLLEGE
+                        </Text>    
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown}>
+                        <Text style={styles.contentBody1}>
+                            HEALTH AND HUMAN PERFORMANCE
+                        </Text>    
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown}>
+                        <Text style={styles.contentBody1}>
+                            JOURNALISM AND COMMUNICATIONS
+                        </Text>    
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown}>
+                        <Text style={styles.contentBody1}>
+                            LAW, LEVIN COLLEGE
+                        </Text>    
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown}>
+                        <Text style={styles.contentBody1}>
+                            LIBERAL ARTS AND SCIENCES
+                        </Text>    
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown}>
+                        <Text style={styles.contentBody1}>
+                            MEDICINE
+                        </Text>    
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown}>
+                        <Text style={styles.contentBody1}>
+                            NURSING
+                        </Text>    
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown}>
+                        <Text style={styles.contentBody1}>
+                            PHARMACY
+                        </Text>    
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown}>
+                        <Text style={styles.contentBody1}>
+                            PUBLIC HEALTH AND HEALTH PROFESSIONS
+                        </Text>    
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown}>
+                        <Text style={styles.contentBody1}>
+                            VETERINARY MEDICINE
+                        </Text>    
+                    </TouchableOpacity>
                 </Panel>
 
                 <Panel title="Tuition Cost">
@@ -171,13 +263,13 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontWeight: "bold",
         textAlign: "left",
-        lineHeight: 50,
+        textAlignVertical: "center",
         paddingLeft: 15
     },
     secLvlSubTitle: {
         fontSize: 20,
         textAlign: "left",
-        lineHeight: 40,
+        textAlignVertical: "center",
         paddingLeft: 15,
         fontWeight: "bold",            
     },
@@ -218,11 +310,13 @@ const styles = StyleSheet.create({
     },
     dropdown: {
         flexDirection:"row",
-        borderWidth: .5,
-        backgroundColor: "#c0c0c0",
+        borderTopWidth: .5,
+        backgroundColor: "aliceblue",
+        height: height*(1/15)
     },
     secondLevelDropDown: {
         flexDirection:"row",
+        height: height*(1/20)
         //borderWidth: .5,
         //backgroundColor: "#d3d3d3",
     },

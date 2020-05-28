@@ -92,7 +92,7 @@ export default class MapPage extends Component {
             {
                 lat: 29.6508, 
                 lng: -82.3401,
-                radius: 20, // in meters
+                radius: 100, // in meters
                 id: "Gerson Hall",
             })
             .then(() => console.log("success2!"))
