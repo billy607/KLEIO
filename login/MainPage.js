@@ -10,21 +10,11 @@ import PopoverTooltip from 'react-native-popover-tooltip';
 
 import {Header, Icon} from 'react-native-elements';
 import Overview from './Overview';
-import Sound from 'react-native-sound';
 import MapPage from './MapPage';
 import Colleges from './Colleges'
 
 
 var {height, width} = Dimensions.get('window'); 
-let demoAudio = require('./sound/test.mp3');
-const s = new Sound(demoAudio,(error) => {
-  if (error) {
-      console.log('failed');
-      return;
-  }
-  console.log('start');
-  console.log('duration in seconds: ' + s.getDuration() + 'number of channels: ' + s.getNumberOfChannels());
-})
 const ASPECT_RATIO = width / height;
 const LATITUDE = 29.6463;  
 const LONGITUDE = -82.3477;
@@ -35,7 +25,6 @@ export default class MainPage extends Component {
   constructor(props) {
     super(props);
     const {select}=this.props.route.params
-    console.log(select)
     this.state = {
       selection: select,
     };  

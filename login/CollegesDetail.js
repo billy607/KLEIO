@@ -80,7 +80,9 @@ class Overview extends Component {
                             <Text style={styles.contentBody2}>Course Listings: </Text>
                             <Text style={styles.url} onPress={()=>Linking.openURL("https://arts.ufl.edu/academics/art-and-art-history/programs/art-history/course-listing-s17/")}>https://arts.ufl.edu/academics/art-and-art-history/programs/art-history/course-listing-s17/</Text>
                         </Panel>
+
                         <View style={{height:fill}}></View>
+
                         <Panel title="Graphic Design/Design and Visual Communication" containerStyle={styles.thirdLevelDropDown} titleStyle={styles.thirdLvlSubTitle}>
                             <Text style={styles.contentBody2}>*{'\t'}BFA in Graphic Design:</Text>
                             
@@ -108,7 +110,9 @@ class Overview extends Component {
                             <Text style={styles.contentBody4}>*{'\t\t'}Studio art related majors (art, art education, design and visual communications and visual art studies) have priority access to 2000-level certificate courses. Students must work with the SA+AH advisor to gain access to these courses.</Text>
                             <Text style={styles.contentBody4}>*{'\t\t'}12 of the 15 total credits and all 3000-level coursework must be taken at UF.</Text>
                         </Panel>
+
                         <View style={{height:fill}}></View>
+
                         <Panel title="Studio Art" containerStyle={styles.thirdLevelDropDown} titleStyle={styles.thirdLvlSubTitle}>
                             <Text style={styles.urlInBody2} onPress={()=>Linking.openURL("https://arts.ufl.edu/academics/art-and-art-history/programs/studio-art/art-technology/overview/")}>*{'\t'}Art + Technology:</Text>
                             
@@ -146,7 +150,7 @@ class Overview extends Component {
                             <Text style={styles.contentBody3}>*{'\t'}Admission is only offered for the fall semester.</Text>
                             <Text style={styles.contentBody3}>*{'\t'}Application Deadline: February 1st</Text>
                         </Panel>
-
+                        <View style={{height:fill}}></View>
                         <Panel title="Studio Art" containerStyle={styles.thirdLevelDropDown} titleStyle={styles.thirdLvlSubTitle}>
                             <Text style={styles.urlInBody2} onPress={()=>Linking.openURL("https://arts.ufl.edu/academics/art-and-art-history/programs/studio-art/art-technology/overview/")}>*{'\t'}Art + Technology:</Text>
                             <Text style={styles.contentBody3}>"The Art + Technology program prepares students to become artists by facilitating the conceptual, technical, and creative development of an informed and critical practice. The program approaches forms and technologies located at the "cutting-edge" of science and commerce as sites of potential creative discourse, simultaneously realizing alternative possibilities and connections with the continuing dialogue of art."</Text>
@@ -186,7 +190,7 @@ class Overview extends Component {
 const styles = StyleSheet.create({
     safeContainer: {
         flex: 1,
-        marginBottom:25,
+        // marginBottom:25,
         
     },
     container:{

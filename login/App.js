@@ -39,7 +39,7 @@ function MyStack({navigation}) {
         component={SearchPage} 
         options={({navigation}) => ({
           headerRight: () => (
-            <Icon name='cog' type='font-awesome' color='white' containerStyle={{padding:10}} onPress={()=>navigation.navigate('Setting')}/>
+            <Icon name='cog' type='font-awesome' color='white' underlayColor='darkorange' containerStyle={{padding:10}} onPress={()=>navigation.navigate('Setting')}/>
           ),
           headerLeft: null,
           headerTintColor:'white', 
@@ -58,7 +58,7 @@ function MyStack({navigation}) {
         component={MainPage}
         options={({navigation}) => ({
           headerRight: () => (
-            <Icon name='cog' type='font-awesome' color='white' containerStyle={{padding:10}} onPress={()=>navigation.navigate('Setting')}/>
+            <Icon name='cog' type='font-awesome' color='white' underlayColor='darkorange' containerStyle={{padding:10}} onPress={()=>navigation.navigate('Setting')}/>
           ),
           headerTintColor:'white', 
           headerTitleAlign:'center', 
@@ -70,7 +70,14 @@ function MyStack({navigation}) {
       <Stack.Screen
         name="Setting"
         component={MenuPage}
-      />
+        options={() => ({
+          headerTintColor:'white', 
+          headerTitleAlign:'center', 
+          headerTitle:'KLEIO', 
+          headerStyle:{
+            height:50,           
+            backgroundColor:'darkorange',
+          }})}/>
     {/* <Stack.Navigator initialRouteName='CollegesDetail' headerMode='none'>
       <Stack.Screen name="CollegesDetail" component={CollegesDetail} />
       <Stack.Screen name="Home" component={HelloWorldApp} />

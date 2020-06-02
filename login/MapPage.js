@@ -19,6 +19,7 @@ import {
 import Sound from 'react-native-sound';
 import MapViewDirections from 'react-native-maps-directions';
 import PopupMenu from './components/PopupMenu'
+import MusicPlayer from './components/MusicPlayer'
 
 
 //Variable for drawing route on map
@@ -32,6 +33,11 @@ const destination = {latitude: 29.6463, longitude: -82.3477};
 const GOOGLE_MAPS_APIKEY = 'AIzaSyAwEASOqU1llLDKrblaktUWaec_zGuJnwU';
 
 var {height, width} = Dimensions.get('window'); 
+const ASPECT_RATIO = width / height;
+const LATITUDE = 29.6463;  
+const LONGITUDE = -82.3477;
+const LATITUDE_DELTA = 0.0922;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 let demoAudio = require('./sound/test.mp3');
 const s = new Sound(demoAudio,(error) => {
   if (error) {
@@ -39,14 +45,8 @@ const s = new Sound(demoAudio,(error) => {
       return;
   }
   console.log('start');
-//   console.log('duration in seconds: ' + s.getDuration() + 'number of channels: ' + s.getNumberOfChannels());
+  console.log('duration in seconds: ' + s.getDuration() + 'number of channels: ' + s.getNumberOfChannels());
 })
-const ASPECT_RATIO = width / height;
-const LATITUDE = 29.6463;  
-const LONGITUDE = -82.3477;
-const LATITUDE_DELTA = 0.0922;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
 export default class MapPage extends Component {
     constructor(props) {
         super(props);
@@ -59,7 +59,7 @@ export default class MapPage extends Component {
                   longitudeDelta: LONGITUDE_DELTA,
                 },
           poi: null,
-          audioState:'paused', //playing, paused
+          audioState:'playing', //playing, paused
           audioSeconds: 0,
           audioDuration: s.getDuration(),
           audioSpeed: 1,
@@ -128,13 +128,14 @@ export default class MapPage extends Component {
     }
     componentWillUnmount() {
         // Remove the events
-        Boundary.off(Events.ENTER)
-        Boundary.off(Events.EXIT)
+        // Boundary.off(Events.ENTER)
+        // Boundary.off(Events.EXIT)
+        // s.stop()
     
-        // Remove the boundary from native API´s
-        Boundary.remove('Reitz Union')
-          .then(() => console.log('Remove boundary on RU'))
-          .catch(e => console.log('Failed to delete RU :)', e))
+        // // Remove the boundary from native API´s
+        // Boundary.remove('Reitz Union')
+        //   .then(() => console.log('Remove boundary on RU'))
+        //   .catch(e => console.log('Failed to delete RU :)', e))
     }
     onPoiClick(e) {
         const poi = e.nativeEvent;
@@ -297,35 +298,14 @@ export default class MapPage extends Component {
             </Marker>
             )}
         </MapView>
-        
-        
-        <View style={{width:width*0.8,height:height*0.2,backgroundColor: 'white',opacity:this.state.entergeo==true?0.7:0}}>
-            <Slider
-                style={{width: width*0.8, height: 40}}
-                onSlidingStart={this.onSliderEditStart}
-                onSlidingComplete={this.onSliderEditEnd}
-                // onValueChange={this.onSliderEditing} 
-                value={this.state.audioSeconds}
-                maximumValue={this.state.audioDuration} 
-                minimumValue={0} 
-                maximumTrackTintColor='black' 
-                minimumTrackTintColor='grey' 
-                thumbTintColor= 'rgb(20,134,245)'
-            />
-            <View style={{flex:1,flexDirection:'row'}}>
-            <Icon name='backward' type='font-awesome' color='rgb(20,134,245)' containerStyle={{flex:1}} onPress={this.jumpPrevSeconds}/> 
-            
-            {this.state.audioState=='playing'?
-                <Icon name='pause' type='font-awesome' color='rgb(20,134,245)' onPress={this.pauseAudio} containerStyle={{flex:1}}/>:
-                <Icon name='play' type='font-awesome' color='rgb(20,134,245)' onPress={()=>this.Playaudio("press play button")} containerStyle={{flex:1}}/>
-            }
 
-            <Icon name='forward' type='font-awesome' color='rgb(20,134,245)' containerStyle={{flex:1}} onPress={this.jumpNextSeconds}/>
+        {this.state.entergeo==true&&
+        <MusicPlayer 
+            s={s} 
+            {...console.log(this.state.audioState)}
+            audioState={this.state.audioState}/>
+        }   
 
-        <View style={{paddingRight:10}}><View style={styles.speedup}><Text style={{textAlign:'center',fontWeight: 'bold'}} onPress={this.speedUp}>x{this.state.audioSpeed}</Text></View></View>
-            </View>
-        </View>
-        
         <View style={{width:width}}>
             
             {this.state.poi!=null&&

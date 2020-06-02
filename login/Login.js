@@ -49,12 +49,12 @@ export default class HelloWorldApp extends PureComponent {
                 />
                 <Text>    </Text>
                 <View style={{flexDirection: "row"}}>
-                  <Button title="login" 
+                  <Button title="login" containerStyle={{width:width*0.2}}
                     onPress={() => {
                       this.props.navigation.navigate('Search');
                     }}/>
                   <Text style={{width: width*0.2}}/>
-                  <Button title="register" 
+                  <Button title="register" containerStyle={{width:width*0.2}}
                   onPress={() => {
                     this.props.navigation.navigate('Register');
                     }}/>
