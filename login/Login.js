@@ -1,6 +1,7 @@
 import React, { Component,PureComponent } from 'react';
 import { Text, View, Dimensions, StyleSheet, TouchableHighlight,BackHandler,Alert } from 'react-native';
-import { Input, Button, SocialIcon } from 'react-native-elements';
+import { Input, SocialIcon, Button} from 'react-native-elements';
+/*import { Button } from "@material-ui/core";*/
 
 var {height, width} = Dimensions.get('window');
 export default class HelloWorldApp extends PureComponent {
@@ -38,23 +39,23 @@ export default class HelloWorldApp extends PureComponent {
               <View style={styles.container}>
                 <Text style={styles.text}>WELCOME TO KLEIO</Text>
                 <Input
-                  placeholder=' your email address'
+                  placeholder=' Email'
                   leftIcon={{ type: 'font-awesome', name: 'envelope',color:"white" }}
                   inputStyle={{color:"white"}}
                 />
                 <Input 
-                  placeholder=' your password'
+                  placeholder='Password'
                   leftIcon={{ type: 'font-awesome', name: 'key',color:"white" }}
                   inputStyle={{color:"white"}}
                 />
                 <Text>    </Text>
                 <View style={{flexDirection: "row"}}>
-                  <Button title="login" containerStyle={{width:width*0.2}}
+                  <Button title="Login" containerStyle={{width:width*0.25}}
                     onPress={() => {
                       this.props.navigation.navigate('Search');
                     }}/>
-                  <Text style={{width: width*0.2}}/>
-                  <Button title="register" containerStyle={{width:width*0.2}}
+                  <Text style={{width: width*0.15}}/>
+                  <Button title="Register" containerStyle={{width:width*0.25}}
                   onPress={() => {
                     this.props.navigation.navigate('Register');
                     }}/>
@@ -87,9 +88,10 @@ const styles = StyleSheet.create({
   },
   text:{
     color: "white",
-    fontSize: 20,
+    fontSize: 35,
     position: "absolute",
-    top:100
+    top:100,
+    fontWeight: 'bold',
   },
   iconcontainer:{
     flexDirection: "row",
