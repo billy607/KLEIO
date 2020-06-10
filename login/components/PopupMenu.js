@@ -38,6 +38,7 @@ export default class Popupmenu extends Component {
 
     onHandlerStateChange = event => {
         if (event.nativeEvent.oldState === State.ACTIVE) {
+          console.log('hhh')
           this._lastOffset.y += event.nativeEvent.translationY;
           if(event.nativeEvent.translationY>0) this._lastOffset.y=height-pullUpMenuHeight;///////////////////
           else if(event.nativeEvent.translationY<0) this._lastOffset.y=0;//StatusBar.currentHeight

@@ -9,7 +9,7 @@ import Slider from '@react-native-community/slider';
 import {Icon} from 'react-native-elements';
 
 var {height, width} = Dimensions.get('window'); 
-export default class MapPage extends Component {
+export default class MusicPlayer extends Component {
     constructor(props) {
         super(props);
         this.s=this.props.s;
@@ -106,7 +106,7 @@ export default class MapPage extends Component {
     render() {
         return (
         <View style={{width:width*0.8,height:height*0.25,backgroundColor: 'white',opacity:0.7}}>
-        <Slider
+        {/* <Slider
             style={{width: width*0.8, height: 40}}
             onSlidingStart={this.onSliderEditStart}
             onSlidingComplete={this.onSliderEditEnd}
@@ -129,7 +129,7 @@ export default class MapPage extends Component {
         <Icon name='forward' type='font-awesome' color='rgb(20,134,245)' containerStyle={{flex:1}} onPress={this.jumpNextSeconds}/>
 
         <View style={{paddingRight:10}}><View style={styles.speedup}><Text style={{textAlign:'center',fontWeight: 'bold'}} onPress={this.speedUp}>x{this.state.audioSpeed}</Text></View></View>
-            </View>
+            </View> */}
         </View>
     )}
 }

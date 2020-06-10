@@ -7,6 +7,7 @@ import SearchPage from './Search';
 import RegisterPage from './Register'
 import HelloWorldApp from './Login'
 import MainPage from './MainPage'
+import MapPage from './MapPage'
 import MenuPage from './Menu'
 import CollegeDetails from './CollegesDetail'
 import {Icon} from 'react-native-elements'
@@ -56,6 +57,20 @@ function MyStack({navigation}) {
       <Stack.Screen 
         name="MainPage" 
         component={MainPage}
+        options={({navigation}) => ({
+          headerRight: () => (
+            <Icon name='cog' type='font-awesome' color='white' underlayColor='darkorange' containerStyle={{padding:10}} onPress={()=>navigation.navigate('Setting')}/>
+          ),
+          headerTintColor:'white', 
+          headerTitleAlign:'center', 
+          headerTitle:'KLEIO', 
+          headerStyle:{
+            height:50,           
+            backgroundColor:'darkorange',
+          }})}/>
+      <Stack.Screen 
+        name="MapPage" 
+        component={MapPage}
         options={({navigation}) => ({
           headerRight: () => (
             <Icon name='cog' type='font-awesome' color='white' underlayColor='darkorange' containerStyle={{padding:10}} onPress={()=>navigation.navigate('Setting')}/>

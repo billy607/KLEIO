@@ -52,7 +52,7 @@ export default class Overview extends Component {
                 <ImageBackground source={require('./image/stadium.png')} style={{resizeMode: "cover", justifyContent: "center"}} imageStyle={{opacity:0.4}}>
                     <Text style={styles.title}>University of Florida</Text>
                     <View style={styles.image}>
-                    <TouchableOpacity  onPress={() => {this.props.navigation.push('MainPage',{select:'Map'});}}>
+                    <TouchableOpacity  onPress={() => {this.props.navigation.navigate('MapPage');}}>
                     <Image source={require('./image/gator.png')} style={{height: height*0.1}} resizeMode="contain"/>
                     </TouchableOpacity>
                 </View>

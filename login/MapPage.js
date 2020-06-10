@@ -305,7 +305,7 @@ export default class MapPage extends Component {
             {...console.log(this.state.audioState)}
             audioState={this.state.audioState}/>
         }   
-
+        
         <View style={{width:width}}>
             
             {this.state.poi!=null&&
