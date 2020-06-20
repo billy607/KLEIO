@@ -19,7 +19,7 @@ import {
 import Sound from 'react-native-sound';
 import MapViewDirections from 'react-native-maps-directions';
 import PopupMenu from './components/PopupMenu'
-import MusicPlayer from './components/MusicPlayer'
+import MenuPage from './Menu'
 
 
 //Variable for drawing route on map
@@ -38,15 +38,15 @@ const LATITUDE = 29.6463;
 const LONGITUDE = -82.3477;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-let demoAudio = require('./sound/test.mp3');
-const s = new Sound(demoAudio,(error) => {
-  if (error) {
-      console.log('failed');
-      return;
-  }
-  console.log('start');
-  console.log('duration in seconds: ' + s.getDuration() + 'number of channels: ' + s.getNumberOfChannels());
-})
+// let demoAudio = require('./sound/test.mp3');
+// const s = new Sound(demoAudio,(error) => {
+//   if (error) {
+//       console.log('failed');
+//       return;
+//   }
+//   console.log('start');
+//   console.log('duration in seconds: ' + s.getDuration() + 'number of channels: ' + s.getNumberOfChannels());
+// })
 export default class MapPage extends Component {
     constructor(props) {
         super(props);
@@ -59,26 +59,26 @@ export default class MapPage extends Component {
                   longitudeDelta: LONGITUDE_DELTA,
                 },
           poi: null,
-          audioState:'playing', //playing, paused
-          audioSeconds: 0,
-          audioDuration: s.getDuration(),
-          audioSpeed: 1,
+        //   audioState:'playing', //playing, paused
+        //   audioSeconds: 0,
+        //   audioDuration: s.getDuration(),
+        //   audioSpeed: 1,
           entergeo: false,
           note:false,
           noteContent:null
         };
-        this.sliderEditing = false;
+        // this.sliderEditing = false;
         this.onPoiClick = this.onPoiClick.bind(this);
     }
     componentDidMount() {
         console.log("call componentDidMount!!!!!!!!");
-        this.timeout = setInterval(() => {
-            if(this.state.audioState == 'playing' && !this.sliderEditing){
-                s.getCurrentTime((seconds) => {
-                    this.setState({audioSeconds:seconds});
-                })
-            }
-        }, 100);
+        // this.timeout = setInterval(() => {
+        //     if(this.state.audioState == 'playing' && !this.sliderEditing){
+        //         s.getCurrentTime((seconds) => {
+        //             this.setState({audioSeconds:seconds});
+        //         })
+        //     }
+        // }, 100);
         Boundary.add({
             lat: 29.6513, 
             lng: -82.3402,
@@ -113,7 +113,7 @@ export default class MapPage extends Component {
         // Prints 'Get out of my Chipotle!!'
             console.log(`Get out of my ${id}!!`);
             this.setState({entergeo:true});
-            this.Playaudio("onEnter "+ id);/////////////////////////////////////////////////////////////////////
+            // this.Playaudio("onEnter "+ id);/////////////////////////////////////////////////////////////////////
             Alert.alert(`You have entered ${id}`)
         });
         
@@ -121,10 +121,8 @@ export default class MapPage extends Component {
         // Prints 'Ya! You better get out of my Chipotle!!'
             console.log(`Ya! You better get out of my ${id}!!`);
             this.setState({entergeo:false});
-            this.pauseAudio();
+            // this.pauseAudio();
         });
-        // .then(() => console.log("exit function fired!"))
-        // .catch(e => console.error("error on exit :(", e))
     }
     componentWillUnmount() {
         // Remove the events
@@ -165,74 +163,74 @@ export default class MapPage extends Component {
         //To hide the ActionBar/NavigationBar
         header: null,
     };
-    Playaudio=async(param)=>{
-        console.log(param)
-        if(s){
-            console.log('playing')
-            console.log(this.state.audioDuration);
-            s.play(this.playComplete);
-            this.setState({audioState: 'playing'});   
-        }else{
-            console.log("audio loaded failed");
-        }
-    }
-    playComplete = (success) => {
-        if(s){
-            if (success) {
-                console.log('successfully finished playing');
-            } else {
-                console.log('playback failed due to audio decoding errors');
-                Alert.alert('Notice', 'audio file error. (Error code : 2)');
-            }
-            this.setState({audioState:'paused', audioSeconds:0});
-            s.setCurrentTime(0);
-        }
-    }
-    Stopaudio=()=>{
-        s.stop();
-    }
-    pauseAudio=()=>{
-        if(s){
-            s.pause();
-        }
-        this.setState({audioState:'pause'});
-    }
-    onSliderEditStart = () => {
-        this.sliderEditing = true;
-    }
-    onSliderEditEnd = (value) => {
-        this.sliderEditing = false;
-        if(s){
-            s.setCurrentTime(value);
-            this.setState({audioSeconds:value});
-        }
-    }
-    jumpPrevSeconds = () => {this.jumpSeconds(-5);}
-    jumpNextSeconds = () => {this.jumpSeconds(5);}
-    jumpSeconds = (secsDelta) => {
-        if(s){
-            s.getCurrentTime((secs) => {
-                let nextSecs = secs + secsDelta;
-                if(nextSecs < 0) nextSecs = 0;
-                else if(nextSecs > this.state.audioDuration) nextSecs = this.state.audioDuration;
-                s.setCurrentTime(nextSecs);
-                this.setState({audioSeconds:nextSecs});
-            })
-        }
-    }
+    // Playaudio=async(param)=>{
+    //     console.log(param)
+    //     if(s){
+    //         console.log('playing')
+    //         console.log(this.state.audioDuration);
+    //         s.play(this.playComplete);
+    //         this.setState({audioState: 'playing'});   
+    //     }else{
+    //         console.log("audio loaded failed");
+    //     }
+    // }
+    // playComplete = (success) => {
+    //     if(s){
+    //         if (success) {
+    //             console.log('successfully finished playing');
+    //         } else {
+    //             console.log('playback failed due to audio decoding errors');
+    //             Alert.alert('Notice', 'audio file error. (Error code : 2)');
+    //         }
+    //         this.setState({audioState:'paused', audioSeconds:0});
+    //         s.setCurrentTime(0);
+    //     }
+    // }
+    // Stopaudio=()=>{
+    //     s.stop();
+    // }
+    // pauseAudio=()=>{
+    //     if(s){
+    //         s.pause();
+    //     }
+    //     this.setState({audioState:'pause'});
+    // }
+    // onSliderEditStart = () => {
+    //     this.sliderEditing = true;
+    // }
+    // onSliderEditEnd = (value) => {
+    //     this.sliderEditing = false;
+    //     if(s){
+    //         s.setCurrentTime(value);
+    //         this.setState({audioSeconds:value});
+    //     }
+    // }
+    // jumpPrevSeconds = () => {this.jumpSeconds(-5);}
+    // jumpNextSeconds = () => {this.jumpSeconds(5);}
+    // jumpSeconds = (secsDelta) => {
+    //     if(s){
+    //         s.getCurrentTime((secs) => {
+    //             let nextSecs = secs + secsDelta;
+    //             if(nextSecs < 0) nextSecs = 0;
+    //             else if(nextSecs > this.state.audioDuration) nextSecs = this.state.audioDuration;
+    //             s.setCurrentTime(nextSecs);
+    //             this.setState({audioSeconds:nextSecs});
+    //         })
+    //     }
+    // }
 
-    speedUp = () =>{
-        var speed = this.state.audioSpeed
-        if(speed>=2){
-            speed = 1;
-        }else{
-            speed = speed + 0.5;
-        }
-        console.log(speed);
-        s.setSpeed(speed);
-        if(!s.isPlaying()) s.pause();
-        this.setState({audioSpeed: speed});
-    }
+    // speedUp = () =>{
+    //     var speed = this.state.audioSpeed
+    //     if(speed>=2){
+    //         speed = 1;
+    //     }else{
+    //         speed = speed + 0.5;
+    //     }
+    //     console.log(speed);
+    //     s.setSpeed(speed);
+    //     if(!s.isPlaying()) s.pause();
+    //     this.setState({audioSpeed: speed});
+    // }
     storeData = async () => {
         try {
             console.log('store')
@@ -299,26 +297,19 @@ export default class MapPage extends Component {
             )}
         </MapView>
 
-        {this.state.entergeo==true&&
-        <MusicPlayer 
-            s={s} 
-            {...console.log(this.state.audioState)}
-            audioState={this.state.audioState}/>
-        }   
+        {/* {this.state.entergeo==true&& */}
         
-        <View style={{width:width}}>
-            
-            {this.state.poi!=null&&
-                <PopupMenu name={this.state.poi && this.state.poi.name.replace(/\n/g, " ")}>
-                    <ScrollView >
-                        <Text>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</Text>
-                    </ScrollView>
-                </PopupMenu>
-            }
-        </View>
-
+        {/* }    */}
+        {this.state.poi!=null&&
+            <PopupMenu name={this.state.poi && this.state.poi.name.replace(/\n/g, " ")}>
+                <ScrollView >
+                    <Text>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</Text>
+                </ScrollView>
+            </PopupMenu>
+        }
+        <MenuPage/>
         <Icon name='pencil-square-o' type='font-awesome' raised={true} size={18} onPress={this.getData} containerStyle={{position:'absolute', top:height*0.0005,right:width*0.0005}}/>
-       
+        
         <Overlay isVisible={this.state.note} onBackdropPress={this.storeData} 
         overlayStyle={{width:width*0.8, height:height*0.65}}
         >
@@ -338,8 +329,8 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
+        // justifyContent: 'flex-end',
+        // alignItems: 'center',
     },
     map: {
         position: 'absolute',

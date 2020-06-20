@@ -7,16 +7,26 @@ import {
   } from 'react-native';
 import Slider from '@react-native-community/slider';
 import {Icon} from 'react-native-elements';
+import Sound from 'react-native-sound';
 
 var {height, width} = Dimensions.get('window'); 
+let demoAudio = require('../sound/test.mp3');
+const s = new Sound(demoAudio,(error) => {
+  if (error) {
+      console.log('failed');
+      return;
+  }
+  console.log('start');
+  console.log('duration in seconds: ' + s.getDuration() + 'number of channels: ' + s.getNumberOfChannels());
+})
 export default class MusicPlayer extends Component {
     constructor(props) {
         super(props);
-        this.s=this.props.s;
+        this.s=s;
         this.state = {
-          audioState:this.props.audioState, //playing, paused
+          audioState:'paused', //playing, paused
           audioSeconds: 0,
-          audioDuration: this.props.s.getDuration(),
+          audioDuration: s.getDuration(),
           audioSpeed: 1,
           note:false,
           noteContent:null
@@ -105,8 +115,8 @@ export default class MusicPlayer extends Component {
 
     render() {
         return (
-        <View style={{width:width*0.8,height:height*0.25,backgroundColor: 'white',opacity:0.7}}>
-        {/* <Slider
+        <View style={{flex:1, backgroundColor: 'white',opacity:0.7}}>
+        <Slider
             style={{width: width*0.8, height: 40}}
             onSlidingStart={this.onSliderEditStart}
             onSlidingComplete={this.onSliderEditEnd}
@@ -129,7 +139,7 @@ export default class MusicPlayer extends Component {
         <Icon name='forward' type='font-awesome' color='rgb(20,134,245)' containerStyle={{flex:1}} onPress={this.jumpNextSeconds}/>
 
         <View style={{paddingRight:10}}><View style={styles.speedup}><Text style={{textAlign:'center',fontWeight: 'bold'}} onPress={this.speedUp}>x{this.state.audioSpeed}</Text></View></View>
-            </View> */}
+            </View>
         </View>
     )}
 }

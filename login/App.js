@@ -11,6 +11,8 @@ import MapPage from './MapPage'
 import MenuPage from './Menu'
 import CollegeDetails from './CollegesDetail'
 import {Icon} from 'react-native-elements'
+import { HeaderBackButton } from '@react-navigation/stack';
+
 /////////////// navigation logic
 const Stack = createStackNavigator();
 function MyStack({navigation}) {
@@ -72,6 +74,13 @@ function MyStack({navigation}) {
         name="MapPage" 
         component={MapPage}
         options={({navigation}) => ({
+          // headerLeft: ()=>(<HeaderBackButton
+          //   color='white'
+          //   onPress={() => {
+          //     navigation.navigate('Setting')
+          //   }}
+          // />),
+
           headerRight: () => (
             <Icon name='cog' type='font-awesome' color='white' underlayColor='darkorange' containerStyle={{padding:10}} onPress={()=>navigation.navigate('Setting')}/>
           ),

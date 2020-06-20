@@ -1,6 +1,6 @@
 import React, { Component,PureComponent } from 'react';
-import { Text, View, Dimensions, StyleSheet, TouchableHighlight,BackHandler,Alert } from 'react-native';
-import { Input, Button, SocialIcon } from 'react-native-elements';
+import { Text, View, Dimensions, StyleSheet, TouchableHighlight,BackHandler,Alert,Button } from 'react-native';
+import { Input, SocialIcon } from 'react-native-elements';
 
 var {height, width} = Dimensions.get('window');
 export default class HelloWorldApp extends PureComponent {
