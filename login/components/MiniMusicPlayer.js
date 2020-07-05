@@ -3,7 +3,8 @@ import {
     StyleSheet,
     Text,
     View,
-    Dimensions
+    Dimensions,
+    TouchableOpacity
   } from 'react-native';
 import Slider from '@react-native-community/slider';
 import {Icon} from 'react-native-elements';
@@ -85,8 +86,8 @@ export default class MusicPlayer extends Component {
             this.setState({audioSeconds:value});
         }
     }
-    jumpPrevSeconds = () => {this.jumpSeconds(-5);}
-    jumpNextSeconds = () => {this.jumpSeconds(5);}
+    jumpPrevSeconds = () => {this.jumpSeconds(-10);}
+    jumpNextSeconds = () => {this.jumpSeconds(10);}
     jumpSeconds = (secsDelta) => {
         if(this.s){
             this.s.getCurrentTime((secs) => {
@@ -115,56 +116,14 @@ export default class MusicPlayer extends Component {
 
     render() {
         return (
-        <View style={{flex:1, backgroundColor: 'white',opacity:0.7}}>
-        <Slider
-            style={{width: width, height: height*0.05}}
-            onSlidingStart={this.onSliderEditStart}
-            onSlidingComplete={this.onSliderEditEnd}
-            // onValueChange={this.onSliderEditing} 
-            value={this.state.audioSeconds}
-            maximumValue={this.state.audioDuration} 
-            minimumValue={0} 
-            maximumTrackTintColor='black' 
-            minimumTrackTintColor='grey' 
-            thumbTintColor= 'rgb(20,134,245)'
-        />
-        <View style={{flex:1,flexDirection:'row'}}>
-        <Icon name='backward' type='font-awesome' color='rgb(20,134,245)' containerStyle={{flex:1}} onPress={this.jumpPrevSeconds}/> 
-        {console.log('second:'+this.state.audioState)}
-        {this.state.audioState=='playing'?
-            <Icon name='pause' type='font-awesome' color='rgb(20,134,245)' onPress={this.pauseAudio} containerStyle={{flex:1}}/>:
-            <Icon name='play' type='font-awesome' color='rgb(20,134,245)' onPress={()=>this.Playaudio("press play button")} containerStyle={{flex:1}}/>
-        }
-
-        <Icon name='forward' type='font-awesome' color='rgb(20,134,245)' containerStyle={{flex:1}} onPress={this.jumpNextSeconds}/>
-
-        <View style={{paddingRight:10}}><View style={styles.speedup}><Text style={{textAlign:'center',fontWeight: 'bold'}} onPress={this.speedUp}>x{this.state.audioSpeed}</Text></View></View>
-            </View>
-        </View>
+        <View style={{flex:1, backgroundColor: 'darkorange',flexDirection:'row',width:width,height:50,alignItems:'center',paddingHorizontal:width*0.05}}>
+            <Text style={{flex:8,}}>sljdflds</Text>
+            <Icon name='replay-10' type='material' underlayColor='darkorange' color='white' size={35} containerStyle={{flex:1,}} onPress={this.jumpPrevSeconds}/> 
+            <View style={{flex:0.5}}/>
+            {this.state.audioState=='playing'?
+                <Icon name='pause' type='font-awesome' underlayColor='darkorange' color='white' onPress={this.pauseAudio} containerStyle={{flex:1}}/>:
+                <Icon name='play' type='font-awesome' underlayColor='darkorange' color='white' onPress={()=>this.Playaudio("press play button")} containerStyle={{flex:1}}/>
+            }
+        </View> 
     )}
 }
-const styles = StyleSheet.create({
-    mapcontainer: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-    },
-    map: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0
-    },
-    speedup: {
-        borderWidth:1,
-        borderColor:'rgb(20,134,245)',
-        borderRadius:10,
-        height:25,
-        width:40
-    },
-});

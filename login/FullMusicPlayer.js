@@ -1,16 +1,18 @@
 import React, {Component} from 'react';
 import {
     StyleSheet,
+    Image,
     Text,
     View,
-    Dimensions
+    Dimensions,
+    TouchableOpacity
   } from 'react-native';
 import Slider from '@react-native-community/slider';
 import {Icon} from 'react-native-elements';
 import Sound from 'react-native-sound';
 
 var {height, width} = Dimensions.get('window'); 
-let demoAudio = require('../sound/test.mp3');
+let demoAudio = require('./sound/test.mp3');
 const s = new Sound(demoAudio,(error) => {
   if (error) {
       console.log('failed');
@@ -19,7 +21,7 @@ const s = new Sound(demoAudio,(error) => {
   console.log('start');
   console.log('duration in seconds: ' + s.getDuration() + 'number of channels: ' + s.getNumberOfChannels());
 })
-export default class MusicPlayer extends Component {
+export default class FullMusicPlayer extends Component {
     constructor(props) {
         super(props);
         this.s=s;
@@ -85,8 +87,8 @@ export default class MusicPlayer extends Component {
             this.setState({audioSeconds:value});
         }
     }
-    jumpPrevSeconds = () => {this.jumpSeconds(-5);}
-    jumpNextSeconds = () => {this.jumpSeconds(5);}
+    jumpPrevSeconds = () => {this.jumpSeconds(-10);}
+    jumpNextSeconds = () => {this.jumpSeconds(10);}
     jumpSeconds = (secsDelta) => {
         if(this.s){
             this.s.getCurrentTime((secs) => {
@@ -115,51 +117,48 @@ export default class MusicPlayer extends Component {
 
     render() {
         return (
-        <View style={{flex:1, backgroundColor: 'white',opacity:0.7}}>
-        <Slider
-            style={{width: width, height: height*0.05}}
-            onSlidingStart={this.onSliderEditStart}
-            onSlidingComplete={this.onSliderEditEnd}
-            // onValueChange={this.onSliderEditing} 
-            value={this.state.audioSeconds}
-            maximumValue={this.state.audioDuration} 
-            minimumValue={0} 
-            maximumTrackTintColor='black' 
-            minimumTrackTintColor='grey' 
-            thumbTintColor= 'rgb(20,134,245)'
-        />
-        <View style={{flex:1,flexDirection:'row'}}>
-        <Icon name='backward' type='font-awesome' color='rgb(20,134,245)' containerStyle={{flex:1}} onPress={this.jumpPrevSeconds}/> 
-        {console.log('second:'+this.state.audioState)}
-        {this.state.audioState=='playing'?
-            <Icon name='pause' type='font-awesome' color='rgb(20,134,245)' onPress={this.pauseAudio} containerStyle={{flex:1}}/>:
-            <Icon name='play' type='font-awesome' color='rgb(20,134,245)' onPress={()=>this.Playaudio("press play button")} containerStyle={{flex:1}}/>
-        }
-
-        <Icon name='forward' type='font-awesome' color='rgb(20,134,245)' containerStyle={{flex:1}} onPress={this.jumpNextSeconds}/>
-
-        <View style={{paddingRight:10}}><View style={styles.speedup}><Text style={{textAlign:'center',fontWeight: 'bold'}} onPress={this.speedUp}>x{this.state.audioSpeed}</Text></View></View>
+        <View style={{backgroundColor:'darkorange',height:height,width:width}}>
+            <View style={{flex:1,paddingHorizontal:width*0.05,paddingVertical:width*0.05}}>
+                <View style={{flexDirection:'row', flex:1}}>
+                    <View style={{flex:2,alignItems:'flex-start'}}>
+                        <Icon name='chevron-down-circle-outline' type='material-community' color='white' underlayColor='darkorange' size={35} onPress={()=>{this.props.navigation.goBack()}}/>
+                    </View>    
+                    <View style={{flex:8}}>
+                        <View style={{flex:1}}/>
+                        <Image source={require('./image/Alachua_sculpture.jpg')} style={{flex:1.5, width:undefined, height:undefined}} resizeMode='stretch'/>
+                        <Text style={{flex:1, textAlign:'center', textAlignVertical:'center', fontSize:18, fontFamily:'monospace'}}>Alachua sculpture</Text>
+                    </View>
+                    <View style={{flex:2}}/>
+                </View>
+                <Slider
+                    // style={{width: width, height: height*0.05,}}
+                    onSlidingStart={this.onSliderEditStart}
+                    onSlidingComplete={this.onSliderEditEnd}
+                    // onValueChange={this.onSliderEditing} 
+                    value={this.state.audioSeconds}
+                    maximumValue={this.state.audioDuration} 
+                    minimumValue={0} 
+                    maximumTrackTintColor='black' 
+                    minimumTrackTintColor='grey' 
+                    thumbTintColor= 'white'
+                />
+                <View style={{flex:1,flexDirection:'row'}}>
+                    <View style={{flex:1}}/>
+                    <Icon name='replay-10' type='material' color='white' size={40} containerStyle={{flex:1}} onPress={this.jumpPrevSeconds}/> 
+                    {this.state.audioState=='playing'?
+                        <Icon name='pause-circle' type='font-awesome' color='white' size={60} onPress={this.pauseAudio} containerStyle={{flex:1}}/>:
+                        <Icon name='play-circle' type='font-awesome' color='steelblue' size={60} onPress={()=>this.Playaudio("press play button")} containerStyle={{flex:1}}/>
+                    }
+                    <Icon name='forward-10' type='material' color='white' size={40} containerStyle={{flex:1}} onPress={this.jumpNextSeconds}/>
+                    <View style={{flex:1, alignItems:'center'}}>
+                        <View style={styles.speedup}><Text style={{textAlign:'center',fontWeight: 'bold'}} onPress={this.speedUp}>x{this.state.audioSpeed}</Text></View>
+                    </View>
+                </View>
             </View>
         </View>
     )}
 }
 const styles = StyleSheet.create({
-    mapcontainer: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-    },
-    map: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0
-    },
     speedup: {
         borderWidth:1,
         borderColor:'rgb(20,134,245)',

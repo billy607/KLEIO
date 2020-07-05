@@ -6,20 +6,20 @@ import {
   Dimensions,
   Animated,
   TextInput,
-  Alert
+  Alert,
+  TouchableOpacity
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import AsyncStorage from '@react-native-community/async-storage'
 import {Icon,Overlay} from 'react-native-elements';
 import MapView, {Polyline,Marker,PROVIDER_GOOGLE } from 'react-native-maps';
 import Boundary, {Events} from 'react-native-boundary';
-import {
-  ScrollView,
-} from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 import Sound from 'react-native-sound';
 import MapViewDirections from 'react-native-maps-directions';
 import PopupMenu from './components/PopupMenu'
-import MenuPage from './Menu'
+import MusicPlayer from './components/MiniMusicPlayer'
+import FullMusicPlayer from './FullMusicPlayer';
 
 
 //Variable for drawing route on map
@@ -307,7 +307,10 @@ export default class MapPage extends Component {
                 </ScrollView>
             </PopupMenu>
         }
-        <MenuPage/>
+        <TouchableOpacity activeOpacity={0.8} style={{position:'absolute', bottom:0}} onPress={()=>{this.props.navigation.navigate('FullMusicPlayer');}}>
+            <MusicPlayer/>
+        </TouchableOpacity>
+        
         <Icon name='pencil-square-o' type='font-awesome' raised={true} size={18} onPress={this.getData} containerStyle={{position:'absolute', top:height*0.0005,right:width*0.0005}}/>
         
         <Overlay isVisible={this.state.note} onBackdropPress={this.storeData} 
@@ -337,7 +340,7 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-        bottom: 0
+        bottom: 50
     },
     speedup: {
         borderWidth:1,
