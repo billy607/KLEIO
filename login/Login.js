@@ -36,40 +36,40 @@ export default class HelloWorldApp extends PureComponent {
     }
     render() {
         return (
-              <View style={styles.container}>
-                <Text style={styles.text}>WELCOME TO KLEIO</Text>
-                <Input
-                  placeholder=' Email'
-                  leftIcon={{ type: 'font-awesome', name: 'envelope',color:"white" }}
-                  inputStyle={{color:"white"}}
-                />
-                <Input 
-                  placeholder='Password'
-                  leftIcon={{ type: 'font-awesome', name: 'key',color:"white" }}
-                  inputStyle={{color:"white"}}
-                />
-                <Text>    </Text>
-                <View style={{flexDirection: "row"}}>
-                  <Button title="Login" containerStyle={{width:width*0.25}}
-                    onPress={() => {
-                      this.props.navigation.navigate('Search');
-                    }}/>
-                  <Text style={{width: width*0.15}}/>
-                  <Button title="Register" containerStyle={{width:width*0.25}}
+            <View style={styles.container}>
+              <Text style={styles.text}>WELCOME TO KLEIO</Text>
+              <Input
+                placeholder=' Email'
+                leftIcon={{ type: 'font-awesome', name: 'envelope',color:"white" }}
+                inputStyle={{color:"white"}}
+              />
+              <Input 
+                placeholder='Password'
+                leftIcon={{ type: 'font-awesome', name: 'key',color:"white" }}
+                inputStyle={{color:"white"}}
+              />
+              <Text>    </Text>
+              <View style={{flexDirection: "row"}}>
+                <Button title="Login" containerStyle={{width:width*0.25}}
                   onPress={() => {
-                    this.props.navigation.navigate('Register');
-                    }}/>
-                </View>
-                <View style={styles.iconcontainer}>
-                  <SocialIcon
-                    type='facebook'
-                  />
-                  <Text>        </Text>
-                  <SocialIcon
-                    type='google'
-                  />
-                </View>
+                    this.props.navigation.navigate('Search');
+                  }}/>
+                <Text style={{width: width*0.15}}/>
+                <Button title="Register" containerStyle={{width:width*0.25}}
+                onPress={() => {
+                  this.props.navigation.navigate('Register');
+                  }}/>
               </View>
+              <View style={styles.iconcontainer}>
+                <SocialIcon
+                  type='facebook'
+                />
+                <Text>        </Text>
+                <SocialIcon
+                  type='google'
+                />
+              </View>
+            </View>
         );
     }
 }
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     flex:1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'darkorange',
+    backgroundColor: 'hsl(28,110%,54%)',
     padding: 20
   },
   text:{
