@@ -26,16 +26,11 @@ export default class RegisterPage extends Component {
     render() { 
         return (
               <ScrollView style={styles.container} contentContainerStyle={{flex:1, alignItems: 'center', justifyContent:'center'}}>
-                <View style={{flex:1, justifyContent:'center'}}><Text style={styles.text}>Register</Text></View>
+                <View style={{flex:1, justifyContent:'center'}}><Text style={styles.text}>Create Account</Text></View>
                 <View style={styles.mainpart}>
                 <Input
                   placeholder=' your email address'
                   leftIcon={{ type: 'font-awesome', name: 'envelope',color:"white" }}
-                  inputStyle={{color:"white"}}
-                />
-                <Input
-                  placeholder=' user name'
-                  leftIcon={{ type: 'font-awesome', name: 'user',color:"white" }}
                   inputStyle={{color:"white"}}
                 />
                 <Input 
@@ -52,16 +47,28 @@ export default class RegisterPage extends Component {
                 />
                 </View>
                 <View style={styles.iconcontainer}>
-                  <Button title="register" containerStyle={{width:width*0.2}}
-                   onPress={() => {
-                    if(this.state.cPassword==this.state.password) this.props.navigation.goBack();
-                    else alert("error")
-                   }}/>
-                  <Text style={{width: width*0.2}}/>
-                  <Button title="cancel" containerStyle={{width:width*0.2}}
+                  <View style={{flex:0.5}}/>
+                  <View style={{flex:1}}>
+                    <Button title="REGISTER" titleStyle={{fontSize:15}} containerStyle={{width:width*0.3}}
                     onPress={() => {
-                      this.props.navigation.goBack();
+                      if(this.state.cPassword==this.state.password) this.props.navigation.goBack();
+                      else alert("error")
                     }}/>
+                  </View>
+                  <View style={{flex:1, alignItems:'center'}}>
+                    <Text style={{fontSize:20}}>or</Text>
+                    <Text style={{fontSize:20}}>continue with</Text>
+                  </View>
+                  <View style={{flex:1,flexDirection: "row"}}>
+                    <SocialIcon
+                      type='facebook'
+                    />
+                    <View style={{width:width*0.3}}/>
+                    <SocialIcon
+                      type='google'
+                    />
+                  </View>
+                  <View style={{flex:1}}></View>
                 </View>
                 
               </ScrollView>
@@ -82,7 +89,7 @@ const styles = StyleSheet.create({
   text:{
     textAlign: 'center',
     color: "white",
-    fontSize: 20,
+    fontSize: 25,
   },
   mainpart:{
     flex:1,
@@ -90,9 +97,9 @@ const styles = StyleSheet.create({
     width:width,
   },
   iconcontainer:{
-    flex:1,
-    // justifyContent:'center',
-    flexDirection: "row",
+    flex:2,
+    alignItems: 'center',
+    marginTop:20
   }
 })
 
@@ -103,4 +110,3 @@ const styles = StyleSheet.create({
 //     return <RegisterPage />;
 //   }
 // }
-

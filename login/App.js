@@ -13,7 +13,7 @@ import FullMusicPlayer from './FullMusicPlayer'
 import {Icon} from 'react-native-elements'
 import { HeaderBackButton } from '@react-navigation/stack';
 import { StyleSheet, View } from 'react-native';
-import ActionButton from 'react-native-action-button';
+// import ActionButton from 'react-native-action-button';
 
 /////////////// navigation logic
 const Stack = createStackNavigator();
@@ -56,8 +56,15 @@ function MyStack({navigation}) {
           }})}/>
       <Stack.Screen  
         name='Register' 
-        component={RegisterPage} 
-        options={{headerShown:false}}/>
+        component={RegisterPage}
+        options={() => ({
+          headerTintColor:'white', 
+          headerTitleAlign:'center', 
+          headerTitle:'KLEIO', 
+          headerStyle:{
+            height:50,           
+            backgroundColor:'darkorange',
+          }})} />
       <Stack.Screen 
         name="MainPage" 
         component={MainPage}
