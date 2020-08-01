@@ -27,25 +27,27 @@ export default class RegisterPage extends Component {
         return (
               <ScrollView style={styles.container} contentContainerStyle={{flex:1, alignItems: 'center', justifyContent:'center'}}>
                 <View style={{flex:1, justifyContent:'center'}}><Text style={styles.text}>Create Account</Text></View>
+
                 <View style={styles.mainpart}>
-                <Input
-                  placeholder=' your email address'
-                  leftIcon={{ type: 'font-awesome', name: 'envelope',color:"white" }}
-                  inputStyle={{color:"white"}}
-                />
-                <Input 
-                  placeholder=' your password'
-                  leftIcon={{ type: 'font-awesome', name: 'key',color:"white" }}
-                  inputStyle={{color:"white"}}
-                  onChangeText={text => this.setPassword(text)}
-                />
-                <Input 
-                  placeholder=' confirm your password'
-                  leftIcon={{ type: 'font-awesome', name: 'key',color:"white" }}
-                  inputStyle={{color:"white"}}
-                  onChangeText={text => this.setcPassword(text)}
-                />
+                  <Input
+                    placeholder=' your email address'
+                    leftIcon={{ type: 'font-awesome', name: 'envelope',color:"white" }}
+                    inputStyle={{color:"white"}}
+                  />
+                  <Input 
+                    placeholder=' your password'
+                    leftIcon={{ type: 'font-awesome', name: 'key',color:"white" }}
+                    inputStyle={{color:"white"}}
+                    onChangeText={text => this.setPassword(text)}
+                  />
+                  <Input 
+                    placeholder=' confirm your password'
+                    leftIcon={{ type: 'font-awesome', name: 'key',color:"white" }}
+                    inputStyle={{color:"white"}}
+                    onChangeText={text => this.setcPassword(text)}
+                  />
                 </View>
+
                 <View style={styles.iconcontainer}>
                   <View style={{flex:0.5}}/>
                   <View style={{flex:1}}>
@@ -63,7 +65,7 @@ export default class RegisterPage extends Component {
                     <SocialIcon
                       type='facebook'
                     />
-                    <View style={{width:width*0.3}}/>
+                    <View style={{width:width*0.2}}/>
                     <SocialIcon
                       type='google'
                     />
@@ -83,7 +85,7 @@ const styles = StyleSheet.create({
     // top:0,
     // height:height,
     // width:width,
-    backgroundColor: 'darkorange',
+    backgroundColor: 'hsl(28,110%,54%)',
     // padding: 20
   },
   text:{

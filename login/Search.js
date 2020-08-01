@@ -134,7 +134,7 @@ export default class SearchPage extends Component {
 
 const styles = StyleSheet.create({
   maincontainer:{
-    backgroundColor:'darkorange', 
+    backgroundColor:'hsl(28,110%,54%)', 
     // position:'absolute',
     // top:0,
     height:height,

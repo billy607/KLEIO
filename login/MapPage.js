@@ -25,11 +25,19 @@ import FullMusicPlayer from './FullMusicPlayer';
 //Variable for drawing route on map
 
 
-const waypoint1 = {latitude: 29.6450, longitude:  -82.3395};
+const waypoint1 = [ {latitude:29.6463, longitude:-82.3477},     //RU
+                    //{latitude:29.6477, longitude:-82.3459},     //Help point on grass
+                    {latitude:29.6481, longitude:-82.3437},     //Marston
+                    {latitude:29.6489, longitude:-82.3441},     //Turlington
+                    {latitude:29.6498, longitude:-82.3429},     //Plaza
+                    {latitude:29.6500, longitude:-82.3462},     //Racquet
+                    {latitude:29.6499, longitude:-82.3487}    //Griffin
+                ];
 
-const origin1 = {latitude: 29.6526, longitude: -82.3386};
+
+const origin1 = {latitude: 29.6463,  longitude: -82.3477};
 const origin = {latitude: 29.6480,  longitude: -82.3439};
-const destination = {latitude: 29.6463, longitude: -82.3477};
+const destination = {latitude: 29.6499,  longitude: -82.3487};
 const GOOGLE_MAPS_APIKEY = 'AIzaSyAwEASOqU1llLDKrblaktUWaec_zGuJnwU';
 
 var {height, width} = Dimensions.get('window'); 
@@ -60,10 +68,6 @@ export default class MapPage extends Component {
                   longitudeDelta: LONGITUDE_DELTA,
                 },
           poi: null,
-        //   audioState:'playing', //playing, paused
-        //   audioSeconds: 0,
-        //   audioDuration: s.getDuration(),
-        //   audioSpeed: 1,
           entergeo: false,
           note:false,
           noteContent:null
@@ -73,13 +77,6 @@ export default class MapPage extends Component {
     }
     componentDidMount() {
         console.log("call componentDidMount!!!!!!!!");
-        // this.timeout = setInterval(() => {
-        //     if(this.state.audioState == 'playing' && !this.sliderEditing){
-        //         s.getCurrentTime((seconds) => {
-        //             this.setState({audioSeconds:seconds});
-        //         })
-        //     }
-        // }, 100);
         Boundary.add({
             lat: 29.6513, 
             lng: -82.3402,
@@ -164,74 +161,6 @@ export default class MapPage extends Component {
         //To hide the ActionBar/NavigationBar
         header: null,
     };
-    // Playaudio=async(param)=>{
-    //     console.log(param)
-    //     if(s){
-    //         console.log('playing')
-    //         console.log(this.state.audioDuration);
-    //         s.play(this.playComplete);
-    //         this.setState({audioState: 'playing'});   
-    //     }else{
-    //         console.log("audio loaded failed");
-    //     }
-    // }
-    // playComplete = (success) => {
-    //     if(s){
-    //         if (success) {
-    //             console.log('successfully finished playing');
-    //         } else {
-    //             console.log('playback failed due to audio decoding errors');
-    //             Alert.alert('Notice', 'audio file error. (Error code : 2)');
-    //         }
-    //         this.setState({audioState:'paused', audioSeconds:0});
-    //         s.setCurrentTime(0);
-    //     }
-    // }
-    // Stopaudio=()=>{
-    //     s.stop();
-    // }
-    // pauseAudio=()=>{
-    //     if(s){
-    //         s.pause();
-    //     }
-    //     this.setState({audioState:'pause'});
-    // }
-    // onSliderEditStart = () => {
-    //     this.sliderEditing = true;
-    // }
-    // onSliderEditEnd = (value) => {
-    //     this.sliderEditing = false;
-    //     if(s){
-    //         s.setCurrentTime(value);
-    //         this.setState({audioSeconds:value});
-    //     }
-    // }
-    // jumpPrevSeconds = () => {this.jumpSeconds(-5);}
-    // jumpNextSeconds = () => {this.jumpSeconds(5);}
-    // jumpSeconds = (secsDelta) => {
-    //     if(s){
-    //         s.getCurrentTime((secs) => {
-    //             let nextSecs = secs + secsDelta;
-    //             if(nextSecs < 0) nextSecs = 0;
-    //             else if(nextSecs > this.state.audioDuration) nextSecs = this.state.audioDuration;
-    //             s.setCurrentTime(nextSecs);
-    //             this.setState({audioSeconds:nextSecs});
-    //         })
-    //     }
-    // }
-
-    // speedUp = () =>{
-    //     var speed = this.state.audioSpeed
-    //     if(speed>=2){
-    //         speed = 1;
-    //     }else{
-    //         speed = speed + 0.5;
-    //     }
-    //     console.log(speed);
-    //     s.setSpeed(speed);
-    //     if(!s.isPlaying()) s.pause();
-    //     this.setState({audioSpeed: speed});
-    // }
     storeData = async () => {
         try {
             console.log('store')
@@ -269,7 +198,7 @@ export default class MapPage extends Component {
            onPoiClick={this.onPoiClick}
            onPress={this.onScreenClick}
         >
-            <Polyline
+            {/* <Polyline
                 coordinates={[
                     origin1,
                     waypoint1,
@@ -278,15 +207,19 @@ export default class MapPage extends Component {
                 strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
                 
                 strokeWidth={6}
-            />
+            /> */}
 
             <MapViewDirections
                 origin={origin1}
                 destination={destination}
                 apikey={GOOGLE_MAPS_APIKEY}
+                waypoints={waypoint1}
                 mode={"WALKING"}
-                strokeWidth={3}
-                strokeColor="hotpink"
+                optimizeWaypoints={true}
+                precision="high"
+                strokeWidth={10}
+                strokeColor="deepskyblue"
+                lineDashPattern = {[15,15]}
             />
             {this.state.poi && (
             <Marker 
