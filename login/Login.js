@@ -1,6 +1,7 @@
 import React, { Component,PureComponent } from 'react';
-import { Text, View, Dimensions, StyleSheet, TouchableHighlight,BackHandler,Alert,Button } from 'react-native';
-import { Input, SocialIcon } from 'react-native-elements';
+import { Text, View, Dimensions, StyleSheet, TouchableHighlight,BackHandler,Alert } from 'react-native';
+import { Input, SocialIcon, Button} from 'react-native-elements';
+/*import { Button } from "@material-ui/core";*/
 
 var {height, width} = Dimensions.get('window');
 export default class HelloWorldApp extends PureComponent {
@@ -25,50 +26,56 @@ export default class HelloWorldApp extends PureComponent {
       return true;
     };
     componentDidMount() {
-     this.backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      this.backAction
-    );
+      this._unsubscribe = this.props.navigation.addListener('blur', () => {
+        this.backHandler.remove();
+      });
+      this._unsubscribe = this.props.navigation.addListener('focus', () => {
+        this.backHandler = BackHandler.addEventListener(
+          "hardwareBackPress",
+          this.backAction
+        );
+      });
     }
     componentWillUnmount() {
       this.backHandler.remove();
     }
     render() {
         return (
-              <View style={styles.container}>
-                <Text style={styles.text}>WELCOME TO KLEIO</Text>
-                <Input
-                  placeholder=' your email address'
-                  leftIcon={{ type: 'font-awesome', name: 'envelope',color:"white" }}
-                  inputStyle={{color:"white"}}
-                />
-                <Input 
-                  placeholder=' your password'
-                  leftIcon={{ type: 'font-awesome', name: 'key',color:"white" }}
-                  inputStyle={{color:"white"}}
-                />
-                <Text>    </Text>
-                <View style={{flexDirection: "row"}}>
-                  <Button title="login" containerStyle={{width:width*0.2}}
-                    onPress={() => {
-                      this.props.navigation.navigate('Search');
-                    }}/>
-                  <Text style={{width: width*0.2}}/>
-                  <Button title="register" containerStyle={{width:width*0.2}}
+            <View style={styles.container}>
+              <Text style={styles.text}>WELCOME TO KLEIO</Text>
+              <Input
+                placeholder=' Email'
+                leftIcon={{ type: 'font-awesome', name: 'envelope',color:"white" }}
+                inputStyle={{color:"white"}}
+              />
+              <Input 
+                placeholder='Password'
+                leftIcon={{ type: 'font-awesome', name: 'key',color:"white" }}
+                inputStyle={{color:"white"}}
+              />
+              <Text>    </Text>
+              <View style={{flexDirection: "row"}}>
+                <Button title="Login" containerStyle={{width:width*0.25}}
                   onPress={() => {
-                    this.props.navigation.navigate('Register');
-                    }}/>
-                </View>
-                <View style={styles.iconcontainer}>
-                  <SocialIcon
-                    type='facebook'
-                  />
-                  <Text>        </Text>
-                  <SocialIcon
-                    type='google'
-                  />
-                </View>
+                    this.props.navigation.navigate('Search');
+                  }}/>
+                <Text style={{width: width*0.15}}/>
+                <Button title="Register" containerStyle={{width:width*0.25}}
+                onPress={() => {
+                  this.backHandler.remove();
+                  this.props.navigation.navigate('Register');
+                  }}/>
               </View>
+              <View style={styles.iconcontainer}>
+                <SocialIcon
+                  type='facebook'
+                />
+                <Text>        </Text>
+                <SocialIcon
+                  type='google'
+                />
+              </View>
+            </View>
         );
     }
 }
@@ -82,14 +89,15 @@ const styles = StyleSheet.create({
     flex:1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'darkorange',
+    backgroundColor: 'hsl(28,110%,54%)',
     padding: 20
   },
   text:{
     color: "white",
-    fontSize: 20,
+    fontSize: 35,
     position: "absolute",
-    top:100
+    top:100,
+    fontWeight: 'bold',
   },
   iconcontainer:{
     flexDirection: "row",

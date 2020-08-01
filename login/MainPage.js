@@ -30,20 +30,20 @@ export default class MainPage extends Component {
     };  
   }
 
-  backAction = () => {//android back button action
-    this.props.navigation.goBack()
-    return true;
-  };
-  componentDidMount() {
-    this.backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      this.backAction
-    );
-  }
+  // backAction = () => {//android back button action
+  //   this.props.navigation.goBack()
+  //   return true;
+  // };
+  // componentDidMount() {
+  //   this.backHandler = BackHandler.addEventListener(
+  //     "hardwareBackPress",
+  //     this.backAction
+  //   );
+  // }
 
-  componentWillUnmount() {
-    this.backHandler.remove();
-  }
+  // componentWillUnmount() {
+  //   this.backHandler.remove();
+  // }
     // _makeselection= selection =>{
     //   if(selection=="OverView"){
     //     return <Overview navigation={this.props.navigation}/>

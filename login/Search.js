@@ -42,7 +42,7 @@ const list = [
 ]
 
 
-export default class SearchPage extends PureComponent {
+export default class SearchPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -61,12 +61,16 @@ export default class SearchPage extends PureComponent {
     return true;
   };
   componentDidMount() {
-    this.backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      this.backAction
-    );
+    this._unsubscribe = this.props.navigation.addListener('blur', () => {
+      this.backHandler.remove();
+    });
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        this.backAction
+      );
+    });
   }
-
   componentWillUnmount() {
     this.backHandler.remove();
   }

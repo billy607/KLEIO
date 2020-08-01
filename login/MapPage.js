@@ -47,6 +47,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 //   console.log('start');
 //   console.log('duration in seconds: ' + s.getDuration() + 'number of channels: ' + s.getNumberOfChannels());
 // })
+
 export default class MapPage extends Component {
     constructor(props) {
         super(props);
@@ -93,7 +94,7 @@ export default class MapPage extends Component {
                 lat: 29.6508, 
                 lng: -82.3401,
                 radius: 100, // in meters
-                id: "Gerson Hall",
+                id: "abc",
             })
             .then(() => console.log("success2!"))
             .catch(e => console.error("error :(", e));
