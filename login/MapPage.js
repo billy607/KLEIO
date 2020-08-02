@@ -5,9 +5,11 @@ import {
   View,
   Dimensions,
   Animated,
+  Image,
   TextInput,
   Alert,
-  TouchableOpacity
+  TouchableOpacity,
+  ImageBackground
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import AsyncStorage from '@react-native-community/async-storage'
@@ -25,7 +27,7 @@ import FullMusicPlayer from './FullMusicPlayer';
 //Variable for drawing route on map
 
 
-const waypoint1 = [ {latitude:29.6463, longitude:-82.3477},     //RU
+const waypoints = [ {latitude:29.6463, longitude:-82.3477},     //RU
                     //{latitude:29.6477, longitude:-82.3459},     //Help point on grass
                     {latitude:29.6481, longitude:-82.3437},     //Marston
                     {latitude:29.6489, longitude:-82.3441},     //Turlington
@@ -42,9 +44,9 @@ const GOOGLE_MAPS_APIKEY = 'AIzaSyAwEASOqU1llLDKrblaktUWaec_zGuJnwU';
 
 var {height, width} = Dimensions.get('window'); 
 const ASPECT_RATIO = width / height;
-const LATITUDE = 29.6463;  
-const LONGITUDE = -82.3477;
-const LATITUDE_DELTA = 0.0922;
+const LATITUDE = 29.6482;  
+const LONGITUDE = -82.3458;
+const LATITUDE_DELTA = 0.010;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 // let demoAudio = require('./sound/test.mp3');
 // const s = new Sound(demoAudio,(error) => {
@@ -213,7 +215,7 @@ export default class MapPage extends Component {
                 origin={origin1}
                 destination={destination}
                 apikey={GOOGLE_MAPS_APIKEY}
-                waypoints={waypoint1}
+                waypoints={waypoints}
                 mode={"WALKING"}
                 optimizeWaypoints={true}
                 precision="high"
@@ -229,6 +231,31 @@ export default class MapPage extends Component {
               onPress={()=>console.log('hello')}>
             </Marker>
             )}
+            
+            {
+            waypoints.map((marker,index) => (
+                console.log(index),
+                console.log("\n"),
+                
+                index += 1,
+                <Marker
+                    coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
+                    //title={marker.title}
+                    // description={marker.description}
+                >
+                    <View >
+                        <ImageBackground    source={require('./image/Marker.png')} 
+                                            style={{resizeMode: "contain", 
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            width: 17.5, 
+                                            height: 29}}>
+                            <Text style={{fontSize:12}}>{index}</Text>
+                        </ImageBackground>
+                    </View>
+                </Marker>
+            ))}
+
         </MapView>
 
         {/* {this.state.entergeo==true&& */}
