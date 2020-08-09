@@ -72,43 +72,58 @@ export default class MapPage extends Component {
           poi: null,
           entergeo: false,
           note:false,
-          noteContent:null
+          noteContent:null,
+          maxindex:0,
+          index:1,
         };
         // this.sliderEditing = false;
         this.onPoiClick = this.onPoiClick.bind(this);
     }
     componentDidMount() {
         console.log("call componentDidMount!!!!!!!!");
-        Boundary.add({
-            lat: 29.6513, 
-            lng: -82.3402,
-            radius: 20, // in meters
-            id: "Bryan Hall",
-        })
-        .then(() => console.log("success1!"))
-        .catch(e => console.error("error :(", e));
+        // Boundary.add({
+        //     lat: 29.6513, 
+        //     lng: -82.3402,
+        //     radius: 20, // in meters
+        //     id: "Bryan Hall",
+        // })
+        // .then(() => console.log("success1!"))
+        // .catch(e => console.error("error :(", e));
 
-        Boundary.add(
-            {
-                lat: 29.6508, 
-                lng: -82.3401,
-                radius: 100, // in meters
-                id: "abc",
-            })
-            .then(() => console.log("success2!"))
-            .catch(e => console.error("error :(", e));
+        // Boundary.add(
+        //     {
+        //         lat: 29.6508, 
+        //         lng: -82.3401,
+        //         radius: 100, // in meters
+        //         id: "abc",
+        //     })
+        //     .then(() => console.log("success2!"))
+        //     .catch(e => console.error("error :(", e));
 
-        Boundary.add(
-        {
-            lat: 29.6463,
-            lng: -82.3477,
-            radius: 100, // in meters
-            id: "Reitz Union",
-        })
-        .then(() => console.log("success3!"))
-        .catch(e => console.error("error :(", e));
+        // Boundary.add(
+        // {
+        //     lat: 29.6463,
+        //     lng: -82.3477,
+        //     radius: 100, // in meters
+        //     id: "Reitz Union",
+        // })
+        // .then(() => console.log("success3!"))
+        // .catch(e => console.error("error :(", e));
+        waypoints.map((marker,index) => (
+            index += 1,
+            this.setState({maxindex:index}),
+            console.log(index.toString()),
+            Boundary.add(
+                {
+                    lat: marker.latitude,
+                    lng: marker.longitude,
+                    radius: 50, // in meters
+                    id: index.toString(),
+                })
+                .then(() => console.log("success!"))
+                .catch(e => console.error("error :(", e))
+        ))
 
-    
         Boundary.on(Events.ENTER, id => {
         // Prints 'Get out of my Chipotle!!'
             console.log(`Get out of my ${id}!!`);
@@ -121,6 +136,9 @@ export default class MapPage extends Component {
         // Prints 'Ya! You better get out of my Chipotle!!'
             console.log(`Ya! You better get out of my ${id}!!`);
             this.setState({entergeo:false});
+            this.setState({index:(parseInt(id)+1)});
+            console.log("h"+parseInt(id))
+            console.log("hhh"+this.state.index)
             // this.pauseAudio();
         });
     }
@@ -234,8 +252,8 @@ export default class MapPage extends Component {
             
             {
             waypoints.map((marker,index) => (
-                console.log(index),
-                console.log("\n"),
+                // console.log(index),
+                // console.log("\n"),
                 
                 index += 1,
                 <Marker
@@ -244,14 +262,23 @@ export default class MapPage extends Component {
                     // description={marker.description}
                 >
                     <View >
-                        <ImageBackground    source={require('./image/Marker.png')} 
+                        {index!=this.state.index? <ImageBackground    source={require('./image/Marker.png')} 
                                             style={{resizeMode: "contain", 
                                             justifyContent: "center",
                                             alignItems: "center",
                                             width: 17.5, 
-                                            height: 29}}>
+                                            height: 29,
+                                            opacity:0.5}}>
                             <Text style={{fontSize:12}}>{index}</Text>
                         </ImageBackground>
+                        :<ImageBackground    source={require('./image/Marker.png')} 
+                                            style={{resizeMode: "contain", 
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            width: 17.5, 
+                                            height: 29,}}>
+                            <Text style={{fontSize:12}}>{index}</Text>
+                        </ImageBackground>}
                     </View>
                 </Marker>
             ))}
