@@ -9,7 +9,8 @@ import {
   TextInput,
   Alert,
   TouchableOpacity,
-  ImageBackground
+  ImageBackground,
+  Button
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import AsyncStorage from '@react-native-community/async-storage'
@@ -21,8 +22,6 @@ import Sound from 'react-native-sound';
 import MapViewDirections from 'react-native-maps-directions';
 import PopupMenu from './components/PopupMenu'
 import MusicPlayer from './components/MiniMusicPlayer'
-import FullMusicPlayer from './FullMusicPlayer';
-
 
 //Variable for drawing route on map
 
@@ -48,15 +47,6 @@ const LATITUDE = 29.6482;
 const LONGITUDE = -82.3458;
 const LATITUDE_DELTA = 0.010;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-// let demoAudio = require('./sound/test.mp3');
-// const s = new Sound(demoAudio,(error) => {
-//   if (error) {
-//       console.log('failed');
-//       return;
-//   }
-//   console.log('start');
-//   console.log('duration in seconds: ' + s.getDuration() + 'number of channels: ' + s.getNumberOfChannels());
-// })
 
 export default class MapPage extends Component {
     constructor(props) {
@@ -75,40 +65,13 @@ export default class MapPage extends Component {
           noteContent:null,
           maxindex:0,
           index:1,
+          visited:[0,0,0,0,0,0],
         };
         // this.sliderEditing = false;
         this.onPoiClick = this.onPoiClick.bind(this);
     }
     componentDidMount() {
         console.log("call componentDidMount!!!!!!!!");
-        // Boundary.add({
-        //     lat: 29.6513, 
-        //     lng: -82.3402,
-        //     radius: 20, // in meters
-        //     id: "Bryan Hall",
-        // })
-        // .then(() => console.log("success1!"))
-        // .catch(e => console.error("error :(", e));
-
-        // Boundary.add(
-        //     {
-        //         lat: 29.6508, 
-        //         lng: -82.3401,
-        //         radius: 100, // in meters
-        //         id: "abc",
-        //     })
-        //     .then(() => console.log("success2!"))
-        //     .catch(e => console.error("error :(", e));
-
-        // Boundary.add(
-        // {
-        //     lat: 29.6463,
-        //     lng: -82.3477,
-        //     radius: 100, // in meters
-        //     id: "Reitz Union",
-        // })
-        // .then(() => console.log("success3!"))
-        // .catch(e => console.error("error :(", e));
         waypoints.map((marker,index) => (
             index += 1,
             this.setState({maxindex:index}),
@@ -128,7 +91,11 @@ export default class MapPage extends Component {
         // Prints 'Get out of my Chipotle!!'
             console.log(`Get out of my ${id}!!`);
             this.setState({entergeo:true});
-            // this.Playaudio("onEnter "+ id);/////////////////////////////////////////////////////////////////////
+            var ls=this.state.visited.map((item,index)=>
+                (index+1).toString()==id?1:item
+            );
+            this.setState({visited:ls})
+            console.log('visited '+this.state.visited)
             Alert.alert(`You have entered ${id}`)
         });
         
@@ -136,10 +103,6 @@ export default class MapPage extends Component {
         // Prints 'Ya! You better get out of my Chipotle!!'
             console.log(`Ya! You better get out of my ${id}!!`);
             this.setState({entergeo:false});
-            this.setState({index:(parseInt(id)+1)});
-            console.log("h"+parseInt(id))
-            console.log("hhh"+this.state.index)
-            // this.pauseAudio();
         });
     }
     componentWillUnmount() {
@@ -218,29 +181,6 @@ export default class MapPage extends Component {
            onPoiClick={this.onPoiClick}
            onPress={this.onScreenClick}
         >
-            {/* <Polyline
-                coordinates={[
-                    origin1,
-                    waypoint1,
-                    destination
-                ]}
-                strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
-                
-                strokeWidth={6}
-            /> */}
-
-            <MapViewDirections
-                origin={origin1}
-                destination={destination}
-                apikey={GOOGLE_MAPS_APIKEY}
-                waypoints={waypoints}
-                mode={"WALKING"}
-                optimizeWaypoints={true}
-                precision="high"
-                strokeWidth={10}
-                strokeColor="deepskyblue"
-                lineDashPattern = {[15,15]}
-            />
             {this.state.poi && (
             <Marker 
               coordinate={this.state.poi.coordinate}
@@ -262,7 +202,8 @@ export default class MapPage extends Component {
                     // description={marker.description}
                 >
                     <View >
-                        {index!=this.state.index? <ImageBackground    source={require('./image/Marker.png')} 
+                        {
+                        this.state.visited[index-1]==0? <ImageBackground    source={require('./image/Marker.png')} 
                                             style={{resizeMode: "contain", 
                                             justifyContent: "center",
                                             alignItems: "center",
@@ -285,9 +226,6 @@ export default class MapPage extends Component {
 
         </MapView>
 
-        {/* {this.state.entergeo==true&& */}
-        
-        {/* }    */}
         {this.state.poi!=null&&
             <PopupMenu name={this.state.poi && this.state.poi.name.replace(/\n/g, " ")}>
                 <ScrollView >
@@ -296,7 +234,7 @@ export default class MapPage extends Component {
             </PopupMenu>
         }
         <TouchableOpacity activeOpacity={0.8} style={{position:'absolute', bottom:0}} onPress={()=>{this.props.navigation.navigate('FullMusicPlayer');}}>
-            <MusicPlayer/>
+            <MusicPlayer enter={this.state.entergeo}/>
         </TouchableOpacity>
         
         <Icon name='pencil-square-o' type='font-awesome' raised={true} size={18} onPress={this.getData} containerStyle={{position:'absolute', top:height*0.0005,right:width*0.0005}}/>
@@ -309,6 +247,7 @@ export default class MapPage extends Component {
                 <TextInput style={{flex:9,textAlignVertical: "top",backgroundColor:'lightgrey'}} multiline={true} value={this.state.noteContent} onChangeText={(value) => this.setState({noteContent:value})}/>
             </View>
         </Overlay>
+        <Button title='report' onPress={()=>{this.props.navigation.navigate('Test',{ visited: this.state.visited });}}/>
        </View>
     )};
 }

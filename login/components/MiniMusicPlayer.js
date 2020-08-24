@@ -9,6 +9,7 @@ import {
 import Slider from '@react-native-community/slider';
 import {Icon} from 'react-native-elements';
 import Sound from 'react-native-sound';
+import { unstable_batchedUpdates } from 'react-dom';
 
 var {height, width} = Dimensions.get('window'); 
 let demoAudio = require('../sound/test.mp3');
@@ -20,6 +21,7 @@ const s = new Sound(demoAudio,(error) => {
   console.log('start');
   console.log('duration in seconds: ' + s.getDuration() + 'number of channels: ' + s.getNumberOfChannels());
 })
+var a=false;
 export default class MusicPlayer extends Component {
     constructor(props) {
         super(props);
@@ -33,9 +35,11 @@ export default class MusicPlayer extends Component {
           noteContent:null
         };
         this.sliderEditing = false;
+        
     }
     componentDidMount() {
-        console.log("audioState:"+this.state.audioState);
+        // console.log("audioState:"+this.props.entergeo);
+        // this.props.entergeo==true?this.setState({audioState:'playing'}):this.setState({audioState:'paused'});
         this.timeout = setInterval(() => {
             if(this.state.audioState == 'playing' && !this.sliderEditing){
                 this.s.getCurrentTime((seconds) => {
@@ -74,7 +78,7 @@ export default class MusicPlayer extends Component {
         if(this.s){
             this.s.pause();
         }
-        this.setState({audioState:'pause'});
+        this.setState({audioState:'paused'});
     }
     onSliderEditStart = () => {
         this.sliderEditing = true;
@@ -112,9 +116,18 @@ export default class MusicPlayer extends Component {
         if(!this.s.isPlaying()) this.s.pause();
         this.setState({audioSpeed: speed});
     }
-
+    update=()=>{
+        if(this.props.enter!=a){
+            a=this.props.enter;
+            if(a) this.Playaudio("press play button")
+            else{
+                this.pauseAudio();
+            }
+        }
+    }
 
     render() {
+        this.update()
         return (
         <View style={{flex:1, backgroundColor: 'darkorange',flexDirection:'row',width:width,height:50,alignItems:'center',paddingHorizontal:width*0.05}}>
             <Text style={{flex:8,}}>sljdflds</Text>

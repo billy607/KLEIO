@@ -10,6 +10,7 @@ import MapPage from './MapPage'
 import MenuPage from './Menu'
 import CollegeDetails from './CollegesDetail'
 import FullMusicPlayer from './FullMusicPlayer'
+import Test from './test'
 import {Icon} from 'react-native-elements'
 import { HeaderBackButton } from '@react-navigation/stack';
 import { StyleSheet, View } from 'react-native';
@@ -109,6 +110,10 @@ function MyStack({navigation}) {
         component={FullMusicPlayer}
         options={{headerShown:false}}
        />
+       <Stack.Screen 
+        name="Test" 
+        component={Test} 
+        options={{headerShown:false}}/>
     {/* <Stack.Navigator initialRouteName='CollegesDetail' headerMode='none'>
       <Stack.Screen name="CollegesDetail" component={CollegesDetail} />
       <Stack.Screen name="Home" component={HelloWorldApp} />
