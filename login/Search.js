@@ -42,7 +42,7 @@ const list = [
 ]
 
 
-export default class SearchPage extends PureComponent {
+export default class SearchPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -61,12 +61,16 @@ export default class SearchPage extends PureComponent {
     return true;
   };
   componentDidMount() {
-    this.backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      this.backAction
-    );
+    this._unsubscribe = this.props.navigation.addListener('blur', () => {
+      this.backHandler.remove();
+    });
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        this.backAction
+      );
+    });
   }
-
   componentWillUnmount() {
     this.backHandler.remove();
   }
@@ -130,7 +134,7 @@ export default class SearchPage extends PureComponent {
 
 const styles = StyleSheet.create({
   maincontainer:{
-    backgroundColor:'darkorange', 
+    backgroundColor:'hsl(28,110%,54%)', 
     // position:'absolute',
     // top:0,
     height:height,

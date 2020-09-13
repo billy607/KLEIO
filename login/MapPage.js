@@ -5,52 +5,81 @@ import {
   View,
   Dimensions,
   Animated,
+  Image,
   TextInput,
-  Alert
+  Alert,
+  TouchableOpacity,
+  ImageBackground,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import AsyncStorage from '@react-native-community/async-storage'
-import {Icon,Overlay} from 'react-native-elements';
+import {Icon,Overlay,Button} from 'react-native-elements';
 import MapView, {Polyline,Marker,PROVIDER_GOOGLE } from 'react-native-maps';
 import Boundary, {Events} from 'react-native-boundary';
-import {
-  ScrollView,
-} from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 import Sound from 'react-native-sound';
 import MapViewDirections from 'react-native-maps-directions';
 import PopupMenu from './components/PopupMenu'
 import MusicPlayer from './components/MusicPlayer'
-
-
 //Variable for drawing route on map
 
+// let sound1 = require('./sound/1.mp3');
+// let sound2 = require('./sound/2.mp3');
+// let sound3 = require('./sound/3.mp3');
+// let sound4 = require('./sound/4.mp3');
+// let sound5 = require('./sound/5.mp3');//auditorium
+// let sound6 = require('./sound/6.mp3');
+const soundPath=[require('./sound/1.mp3'),require('./sound/2.mp3'),require('./sound/3.mp3'),require('./sound/4.mp3'),require('./sound/5.mp3'),require('./sound/6.mp3')]
+const numbers = [0, 1, 2, 3, 4, 5];
+const sounds = numbers.map((number) => 
+    new Sound(soundPath[number],(error) => {
+        if (error) {
+            console.log('failed');
+            return;
+        }
+        console.log('start');
+        // console.log('duration in seconds: ' +  this.s.getDuration() + 'number of channels: ' +  this.s.getNumberOfChannels());
+        }
+    )
+);
 
-const waypoint1 = {latitude: 29.6450, longitude:  -82.3395};
 
-const origin1 = {latitude: 29.6526, longitude: -82.3386};
+const waypoints = [ {latitude:29.6463, longitude:-82.3477},     //RU
+                    //{latitude:29.6477, longitude:-82.3459},     //Help point on grass
+                    {latitude:29.6481, longitude:-82.3437},     //Marston
+                    {latitude:29.6489, longitude:-82.3441},     //Turlington
+                    {latitude:29.6498, longitude:-82.3429},     //Plaza
+                    {latitude:29.6500, longitude:-82.3462},     //Racquet
+                    {latitude:29.6499, longitude:-82.3487}    //Griffin
+                ];
+
+
+const origin1 = {latitude: 29.6463,  longitude: -82.3477};
 const origin = {latitude: 29.6480,  longitude: -82.3439};
-const destination = {latitude: 29.6463, longitude: -82.3477};
+const destination = {latitude: 29.6499,  longitude: -82.3487};
 const GOOGLE_MAPS_APIKEY = 'AIzaSyAwEASOqU1llLDKrblaktUWaec_zGuJnwU';
 
 var {height, width} = Dimensions.get('window'); 
 const ASPECT_RATIO = width / height;
-const LATITUDE = 29.6463;  
-const LONGITUDE = -82.3477;
-const LATITUDE_DELTA = 0.0922;
+const LATITUDE = 29.6482;  
+const LONGITUDE = -82.3458;
+const LATITUDE_DELTA = 0.010;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-let demoAudio = require('./sound/test.mp3');
-const s = new Sound(demoAudio,(error) => {
-  if (error) {
-      console.log('failed');
-      return;
-  }
-  console.log('start');
-  console.log('duration in seconds: ' + s.getDuration() + 'number of channels: ' + s.getNumberOfChannels());
-})
+
+
 export default class MapPage extends Component {
     constructor(props) {
         super(props);
-    
+        // this.sound=s
+        // var s = new Sound(demoAudio,(error) => {
+        // if (error) {
+        //     console.log('failed');
+        //     return;
+        // }
+        // console.log('start');
+        // // console.log('duration in seconds: ' +  this.s.getDuration() + 'number of channels: ' +  this.s.getNumberOfChannels());
+        // })
+        
         this.state = {
           destination: {
                   latitude: LATITUDE,
@@ -59,61 +88,44 @@ export default class MapPage extends Component {
                   longitudeDelta: LONGITUDE_DELTA,
                 },
           poi: null,
-          audioState:'playing', //playing, paused
-          audioSeconds: 0,
-          audioDuration: s.getDuration(),
-          audioSpeed: 1,
           entergeo: false,
           note:false,
-          noteContent:null
+          noteContent:null,
+          maxindex:0,
+          index:1,
+          visited:[0,0,0,0,0,0],
+          sound: sounds[0],
         };
-        this.sliderEditing = false;
         this.onPoiClick = this.onPoiClick.bind(this);
     }
+
     componentDidMount() {
         console.log("call componentDidMount!!!!!!!!");
-        this.timeout = setInterval(() => {
-            if(this.state.audioState == 'playing' && !this.sliderEditing){
-                s.getCurrentTime((seconds) => {
-                    this.setState({audioSeconds:seconds});
+        waypoints.map((marker,index) => (
+            index += 1,
+            this.setState({maxindex:index}),
+            console.log(index.toString()),
+            Boundary.add(
+                {
+                    lat: marker.latitude,
+                    lng: marker.longitude,
+                    radius: 50, // in meters
+                    id: index.toString(),
                 })
-            }
-        }, 100);
-        Boundary.add({
-            lat: 29.6513, 
-            lng: -82.3402,
-            radius: 20, // in meters
-            id: "Bryan Hall",
-        })
-        .then(() => console.log("success1!"))
-        .catch(e => console.error("error :(", e));
+                .then(() => console.log("success!"))
+                .catch(e => console.error("error :(", e))
+        ))
 
-        Boundary.add(
-            {
-                lat: 29.6508, 
-                lng: -82.3401,
-                radius: 100, // in meters
-                id: "Gerson Hall",
-            })
-            .then(() => console.log("success2!"))
-            .catch(e => console.error("error :(", e));
-
-        Boundary.add(
-        {
-            lat: 29.6463,
-            lng: -82.3477,
-            radius: 100, // in meters
-            id: "Reitz Union",
-        })
-        .then(() => console.log("success3!"))
-        .catch(e => console.error("error :(", e));
-
-    
         Boundary.on(Events.ENTER, id => {
         // Prints 'Get out of my Chipotle!!'
             console.log(`Get out of my ${id}!!`);
+            this.setState({sound:sounds[id-1]})
             this.setState({entergeo:true});
-            this.Playaudio("onEnter "+ id);/////////////////////////////////////////////////////////////////////
+            var ls=this.state.visited.map((item,index)=>
+                (index+1).toString()==id?1:item
+            );
+            this.setState({visited:ls})
+            console.log('visited '+this.state.visited)
             Alert.alert(`You have entered ${id}`)
         });
         
@@ -121,10 +133,7 @@ export default class MapPage extends Component {
         // Prints 'Ya! You better get out of my Chipotle!!'
             console.log(`Ya! You better get out of my ${id}!!`);
             this.setState({entergeo:false});
-            this.pauseAudio();
         });
-        // .then(() => console.log("exit function fired!"))
-        // .catch(e => console.error("error on exit :(", e))
     }
     componentWillUnmount() {
         // Remove the events
@@ -165,74 +174,6 @@ export default class MapPage extends Component {
         //To hide the ActionBar/NavigationBar
         header: null,
     };
-    Playaudio=async(param)=>{
-        console.log(param)
-        if(s){
-            console.log('playing')
-            console.log(this.state.audioDuration);
-            s.play(this.playComplete);
-            this.setState({audioState: 'playing'});   
-        }else{
-            console.log("audio loaded failed");
-        }
-    }
-    playComplete = (success) => {
-        if(s){
-            if (success) {
-                console.log('successfully finished playing');
-            } else {
-                console.log('playback failed due to audio decoding errors');
-                Alert.alert('Notice', 'audio file error. (Error code : 2)');
-            }
-            this.setState({audioState:'paused', audioSeconds:0});
-            s.setCurrentTime(0);
-        }
-    }
-    Stopaudio=()=>{
-        s.stop();
-    }
-    pauseAudio=()=>{
-        if(s){
-            s.pause();
-        }
-        this.setState({audioState:'pause'});
-    }
-    onSliderEditStart = () => {
-        this.sliderEditing = true;
-    }
-    onSliderEditEnd = (value) => {
-        this.sliderEditing = false;
-        if(s){
-            s.setCurrentTime(value);
-            this.setState({audioSeconds:value});
-        }
-    }
-    jumpPrevSeconds = () => {this.jumpSeconds(-5);}
-    jumpNextSeconds = () => {this.jumpSeconds(5);}
-    jumpSeconds = (secsDelta) => {
-        if(s){
-            s.getCurrentTime((secs) => {
-                let nextSecs = secs + secsDelta;
-                if(nextSecs < 0) nextSecs = 0;
-                else if(nextSecs > this.state.audioDuration) nextSecs = this.state.audioDuration;
-                s.setCurrentTime(nextSecs);
-                this.setState({audioSeconds:nextSecs});
-            })
-        }
-    }
-
-    speedUp = () =>{
-        var speed = this.state.audioSpeed
-        if(speed>=2){
-            speed = 1;
-        }else{
-            speed = speed + 0.5;
-        }
-        console.log(speed);
-        s.setSpeed(speed);
-        if(!s.isPlaying()) s.pause();
-        this.setState({audioSpeed: speed});
-    }
     storeData = async () => {
         try {
             console.log('store')
@@ -270,25 +211,6 @@ export default class MapPage extends Component {
            onPoiClick={this.onPoiClick}
            onPress={this.onScreenClick}
         >
-            <Polyline
-                coordinates={[
-                    origin1,
-                    waypoint1,
-                    destination
-                ]}
-                strokeColor="#000" // fallback for when `strokeColors` is not supported by the map-provider
-                
-                strokeWidth={6}
-            />
-
-            <MapViewDirections
-                origin={origin1}
-                destination={destination}
-                apikey={GOOGLE_MAPS_APIKEY}
-                mode={"WALKING"}
-                strokeWidth={3}
-                strokeColor="hotpink"
-            />
             {this.state.poi && (
             <Marker 
               coordinate={this.state.poi.coordinate}
@@ -297,28 +219,54 @@ export default class MapPage extends Component {
               onPress={()=>console.log('hello')}>
             </Marker>
             )}
+            
+            {
+            waypoints.map((marker,index) => (
+                // console.log(index),
+                // console.log("\n"),
+                
+                index += 1,
+                <Marker
+                    coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
+                    //title={marker.title}
+                    // description={marker.description}
+                >
+                    <View >
+                        {
+                        this.state.visited[index-1]==0? <ImageBackground    source={require('./image/Marker.png')} 
+                                            style={{resizeMode: "contain", 
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            width: 17.5, 
+                                            height: 29,
+                                            opacity:0.5}}>
+                            <Text style={{fontSize:12}}>{index}</Text>
+                        </ImageBackground>
+                        :<ImageBackground    source={require('./image/Marker.png')} 
+                                            style={{resizeMode: "contain", 
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            width: 17.5, 
+                                            height: 29,}}>
+                            <Text style={{fontSize:12}}>{index}</Text>
+                        </ImageBackground>}
+                    </View>
+                </Marker>
+            ))}
+
         </MapView>
 
-        {this.state.entergeo==true&&
-        <MusicPlayer 
-            s={s} 
-            {...console.log(this.state.audioState)}
-            audioState={this.state.audioState}/>
-        }   
-
-        <View style={{width:width}}>
-            
-            {this.state.poi!=null&&
-                <PopupMenu name={this.state.poi && this.state.poi.name.replace(/\n/g, " ")}>
-                    <ScrollView >
-                        <Text>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</Text>
-                    </ScrollView>
-                </PopupMenu>
-            }
-        </View>
-
+        {this.state.poi!=null&&
+            <PopupMenu name={this.state.poi && this.state.poi.name.replace(/\n/g, " ")}>
+                <ScrollView >
+                    <Text>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</Text>
+                </ScrollView>
+            </PopupMenu>
+        }
+        <MusicPlayer enter={this.state.entergeo} sound={this.state.sound}/>
+        
         <Icon name='pencil-square-o' type='font-awesome' raised={true} size={18} onPress={this.getData} containerStyle={{position:'absolute', top:height*0.0005,right:width*0.0005}}/>
-       
+        
         <Overlay isVisible={this.state.note} onBackdropPress={this.storeData} 
         overlayStyle={{width:width*0.8, height:height*0.65}}
         >
@@ -327,6 +275,8 @@ export default class MapPage extends Component {
                 <TextInput style={{flex:9,textAlignVertical: "top",backgroundColor:'lightgrey'}} multiline={true} value={this.state.noteContent} onChangeText={(value) => this.setState({noteContent:value})}/>
             </View>
         </Overlay>
+        <Button title='report' onPress={()=>{this.props.navigation.navigate('Test',{ visited: this.state.visited });}} containerStyle={{width:width*0.25}}/>
+        {/* <Button title='report' onPress={()=>{this.setState({flag:true})}} containerStyle={{width:width*0.25}}/> */}
        </View>
     )};
 }
@@ -338,15 +288,15 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
+        // justifyContent: 'flex-end',
+        // alignItems: 'center',
     },
     map: {
         position: 'absolute',
         top: 0,
         left: 0,
         right: 0,
-        bottom: 0
+        bottom: 50
     },
     speedup: {
         borderWidth:1,

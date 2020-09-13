@@ -4,6 +4,7 @@ import {
   View,
   Dimensions,
   Animated,
+  StatusBar
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import {
@@ -11,7 +12,7 @@ import {
   State,
 } from 'react-native-gesture-handler';
 
-const pullUpMenuHeight=100;
+const pullUpMenuHeight=150;
 var {height, width} = Dimensions.get('window'); 
 
 export default class Popupmenu extends Component {
@@ -22,8 +23,8 @@ export default class Popupmenu extends Component {
           uparrow: true,
         };
         this._translateY = new Animated.Value(0);
-        this._translateY.setOffset(height-pullUpMenuHeight);///////////////////
-        this._lastOffset = {y: height-pullUpMenuHeight };//////////////////////
+        this._translateY.setOffset(height-pullUpMenuHeight-StatusBar.currentHeight);///////////////////
+        this._lastOffset = {y: 0 };//////////////////////
         this._onGestureEvent = Animated.event(
         [
             {
@@ -38,6 +39,7 @@ export default class Popupmenu extends Component {
 
     onHandlerStateChange = event => {
         if (event.nativeEvent.oldState === State.ACTIVE) {
+          console.log('hhh')
           this._lastOffset.y += event.nativeEvent.translationY;
           if(event.nativeEvent.translationY>0) this._lastOffset.y=height-pullUpMenuHeight;///////////////////
           else if(event.nativeEvent.translationY<0) this._lastOffset.y=0;//StatusBar.currentHeight
@@ -56,7 +58,7 @@ export default class Popupmenu extends Component {
               <PanGestureHandler onHandlerStateChange={this.onHandlerStateChange} onGestureEvent={this._onGestureEvent}>
                   <Animated.View style={{
                       position:'absolute', 
-                      bottom: 0, 
+                      top: 0, 
                       width:width, 
                       height:height,
                       backgroundColor:'white',

@@ -26,10 +26,15 @@ export default class HelloWorldApp extends PureComponent {
       return true;
     };
     componentDidMount() {
-     this.backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      this.backAction
-    );
+      this._unsubscribe = this.props.navigation.addListener('blur', () => {
+        this.backHandler.remove();
+      });
+      this._unsubscribe = this.props.navigation.addListener('focus', () => {
+        this.backHandler = BackHandler.addEventListener(
+          "hardwareBackPress",
+          this.backAction
+        );
+      });
     }
     componentWillUnmount() {
       this.backHandler.remove();
@@ -57,6 +62,7 @@ export default class HelloWorldApp extends PureComponent {
                 <Text style={{width: width*0.15}}/>
                 <Button title="Register" containerStyle={{width:width*0.25}}
                 onPress={() => {
+                  this.backHandler.remove();
                   this.props.navigation.navigate('Register');
                   }}/>
               </View>

@@ -30,37 +30,37 @@ export default class MainPage extends Component {
     };  
   }
 
-  backAction = () => {//android back button action
-    this.props.navigation.goBack()
-    return true;
-  };
-  componentDidMount() {
-    this.backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      this.backAction
-    );
-  }
+  // backAction = () => {//android back button action
+  //   this.props.navigation.goBack()
+  //   return true;
+  // };
+  // componentDidMount() {
+  //   this.backHandler = BackHandler.addEventListener(
+  //     "hardwareBackPress",
+  //     this.backAction
+  //   );
+  // }
 
-  componentWillUnmount() {
-    this.backHandler.remove();
-  }
-    _makeselection= selection =>{
-      if(selection=="OverView"){
-        return <Overview navigation={this.props.navigation}/>
-      }
-      else if(selection=="Map"){
-        return(
-          <MapPage/>
-      )
-      }else if(selection=="Colleges"){
-        return(
-          <Colleges/>
-        )
-      }
-      else{
-        return <View><Text style={{fontSize:20,color:'white'}}>Sites</Text></View>
-      }
-    }
+  // componentWillUnmount() {
+  //   this.backHandler.remove();
+  // }
+    // _makeselection= selection =>{
+    //   if(selection=="OverView"){
+    //     return <Overview navigation={this.props.navigation}/>
+    //   }
+    //   else if(selection=="Map"){
+    //     return(
+    //       <MapPage/>
+    //   )
+    //   }else if(selection=="Colleges"){
+    //     return(
+    //       <Colleges/>
+    //     )
+    //   }
+    //   else{
+    //     return <View><Text style={{fontSize:20,color:'white'}}>Sites</Text></View>
+    //   }
+    // }
 
 
     render() {
@@ -69,39 +69,9 @@ export default class MainPage extends Component {
       // this.setState({selection:select});
         return (
           <View style={styles.container}>
-            {/* <Header
-              leftComponent={ <Icon name='bars' type='font-awesome' onPress={() => this.props.navigation.openDrawer()} color='white' containerStyle={{height:20}}/>}
-              centerComponent={{ text: 'KLEIO', style: { color: 'white', height:20} }}
-              rightComponent={
-                <PopoverTooltip
-                  delayLongPress={0}
-                  ref='tooltip1'
-                  buttonComponent={
-                    <Icon name='ellipsis-v' type='font-awesome' color='white' containerStyle={{height:20, width:20}}/>
-                  }
-                  items={[
-                    {
-                      label: 'Overview',
-                      onPress: () => {this.setState({selection:'Overview'})}
-                    },
-                    {
-                      label: 'Map',
-                      onPress: () => {this.setState({selection:'Map'})}
-                    },
-                    {
-                      label: 'Colleges',
-                      onPress: () => {this.setState({selection:'Colleges'})}
-                    }
-                  ]}
-                  />
-              }
-              containerStyle={{height:50}}
-              leftContainerStyle={{top:-15}}
-              centerContainerStyle={{top:-15}}
-              rightContainerStyle={{top:-15}}
-              backgroundColor='darkorange'
-            /> */}
-            {this._makeselection(this.state.selection)}
+            
+            {/* {this._makeselection(this.state.selection)} */}
+            <Overview navigation={this.props.navigation}/>
             
            </View>
           
