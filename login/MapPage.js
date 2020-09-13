@@ -10,20 +10,38 @@ import {
   Alert,
   TouchableOpacity,
   ImageBackground,
-  Button
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import AsyncStorage from '@react-native-community/async-storage'
-import {Icon,Overlay} from 'react-native-elements';
+import {Icon,Overlay,Button} from 'react-native-elements';
 import MapView, {Polyline,Marker,PROVIDER_GOOGLE } from 'react-native-maps';
 import Boundary, {Events} from 'react-native-boundary';
 import {ScrollView} from 'react-native-gesture-handler';
 import Sound from 'react-native-sound';
 import MapViewDirections from 'react-native-maps-directions';
 import PopupMenu from './components/PopupMenu'
-import MusicPlayer from './components/MiniMusicPlayer'
-
+import MusicPlayer from './components/MusicPlayer'
 //Variable for drawing route on map
+
+// let sound1 = require('./sound/1.mp3');
+// let sound2 = require('./sound/2.mp3');
+// let sound3 = require('./sound/3.mp3');
+// let sound4 = require('./sound/4.mp3');
+// let sound5 = require('./sound/5.mp3');//auditorium
+// let sound6 = require('./sound/6.mp3');
+const soundPath=[require('./sound/1.mp3'),require('./sound/2.mp3'),require('./sound/3.mp3'),require('./sound/4.mp3'),require('./sound/5.mp3'),require('./sound/6.mp3')]
+const numbers = [0, 1, 2, 3, 4, 5];
+const sounds = numbers.map((number) => 
+    new Sound(soundPath[number],(error) => {
+        if (error) {
+            console.log('failed');
+            return;
+        }
+        console.log('start');
+        // console.log('duration in seconds: ' +  this.s.getDuration() + 'number of channels: ' +  this.s.getNumberOfChannels());
+        }
+    )
+);
 
 
 const waypoints = [ {latitude:29.6463, longitude:-82.3477},     //RU
@@ -48,10 +66,20 @@ const LONGITUDE = -82.3458;
 const LATITUDE_DELTA = 0.010;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
+
 export default class MapPage extends Component {
     constructor(props) {
         super(props);
-    
+        // this.sound=s
+        // var s = new Sound(demoAudio,(error) => {
+        // if (error) {
+        //     console.log('failed');
+        //     return;
+        // }
+        // console.log('start');
+        // // console.log('duration in seconds: ' +  this.s.getDuration() + 'number of channels: ' +  this.s.getNumberOfChannels());
+        // })
+        
         this.state = {
           destination: {
                   latitude: LATITUDE,
@@ -66,10 +94,11 @@ export default class MapPage extends Component {
           maxindex:0,
           index:1,
           visited:[0,0,0,0,0,0],
+          sound: sounds[0],
         };
-        // this.sliderEditing = false;
         this.onPoiClick = this.onPoiClick.bind(this);
     }
+
     componentDidMount() {
         console.log("call componentDidMount!!!!!!!!");
         waypoints.map((marker,index) => (
@@ -90,6 +119,7 @@ export default class MapPage extends Component {
         Boundary.on(Events.ENTER, id => {
         // Prints 'Get out of my Chipotle!!'
             console.log(`Get out of my ${id}!!`);
+            this.setState({sound:sounds[id-1]})
             this.setState({entergeo:true});
             var ls=this.state.visited.map((item,index)=>
                 (index+1).toString()==id?1:item
@@ -233,9 +263,7 @@ export default class MapPage extends Component {
                 </ScrollView>
             </PopupMenu>
         }
-        <TouchableOpacity activeOpacity={0.8} style={{position:'absolute', bottom:0}} onPress={()=>{this.props.navigation.navigate('FullMusicPlayer');}}>
-            <MusicPlayer enter={this.state.entergeo}/>
-        </TouchableOpacity>
+        <MusicPlayer enter={this.state.entergeo} sound={this.state.sound}/>
         
         <Icon name='pencil-square-o' type='font-awesome' raised={true} size={18} onPress={this.getData} containerStyle={{position:'absolute', top:height*0.0005,right:width*0.0005}}/>
         
@@ -247,7 +275,8 @@ export default class MapPage extends Component {
                 <TextInput style={{flex:9,textAlignVertical: "top",backgroundColor:'lightgrey'}} multiline={true} value={this.state.noteContent} onChangeText={(value) => this.setState({noteContent:value})}/>
             </View>
         </Overlay>
-        <Button title='report' onPress={()=>{this.props.navigation.navigate('Test',{ visited: this.state.visited });}}/>
+        <Button title='report' onPress={()=>{this.props.navigation.navigate('Test',{ visited: this.state.visited });}} containerStyle={{width:width*0.25}}/>
+        {/* <Button title='report' onPress={()=>{this.setState({flag:true})}} containerStyle={{width:width*0.25}}/> */}
        </View>
     )};
 }

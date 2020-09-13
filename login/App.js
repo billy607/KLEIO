@@ -9,7 +9,6 @@ import MainPage from './MainPage'
 import MapPage from './MapPage'
 import MenuPage from './Menu'
 import CollegeDetails from './CollegesDetail'
-import FullMusicPlayer from './FullMusicPlayer'
 import Test from './test'
 import {Icon} from 'react-native-elements'
 import { HeaderBackButton } from '@react-navigation/stack';
@@ -105,11 +104,6 @@ function MyStack({navigation}) {
             height:50,           
             backgroundColor:'darkorange',
           }})}/>
-      <Stack.Screen
-        name="FullMusicPlayer"
-        component={FullMusicPlayer}
-        options={{headerShown:false}}
-       />
        <Stack.Screen 
         name="Test" 
         component={Test} 
