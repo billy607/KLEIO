@@ -53,6 +53,7 @@ const waypoints = [ {latitude:29.6463, longitude:-82.3477},     //RU
                     {latitude:29.6499, longitude:-82.3487}    //Griffin
                 ];
 
+const poiNames = ["RU", "Marston", "Turlington", "Plaza", "Racquet", "Griffin"];
 
 const origin1 = {latitude: 29.6463,  longitude: -82.3477};
 const origin = {latitude: 29.6480,  longitude: -82.3439};
@@ -91,10 +92,10 @@ export default class MapPage extends Component {
           entergeo: false,
           note:false,
           noteContent:null,
-          maxindex:0,
           index:1,
           visited:[0,0,0,0,0,0],
           sound: sounds[0],
+          currentPOI: "",
         };
         this.onPoiClick = this.onPoiClick.bind(this);
     }
@@ -103,7 +104,6 @@ export default class MapPage extends Component {
         console.log("call componentDidMount!!!!!!!!");
         waypoints.map((marker,index) => (
             index += 1,
-            this.setState({maxindex:index}),
             console.log(index.toString()),
             Boundary.add(
                 {
@@ -119,14 +119,15 @@ export default class MapPage extends Component {
         Boundary.on(Events.ENTER, id => {
         // Prints 'Get out of my Chipotle!!'
             console.log(`Get out of my ${id}!!`);
-            this.setState({sound:sounds[id-1]})
-            this.setState({entergeo:true});
             var ls=this.state.visited.map((item,index)=>
                 (index+1).toString()==id?1:item
             );
+            this.setState({sound:sounds[id-1]})
+            this.setState({entergeo:true});
             this.setState({visited:ls})
+            this.setState({currentPOI:poiNames[id-1]})
             console.log('visited '+this.state.visited)
-            Alert.alert(`You have entered ${id}`)
+            Alert.alert('You have entered ' + poiNames[id-1])
         });
         
         Boundary.on(Events.EXIT, id => {
@@ -263,7 +264,7 @@ export default class MapPage extends Component {
                 </ScrollView>
             </PopupMenu>
         }
-        <MusicPlayer enter={this.state.entergeo} sound={this.state.sound}/>
+        <MusicPlayer enter={this.state.entergeo} sound={this.state.sound} poiName={this.state.currentPOI}/>
         
         <Icon name='pencil-square-o' type='font-awesome' raised={true} size={18} onPress={this.getData} containerStyle={{position:'absolute', top:height*0.0005,right:width*0.0005}}/>
         

@@ -20,7 +20,7 @@ var {height, width} = Dimensions.get('window');
 //   console.log('start');
 //   console.log('duration in seconds: ' + this.props.sound.getDuration() + 'number of channels: ' + this.props.sound.getNumberOfChannels());
 // })
-var a=false;
+var before=false;
 export default class MusicPlayer extends Component {
     constructor(props) {
         super(props);
@@ -116,11 +116,11 @@ export default class MusicPlayer extends Component {
         this.setState({audioSpeed: speed});
     }
     update=()=>{
-        if(this.props.enter!=a){
-            a=this.props.enter;
-            if(a) this.Playaudio("press play button")
+        if(this.props.enter!=before){
+            before=this.props.enter;
+            if(before) this.Playaudio("press play button")
             else{
-                this.Stopaudio();
+                this.pauseAudio();
             }
         }
     }
@@ -131,7 +131,7 @@ export default class MusicPlayer extends Component {
             return (
                 <TouchableOpacity activeOpacity={0.8} style={{position:'absolute', bottom:0}} onPress={()=>{this.setState({maximize:true})}}>
                     <View style={{flex:1, backgroundColor: 'darkorange',flexDirection:'row',width:width,height:50,alignItems:'center',paddingHorizontal:width*0.05}}>
-                        <Text style={{flex:8,}}>sljdflds</Text>
+                        <Text style={{flex:8,}}>{this.props.poiName}</Text>
                         <Icon name='replay-10' type='material' underlayColor='darkorange' color='white' size={35} containerStyle={{flex:1,}} onPress={this.jumpPrevSeconds}/> 
                         <View style={{flex:0.5}}/>
                         {this.state.audioState=='playing'?
