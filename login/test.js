@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text} from 'react-native';
-import ActionButton from 'react-native-action-button';
-import Icon from 'react-native-vector-icons/Ionicons';
+import College from './components/College'
 
-const data=['visit reitz union','visit marston lib','visit turlington','visit plaza','visit racquet','visit griffin']
+const data=['Reitz Union','Marston Library','Turlington Hall','Plaza of the Americas','Racquet','Ben Hill Griffin Stadium']
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -16,8 +15,14 @@ export default class App extends React.Component {
     return (
      <View style={{flex:1, backgroundColor: '#f3f3f3'}}>
         {/* Rest of the app comes ABOVE the action button component !*/}
+          <Text style={styles.Title}>
+            Your Tour Summary
+          </Text>
         {data.map((item,index)=>(
-          this.state.visited[index]==1?<Text>{data[index]}</Text>:null
+          this.state.visited[index]==1?
+            <College title={data[index]}/>
+            :
+          null
         ))}
       </View>
     );
@@ -25,6 +30,13 @@ export default class App extends React.Component {
 }
 
 const styles = StyleSheet.create({
+    Title:{
+      fontSize: 30,
+      fontWeight: "bold",
+      textAlign: "left",
+      textAlignVertical: "center",
+      paddingLeft:15
+    },
     actionButtonIcon: {
       fontSize: 20,
       height: 22,
