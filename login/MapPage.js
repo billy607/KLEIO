@@ -94,7 +94,8 @@ export default class MapPage extends Component {
           noteContent:null,
           index:1,
           visited:[0,0,0,0,0,0],
-          sound: sounds[0],
+          current:-1,
+        //   sound: sounds[0],
           currentPOI: "",
         };
         this.onPoiClick = this.onPoiClick.bind(this);
@@ -122,12 +123,20 @@ export default class MapPage extends Component {
             var ls=this.state.visited.map((item,index)=>
                 (index+1).toString()==id?1:item
             );
-            this.setState({sound:sounds[id-1]})
+            // console.log('indexof '+this.state.order.indexOf(parseInt(id,10)))
+            // if(this.state.order.indexOf(parseInt(id,10))==-1){
+            //     var position=this.state.order.indexOf(0);
+            //     var orderLs=this.state.order;
+            //     orderLs[position]=parseInt(id,10);
+            //     this.setState({order:orderLs});
+            // }
+            // this.setState({sound:sounds[parseInt(id,10)-1]})
+            this.setState({current:parseInt(id,10)-1})
             this.setState({entergeo:true});
             this.setState({visited:ls})
-            this.setState({currentPOI:poiNames[id-1]})
+            this.setState({currentPOI:poiNames[parseInt(id,10)-1]})
             console.log('visited '+this.state.visited)
-            Alert.alert('You have entered ' + poiNames[id-1])
+            Alert.alert('You have entered ' + poiNames[parseInt(id,10)-1])
         });
         
         Boundary.on(Events.EXIT, id => {
@@ -264,7 +273,7 @@ export default class MapPage extends Component {
                 </ScrollView>
             </PopupMenu>
         }
-        <MusicPlayer enter={this.state.entergeo} sound={this.state.sound} poiName={this.state.currentPOI}/>
+        {this.state.current!=-1&&<MusicPlayer enter={this.state.entergeo} sounds={sounds} poiName={poiNames} current={this.state.current}/>}
         
         <Icon name='pencil-square-o' type='font-awesome' raised={true} size={18} onPress={this.getData} containerStyle={{position:'absolute', top:height*0.0005,right:width*0.0005}}/>
         

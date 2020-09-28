@@ -25,41 +25,68 @@ export default class MusicPlayer extends Component {
     constructor(props) {
         super(props);
         this.state = {
+          sound: this.props.sounds[this.props.current],
           audioState:'paused', //playing, paused
           audioSeconds: 0,
-          audioDuration: this.props.sound.getDuration(),
+          audioDuration: this.props.sounds[this.props.current].getDuration(),
           audioSpeed: 1,
           note:false,
           noteContent:null,
           maximize:false,
+          order:[-1,-1,-1,-1,-1,-1],
+          currentPlay: this.props.current,
         };
         this.sliderEditing = false;
-        console.log('duration: '+ this.props.sound.getDuration())
+        console.log('duration: '+ this.props.sounds[this.props.current].getDuration())
     }
     componentDidMount() {
         // console.log("audioState:"+this.props.entergeo);
         // this.props.entergeo==true?this.setState({audioState:'playing'}):this.setState({audioState:'paused'});
         this.timeout = setInterval(() => {
             if(this.state.audioState == 'playing' && !this.sliderEditing){
-                this.props.sound.getCurrentTime((seconds) => {
+                this.state.sound.getCurrentTime((seconds) => {
                     this.setState({audioSeconds:seconds});
                 })
             }
         }, 100);
     }
+    componentDidUpdate(preProps){
+        if(preProps.current!=this.props.current) {
+            this.state.sound.setCurrentTime(0);
+            this.setState({
+                sound: this.props.sounds[this.props.current],
+                currentPlay: this.props.current
+            })
+        }
+        if(this.props.enter!=preProps.enter){
+            before=this.props.enter;
+            if(before) this.Playaudio("press play button")
+            else{
+                this.pauseAudio();
+            }
+            console.log('indexof '+this.state.order.indexOf(this.props.current))
+            if(this.state.order.indexOf(this.props.current)==-1){
+                var position=this.state.order.indexOf(-1);
+                var orderLs=this.state.order;
+                orderLs[position]=this.props.current;
+                this.setState({order:orderLs});
+            }
+            console.log('order '+this.state.order)
+        }
+    }
     Playaudio=async(param)=>{
         console.log(param)
-        if(this.props.sound){
+        if(this.state.sound){
             console.log('playing')
             console.log(this.state.audioDuration);
-            this.props.sound.play(this.playComplete);
+            this.state.sound.play(this.playComplete);
             this.setState({audioState: 'playing'});   
         }else{
             console.log("audio loaded failed");
         }
     }
     playComplete = (success) => {
-        if(this.props.sound){
+        if(this.state.sound){
             if (success) {
                 console.log('successfully finished playing');
             } else {
@@ -67,15 +94,19 @@ export default class MusicPlayer extends Component {
                 Alert.alert('Notice', 'audio file error. (Error code : 2)');
             }
             this.setState({audioState:'paused', audioSeconds:0});
-            this.props.sound.setCurrentTime(0);
+            this.state.sound.setCurrentTime(0);
         }
     }
     Stopaudio=()=>{
-        this.props.sound.stop();
+        if(this.state.sound){
+            console.log('sound stop!!!')
+            this.state.sound.stop();
+        }
+        this.setState({audioState:'paused'});
     }
     pauseAudio=()=>{
-        if(this.props.sound){
-            this.props.sound.pause();
+        if(this.state.sound){
+            this.state.sound.pause();
         }
         this.setState({audioState:'paused'});
     }
@@ -84,20 +115,20 @@ export default class MusicPlayer extends Component {
     }
     onSliderEditEnd = (value) => {
         this.sliderEditing = false;
-        if(this.props.sound){
-            this.props.sound.setCurrentTime(value);
+        if(this.state.sound){
+            this.state.sound.setCurrentTime(value);
             this.setState({audioSeconds:value});
         }
     }
     jumpPrevSeconds = () => {this.jumpSeconds(-10);}
     jumpNextSeconds = () => {this.jumpSeconds(10);}
     jumpSeconds = (secsDelta) => {
-        if(this.props.sound){
-            this.props.sound.getCurrentTime((secs) => {
+        if(this.state.sound){
+            this.state.sound.getCurrentTime((secs) => {
                 let nextSecs = secs + secsDelta;
                 if(nextSecs < 0) nextSecs = 0;
                 else if(nextSecs > this.state.audioDuration) nextSecs = this.state.audioDuration;
-                this.props.sound.setCurrentTime(nextSecs);
+                this.state.sound.setCurrentTime(nextSecs);
                 this.setState({audioSeconds:nextSecs});
             })
         }
@@ -111,27 +142,42 @@ export default class MusicPlayer extends Component {
             speed = speed + 0.5;
         }
         console.log(speed);
-        this.props.sound.setSpeed(speed);
-        if(!this.props.sound.isPlaying()) this.props.sound.pause();
+        this.state.sound.setSpeed(speed);
+        if(!this.state.sound.isPlaying()) this.state.sound.pause();
         this.setState({audioSpeed: speed});
     }
-    update=()=>{
-        if(this.props.enter!=before){
-            before=this.props.enter;
-            if(before) this.Playaudio("press play button")
-            else{
-                this.pauseAudio();
-            }
+    backward = () =>{
+        this.Stopaudio()
+        console.log('this is backward!!! currentplay '+ this.state.currentPlay)
+        var index=this.state.order.indexOf(this.state.currentPlay);  //[2 4 0 -1 -1 -1]
+        if(index>0){
+            this.setState({
+                sound:this.props.sounds[this.state.order[index-1]],
+                currentPlay:this.state.order[index-1]
+            })
         }
+        // this.Playaudio()
+    }
+    forward = () =>{
+        this.Stopaudio()
+        console.log('this is forward!!! currentplay '+ this.state.currentPlay)
+        var index=this.state.order.indexOf(this.state.currentPlay);  //[2 4 0 -1 -1 -1]
+        if(index<5){
+            this.setState({
+                sound:this.props.sounds[this.state.order[index+1]],
+                currentPlay:this.state.order[index+1]
+            })
+        }
+        // this.Playaudio()
     }
 
+
     render() {
-        this.update()
         if(this.state.maximize==false){
             return (
                 <TouchableOpacity activeOpacity={0.8} style={{position:'absolute', bottom:0}} onPress={()=>{this.setState({maximize:true})}}>
                     <View style={{flex:1, backgroundColor: 'darkorange',flexDirection:'row',width:width,height:50,alignItems:'center',paddingHorizontal:width*0.05}}>
-                        <Text style={{flex:8,}}>{this.props.poiName}</Text>
+                        <Text style={{flex:8,}}>{this.props.poiName[this.state.currentPlay]}</Text>
                         <Icon name='replay-10' type='material' underlayColor='darkorange' color='white' size={35} containerStyle={{flex:1,}} onPress={this.jumpPrevSeconds}/> 
                         <View style={{flex:0.5}}/>
                         {this.state.audioState=='playing'?
@@ -152,7 +198,7 @@ export default class MusicPlayer extends Component {
                         <View style={{flex:8}}>
                             <View style={{flex:1}}/>
                             <Image source={require('../image/Alachua_sculpture.jpg')} style={{flex:1.5, width:undefined, height:undefined}} resizeMode='stretch'/>
-                            <Text style={{flex:1, textAlign:'center', textAlignVertical:'center', fontSize:18, fontFamily:'monospace'}}>Alachua sculpture</Text>
+                            <Text style={{flex:1, textAlign:'center', textAlignVertical:'center', fontSize:18, fontFamily:'monospace'}}>{this.props.poiName[this.state.currentPlay]}</Text>
                         </View>
                         <View style={{flex:2}}/>
                     </View>
@@ -170,12 +216,14 @@ export default class MusicPlayer extends Component {
                     />
                     <View style={{flex:1,flexDirection:'row'}}>
                         <View style={{flex:1}}/>
+                        <Icon name='step-backward' type='font-awesome'color='white' size={30} containerStyle={{flex:1}} onPress={this.backward}/>
                         <Icon name='replay-10' type='material' color='white' size={40} containerStyle={{flex:1}} onPress={this.jumpPrevSeconds}/> 
                         {this.state.audioState=='playing'?
                             <Icon name='pause-circle' type='font-awesome' color='white' size={60} onPress={this.pauseAudio} containerStyle={{flex:1}}/>:
                             <Icon name='play-circle' type='font-awesome' color='steelblue' size={60} onPress={()=>this.Playaudio("press play button")} containerStyle={{flex:1}}/>
                         }
                         <Icon name='forward-10' type='material' color='white' size={40} containerStyle={{flex:1}} onPress={this.jumpNextSeconds}/>
+                        <Icon name='step-forward' type='font-awesome' color='white' size={30} containerStyle={{flex:1}} onPress={this.forward}/>
                         <View style={{flex:1, alignItems:'center'}}>
                             <View style={styles.speedup}><Text style={{textAlign:'center',fontWeight: 'bold'}} onPress={this.speedUp}>x{this.state.audioSpeed}</Text></View>
                         </View>
