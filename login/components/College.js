@@ -37,31 +37,46 @@ export default class Panel extends Component {
                         {this.props.title}
                     </Text>
                 </View>
-                <View>
-                    <Text style={styles.subTitle}>
-                        Degrees: {this.props.degrees}
-                    </Text>
-                </View>
-                <View>
-                    <Text style={styles.subTitle}>
-                        Requirements: {this.props.requirements}
-                    </Text>
-                </View>
-                <View>
-                    <Text style={styles.subTitle}>
-                        Programs: {this.props.programs}
-                    </Text>
-                </View>
-                <View>
-                    <Text style={styles.subTitle}>
-                        Impressions: {this.props.impressions}
-                    </Text>
-                </View>
-                <View>
-                    <Text style={styles.subTitle}>
-                        Stars: {this.props.stars}
-                    </Text>
-                </View>
+
+                {this.props.degrees&&
+                    <View>
+                        <Text style={styles.subTitle}>
+                            <Text style={{fontWeight: "bold"}}>Degrees: </Text>{this.props.degrees}
+                        </Text>
+                    </View>
+                }
+                
+                {this.props.requirements&&
+                    <View>
+                        <Text style={styles.subTitle}>
+                            <Text style={{fontWeight: "bold"}}>Requirements: </Text>{this.props.requirements}
+                        </Text>
+                    </View>
+                }
+
+                {this.props.programs&&
+                    <View>
+                        <Text style={styles.subTitle}>
+                            <Text style={{fontWeight: "bold"}}>Programs: </Text>{this.props.programs}
+                        </Text>
+                    </View>
+                }
+
+                {this.props.impressions&&
+                    <View>
+                        <Text style={styles.subTitle}>
+                            <Text style={{fontWeight: "bold"}}>Impressions: </Text>{this.props.impressions}
+                        </Text>
+                    </View>
+                }
+                
+                {this.props.stars&&
+                    <View>
+                        <Text style={styles.subTitle}>
+                            <Text style={{fontWeight: "bold"}}>Stars: </Text>{this.props.stars}
+                        </Text>
+                    </View>
+                }
             </View>
         )
     }
@@ -69,15 +84,14 @@ export default class Panel extends Component {
 
 const styles = StyleSheet.create({
     Title:{
-        fontSize: 30,
+        fontSize: 28,
         fontWeight: "bold",
         textAlign: "left",
         textAlignVertical: "center",
         paddingLeft:15
     },
     subTitle: {
-        fontSize: 25,
-        fontWeight: "bold",
+        fontSize: 17,
         textAlign: "left",
         textAlignVertical: "center",
         paddingLeft:15
