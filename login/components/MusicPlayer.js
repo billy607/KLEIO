@@ -55,6 +55,7 @@ export default class MusicPlayer extends Component {
             this.state.sound.setCurrentTime(0);
             this.setState({
                 sound: this.props.sounds[this.props.current],
+                audioDuration: this.props.sounds[this.props.current].getDuration(),
                 currentPlay: this.props.current
             })
         }

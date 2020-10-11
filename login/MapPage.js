@@ -71,16 +71,13 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 export default class MapPage extends Component {
     constructor(props) {
         super(props);
-        // this.sound=s
-        // var s = new Sound(demoAudio,(error) => {
-        // if (error) {
-        //     console.log('failed');
-        //     return;
-        // }
-        // console.log('start');
-        // // console.log('duration in seconds: ' +  this.s.getDuration() + 'number of channels: ' +  this.s.getNumberOfChannels());
-        // })
-        
+        this.props.navigation.setOptions({
+            headerLeft: () => (
+              <Button onPress={() => this.props.navigation.navigate('Overview', {visited:this.state.visited})} title="goback" />
+            )
+          })
+        const {visited} = this.props.route.params.v;
+        console.log('visited: '+ visited)
         this.state = {
           destination: {
                   latitude: LATITUDE,
@@ -93,7 +90,7 @@ export default class MapPage extends Component {
           note:false,
           noteContent:null,
           index:1,
-          visited:[0,0,0,0,0,0],
+          visited:visited,
           current:-1,
         //   sound: sounds[0],
           currentPOI: "",
@@ -135,7 +132,7 @@ export default class MapPage extends Component {
             this.setState({entergeo:true});
             this.setState({visited:ls})
             this.setState({currentPOI:poiNames[parseInt(id,10)-1]})
-            console.log('visited '+this.state.visited)
+            console.log('mapVisited '+this.state.visited)
             Alert.alert('You have entered ' + poiNames[parseInt(id,10)-1])
         });
         

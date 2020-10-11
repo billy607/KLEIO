@@ -108,7 +108,7 @@ export default class SearchPage extends Component {
             type='font-awesome'
             color='#f50'
             onPress={() => {
-              this.props.navigation.navigate('MainPage',{select:'OverView'});
+              this.props.navigation.navigate('Overview');
             }}
             containerStyle={styles.iconcontainer}/>
           <SafeAreaView style={styles.SafeAreaView}>

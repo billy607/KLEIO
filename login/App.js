@@ -5,7 +5,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import SearchPage from './Search';
 import RegisterPage from './Register'
 import HelloWorldApp from './Login'
-import MainPage from './MainPage'
+import Overview from './Overview'
 import MapPage from './MapPage'
 import MenuPage from './SettingPage'
 import CollegeDetails from './CollegesDetail'
@@ -66,8 +66,8 @@ function MyStack({navigation}) {
             backgroundColor:'darkorange',
           }})} />
       <Stack.Screen 
-        name="MainPage" 
-        component={MainPage}
+        name="Overview" 
+        component={Overview}
         options={({navigation}) => ({
           headerRight: () => (
             <Icon name='cog' type='font-awesome' color='white' underlayColor='darkorange' containerStyle={{padding:10}} onPress={()=>navigation.navigate('Setting')}/>
