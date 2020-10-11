@@ -53,11 +53,11 @@ export default class App extends React.Component {
             <Text style = {{color: 'blue', textDecorationLine: "underline"}}>Achievements: </Text>
           </Text>
           <View style={{flex: 1, flexDirection: 'row', alignItems: "center", paddingHorizontal: 15}}>
-            <Image source = {require('./image/star.jpg')} style = {{height:80, width:80, resizeMode: "contain"}}/>
+            <Image source = {require('./image/star.png')} style = {{height:80, width:80, resizeMode: "contain"}}/>
             <Text style = {{fontSize: 15, fontWeight: "bold"}}> {'\u2605'} Master Explorer Award</Text>
           </View>
           <View style={{flex: 1, flexDirection: 'row', alignItems: "center", paddingHorizontal: 15}}>
-            <Image source = {require('./image/gator_engineer.jpg')} style = {{height:80, width:80, resizeMode: "contain"}}/>
+            <Image source = {require('./image/gator_engineer.png')} style = {{height:80, width:80, resizeMode: "contain"}}/>
             <Text style = {{fontSize: 15, fontWeight: "bold"}}> {'\u2605'} Gator Engineer</Text>
           </View>
           <View

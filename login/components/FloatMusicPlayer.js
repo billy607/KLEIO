@@ -11,7 +11,6 @@ import {
   State,
 } from 'react-native-gesture-handler';
 import {Icon} from 'react-native-elements';
-import MusicPlayer from './components/MusicPlayer'
 
 import ActionButton from 'react-native-action-button';
 
@@ -105,7 +104,6 @@ export default class MenuPage extends Component {
         <View style={{height:height*0.05}}/>
       </TouchableOpacity>
       <View style={{height:height*0.2}}>
-        <MusicPlayer/>
       </View>
       </Animated.View>
     </View>
