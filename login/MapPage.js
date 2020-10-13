@@ -76,8 +76,12 @@ export default class MapPage extends Component {
               <Button onPress={() => this.props.navigation.navigate('Overview', {visited:this.state.visited})} title="goback" />
             )
           })
-        const {visited} = this.props.route.params.v;
-        console.log('visited: '+ visited)
+        var visited = Object.values(this.props.route.params.visited);
+        console.log('mapParam: '+ visited[0])
+        var visited1 = visited.map((item,index)=> parseInt(visited[index]))
+        visited1[0]==1?console.log('visited1 is 1'):null
+        visited1[1]==0?console.log('visited2 is 0'):console.log('visited2 not 0')
+        // console.log('visited: '+ visited)
         this.state = {
           destination: {
                   latitude: LATITUDE,
@@ -132,7 +136,7 @@ export default class MapPage extends Component {
             this.setState({entergeo:true});
             this.setState({visited:ls})
             this.setState({currentPOI:poiNames[parseInt(id,10)-1]})
-            console.log('mapVisited '+this.state.visited)
+            // console.log('mapVisited '+this.state.visited)
             Alert.alert('You have entered ' + poiNames[parseInt(id,10)-1])
         });
         

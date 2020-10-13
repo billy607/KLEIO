@@ -33,13 +33,18 @@ var table2Data = [
 
 var table2Title = ['','Requirement', 'Deadline'];
 const bottomBlank=200;
+var visited=[0,0,0,0,0,0]
 export default class Overview extends Component {
     constructor(props) {
         super(props);
     }
     render() {
         const state = this.state;
-        console.log('param: '+ this.props.route.params)
+        // {this.props.route.params?
+        //     (v=Object.values(this.props.route.params)[0],
+             
+        //     )
+        //     :null}
         return(
             <SafeAreaView style={styles.safeContainer}>
             <ScrollView 
@@ -53,7 +58,7 @@ export default class Overview extends Component {
                 <ImageBackground source={require('./image/stadium.png')} style={{resizeMode: "cover", justifyContent: "center"}} imageStyle={{opacity:0.4}}>
                     <Text style={styles.title}>University of Florida</Text>
                     <View style={styles.image}>
-                    <TouchableOpacity  onPress={() => {this.props.navigation.navigate('MapPage', {visited:this.props.route.params?this.props.route.params:[0,0,0,0,0,0]});}}>
+                    <TouchableOpacity  onPress={() => {this.props.navigation.navigate('MapPage', {visited:this.props.route.params?Object.values(this.props.route.params)[0]:[0,0,0,0,0,0]});}}>
                     <Image source={require('./image/gator.png')} style={{height: height*0.1}} resizeMode="contain"/>
                     </TouchableOpacity>
                 </View>
