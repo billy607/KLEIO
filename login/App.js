@@ -100,7 +100,7 @@ function MyStack({navigation}) {
           //headerShown:false
           headerTintColor:'white', 
           headerTitleAlign:'center', 
-          headerTitle:'KLEIO', 
+          headerTitle:'Setting', 
           headerStyle:{
             height:50,           
             backgroundColor:'darkorange',

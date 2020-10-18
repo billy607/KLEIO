@@ -244,7 +244,6 @@ export default class Overview extends Component {
 const styles = StyleSheet.create({
     safeContainer: {
         flex: 1,
-        marginBottom:25,
         
     },
     container:{

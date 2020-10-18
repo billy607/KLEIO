@@ -1,39 +1,47 @@
-import * as React from 'react';
+import React, {Component} from 'react';
 import { 
   Button, 
-  Text, 
-  Image, 
   Dimensions,
   View } from 'react-native';
+  import { ListItem } from 'react-native-elements'
 
+  const list = [
+    {
+      title: 'Profile',
+      icon: 'account-circle',
+      type: 'MaterialIcons'
+    },
+    {
+      title: 'General',
+      icon: 'gear',
+      type: 'font-awesome'
+    },
+    {
+      title: 'Note',
+      icon: 'book',
+      type: 'font-awesome'
+    },
+  ]
 
 var {height, width} = Dimensions.get('window'); 
-export default class SettingPage extends React.Component{
-  constructor(props) {
-    super(props);
-
-    this.props.navigation.setOptions({
-      headerRight: () => (
-        <Button onPress={() => this.addCount()} title="Update count" />
-      )
-    })
-
-    this.state={
-      count: 0,
-    }
-
-  }
-
-  addCount() {
-    this.setState({count: this.state.count + 1});
-  }
+export default class SettingPage extends Component{
 
   render(){
     
     return (
-      <View style={{flex:1}}>
-          <Text>Count: {this.state.count}</Text>
-      </View>
+<View>
+  {
+    list.map((item, i) => (
+      <ListItem
+        key={i}
+        title={item.title}
+        leftIcon={{ name: item.icon, type: item.type }}
+        bottomDivider
+        chevron
+      />
+    ))
+  }
+</View>
     )
   } 
 }

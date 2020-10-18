@@ -18,7 +18,7 @@ import MapView, {Polyline,Marker,PROVIDER_GOOGLE } from 'react-native-maps';
 import Boundary, {Events} from 'react-native-boundary';
 import {ScrollView} from 'react-native-gesture-handler';
 import Sound from 'react-native-sound';
-import MapViewDirections from 'react-native-maps-directions';
+import {HeaderBackButton,  } from '@react-navigation/stack'
 import PopupMenu from './components/PopupMenu'
 import MusicPlayer from './components/MusicPlayer'
 //Variable for drawing route on map
@@ -67,14 +67,18 @@ const LONGITUDE = -82.3458;
 const LATITUDE_DELTA = 0.010;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-
 export default class MapPage extends Component {
     constructor(props) {
         super(props);
         this.props.navigation.setOptions({
             headerLeft: () => (
-              <Button onPress={() => this.props.navigation.navigate('Overview', {visited:this.state.visited})} title="goback" />
-            )
+                <HeaderBackButton
+                  onPress={() => {
+                    this.props.navigation.navigate('Overview', {visited:this.state.visited})
+                  }}
+                  tintColor='white'
+                />
+            ),
           })
         var visited = Object.values(this.props.route.params.visited);
         console.log('mapParam: '+ visited[0])
