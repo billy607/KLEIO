@@ -32,7 +32,7 @@ var table2Data = [
   ];
 
 var table2Title = ['','Requirement', 'Deadline'];
-const bottomBlank=200;
+const bottomBlank=75;
 var visited=[0,0,0,0,0,0]
 export default class Overview extends Component {
     constructor(props) {
@@ -226,11 +226,22 @@ export default class Overview extends Component {
                 </Panel>
 
                 <Panel title='Organizations'>
-                    <Text style={styles.contentBody1}>Academic/Honor Organizations</Text>
-                    <Text style={styles.contentBody1}>Fraternities {'&'} Cultural Organizations:</Text>
-                    <Text style={styles.contentBody1}>Introductions to Clubs</Text>
-                    <Text style={styles.contentBody2}>There are over 1000 Clubs and organizations at the University of Florida and we want to help you find the right one for you!</Text>
-                    <Text style={styles.url} onPress={() => Linking.openURL('https://studentinvolvement.ufl.edu/')}>(https://studentinvolvement.ufl.edu/)</Text>
+                <Text style={styles.contentBody1}>There are over 900 Clubs and organizations at the University of Florida and we want to help you find the right one for you!</Text>
+                    
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown}>
+                        <Text style={styles.contentBody1}>
+                            Academic/Honor Organizations
+                        </Text>    
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown}>
+                        <Text style={styles.contentBody1}>
+                            Fraternities {'&'} Cultural Organizations
+                        </Text>    
+                    </TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.5} style={styles.dropdown}>
+                    <Text style={styles.contentBody1} onPress={() => Linking.openURL('https://studentinvolvement.ufl.edu/')}>Student Involment Page</Text>  
+                    </TouchableOpacity>
+                    
                 </Panel>
 
                 <View style={{height:bottomBlank}}/>
