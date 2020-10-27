@@ -9,6 +9,8 @@ import {
   Alert 
 } from 'react-native';
 import {Icon, SearchBar, ListItem, Header} from 'react-native-elements';
+import Autocomplete from 'react-native-autocomplete-input';
+
 
 const image = require('./image/menu.png');
 
@@ -18,27 +20,6 @@ const list = [
   {
     name: 'UNIVERSITY OF FLORIDA',
   },
-  {
-    name: 'STANFORD',
-  },
-  {
-    name: 'HARVARD'
-  },
-  {
-    name: 'HARVARD'
-  },
-  {
-    name: 'HARVARD'
-  },
-  {
-    name: 'HARVARD'
-  },
-  {
-    name: 'HARVARD'
-  },
-  {
-    name: 'HARVARD'
-  },
 ]
 
 
@@ -47,6 +28,7 @@ export default class SearchPage extends Component {
     super(props);
     this.state = {
       search:'',
+      show: false,
     };
   }
   backAction = () => {//android back button action
@@ -102,30 +84,41 @@ export default class SearchPage extends Component {
             containerStyle={{backgroundColor: 'white', borderWidth: 1, borderRadius: 5,}}
             leftIconContainerStyle={{backgroundColor:'white'}}
           />
+          {/* <Autocomplete 
+            containerStyle={{
+            left: width*0.1,
+            position: 'absolute',
+            right: width*0.1,
+            top: width*0.4,
+            zIndex: 1}}
+            
+          /> */}
           <Icon
-            raised
+            raised={true}
             name='crosshairs'
             type='font-awesome'
             color='#f50'
             onPress={() => {
-              this.props.navigation.navigate('Overview');
+              this.setState({show: true})
             }}
             containerStyle={styles.iconcontainer}/>
-          <SafeAreaView style={styles.SafeAreaView}>
+           {this.state.show?<SafeAreaView style={styles.SafeAreaView}>
             <ScrollView style={styles.ScrollView}>
               <View style={{padding:5}}>
               {
-                list.map((l, i) => (
+               list.map((l, i) => (
                   <ListItem
                     key={i}
                     title={l.name}
                     bottomDivider
+                    onPress={() => {
+                      this.props.navigation.navigate('Overview');}}
                   />
                 ))
               }
               </View>
             </ScrollView>
-          </SafeAreaView>
+          </SafeAreaView>:null}
         </View>
       // </View>
     );

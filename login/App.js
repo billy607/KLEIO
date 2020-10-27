@@ -9,7 +9,7 @@ import Overview from './Overview'
 import MapPage from './MapPage'
 import MenuPage from './SettingPage'
 import CollegeDetails from './CollegesDetail'
-import Test from './test'
+import Report from './Report'
 import {Icon} from 'react-native-elements'
 import { HeaderBackButton } from '@react-navigation/stack';
 import { StyleSheet, View } from 'react-native';
@@ -83,9 +83,7 @@ function MyStack({navigation}) {
         name="MapPage" 
         component={MapPage}
         options={({navigation}) => ({
-          headerRight: () => (
-            <Icon name='cog' type='font-awesome' color='white' underlayColor='darkorange' containerStyle={{padding:10}} onPress={()=>navigation.navigate('Setting')}/>
-          ),
+          
           headerTintColor:'white', 
           headerTitleAlign:'center', 
           headerTitle:'KLEIO', 
@@ -107,8 +105,8 @@ function MyStack({navigation}) {
           }
         })}/>
        <Stack.Screen 
-        name="Test" 
-        component={Test} 
+        name="Report" 
+        component={Report} 
         options={{headerShown:false}}/>
     {/* <Stack.Navigator initialRouteName='CollegesDetail' headerMode='none'>
       <Stack.Screen name="CollegesDetail" component={CollegesDetail} />
