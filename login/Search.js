@@ -6,10 +6,12 @@ import {
   SafeAreaView,
   ScrollView,
   BackHandler,
-  Alert 
+  Alert,
+  Text
 } from 'react-native';
 import {Icon, SearchBar, ListItem, Header} from 'react-native-elements';
 import Autocomplete from 'react-native-autocomplete-input';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 const image = require('./image/menu.png');
@@ -20,7 +22,27 @@ const list = [
   {
     name: 'UNIVERSITY OF FLORIDA',
   },
+  {
+    name: 'UNIVERSITY OF FLORIDA',
+  },
+  {
+    name: 'UNIVERSITY OF FLORIDA',
+  },
+  {
+    name: 'UNIVERSITY OF FLORIDA',
+  },
+  {
+    name: 'UNIVERSITY OF FLORIDA',
+  },
+  {
+    name: 'UNIVERSITY OF FLORIDA',
+  },
+  {
+    name: 'UNIVERSITY OF FLORIDA',
+  },
 ]
+
+const data = ['University of Florida', 'abc', 'bcd', 'fasdfa', 'afwee', 'kjfal;k',]
 
 
 export default class SearchPage extends Component {
@@ -29,6 +51,7 @@ export default class SearchPage extends Component {
     this.state = {
       search:'',
       show: false,
+      edit: false,
     };
   }
   backAction = () => {//android back button action
@@ -58,8 +81,8 @@ export default class SearchPage extends Component {
   }
   updateSearch = search =>{
     this.setState({search: search});
+    this.setState({edit:true})
   }
-
   render() {
     const { search } = this.state;
 
@@ -74,8 +97,8 @@ export default class SearchPage extends Component {
           centerContainerStyle={{top:-15}}
           rightContainerStyle={{top:-15}}
         /> */
-      
         <View style={styles.container}>
+          <View style={{position:'absolute',top:height*0.05,left:width*0.1,width:width*0.8}}>
           <SearchBar
             placeholder="Explore"
             onChangeText={this.updateSearch}
@@ -84,6 +107,15 @@ export default class SearchPage extends Component {
             containerStyle={{backgroundColor: 'white', borderWidth: 1, borderRadius: 5,}}
             leftIconContainerStyle={{backgroundColor:'white'}}
           />
+          {this.state.edit&&<View style={{backgroundColor:'blue',height:height*0.25,zIndex:1}}><ScrollView style={{height:height*0.2,width:width*0.8,backgroundColor:'white'}}> 
+            {data.map((suggestion, i) => (
+                suggestion.includes(search)?<TouchableOpacity onPress={()=>{this.props.navigation.navigate('Overview')}}><Text style={{fontSize:18}}>{suggestion}</Text></TouchableOpacity>:null
+                ))}
+          </ScrollView>
+          <Icon name='close' type='font-awsome' onPress={()=>{this.setState({edit:false})}}/>
+          </View>
+          }
+          </View>
           {/* <Autocomplete 
             containerStyle={{
             left: width*0.1,
@@ -93,34 +125,35 @@ export default class SearchPage extends Component {
             zIndex: 1}}
             
           /> */}
-          <Icon
-            raised={true}
-            name='crosshairs'
-            type='font-awesome'
-            color='#f50'
-            onPress={() => {
-              this.setState({show: true})
-            }}
-            containerStyle={styles.iconcontainer}/>
-           {this.state.show?<SafeAreaView style={styles.SafeAreaView}>
-            <ScrollView style={styles.ScrollView}>
-              <View style={{padding:5}}>
-              {
-               list.map((l, i) => (
-                  <ListItem
-                    key={i}
-                    title={l.name}
-                    bottomDivider
-                    onPress={() => {
-                      this.props.navigation.navigate('Overview');}}
-                  />
-                ))
-              }
+
+          {!this.state.edit&&<View style={styles.iconcontainer}>
+            <Icon
+              raised={true}
+              name='crosshairs'
+              type='font-awesome'
+              color='#f50'
+              onPress={() => {
+                this.setState({show: true})
+              }}/>
+          </View>}
+          {this.state.show?
+          <ScrollView style={styles.ScrollView}>
+            <View style={{padding:5}}>
+            {
+              list.map((l, i) => (
+                <ListItem
+                  key={i}
+                  title={l.name}
+                  bottomDivider
+                  onPress={() => {
+                    this.props.navigation.navigate('Overview');}}
+                />
+              ))
+            }
               </View>
             </ScrollView>
-          </SafeAreaView>:null}
-        </View>
-      // </View>
+          :null}
+          </View>
     );
   }
 }
@@ -135,26 +168,46 @@ const styles = StyleSheet.create({
   },
   iconcontainer: {
     // flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'darkorange',
-    paddingBottom:height*0.05,
-    paddingTop:height*0.05
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // backgroundColor: 'darkorange',
+    // paddingBottom:height*0.05,
+    // paddingTop:height*0.05
+    position: 'absolute', 
+    top: height*0.2, 
+    left: 0, 
+    right: 0, 
+    bottom: 0,  
+    alignItems: 'center'
   },
   container: {
-    flex: 1,
-    justifyContent: 'center',
+    // flex: 1,
+    // justifyContent: 'center',
+    // backgroundColor: 'darkorange',
+    // padding: 0.1*width,
+    position:'absolute',
+    top:0,
+    bottom:0,
+    left:0,
+    right:0,
     backgroundColor: 'darkorange',
-    padding: 0.1*width,
   },
   SafeAreaView: {
-    flex: 1,
+    // flex: 1,
     // justifyContent: 'center',
+    position:'absolute',
+    top:height*0.4,
+    left:width*0.1,
+    
     backgroundColor: 'darkorange',
   },
   ScrollView: {
+    position:'absolute',
+    top:height*0.35,
+    left:width*0.1,
     borderRadius: 10,
     width:width*0.8,
+    height:height*0.5,
     backgroundColor: 'white',
   },
 });
