@@ -24,33 +24,39 @@ export default class Panel extends Component {
 
     constructor(props) {
         super(props);
+        
         this.state = {
             show: this.props.show,
-            rate: AsyncStorage.getItem(this.props.title),
-        };
-        
+            rate: null,
+        };    
     }
-    getRating(){
+
+    componentDidMount() {
+        this.getRating();
+    }
+
+    getRating = async () => {
         try {
-            const value =  AsyncStorage.getItem(this.props.title)
-            console.log('value '+value)
-            if(value !== null) {
-                return Number(value)
-            }
-          } catch(e) {
-              console.log(e)
-          }
+          console.log('get1 title is ' + this.props.title)
+          const value = await AsyncStorage.getItem(this.props.title)
+          this.setState({rate: Number(value)})
+        } catch(e) {
+            console.log(e)
+        }
     }
+
     ratingCompleted = async (rating) => {
         console.log("Rating is: " + rating)
         try {
-          await AsyncStorage.setItem(this.props.title, '3')
+          await AsyncStorage.setItem(this.props.title, rating.toString())
         } catch (e) {
           console.log(e)
         }
     }
+
     render(){
-        console.log("style is :"+this.state.rate)
+        console.log("rate is :"+this.state.rate + "\n")
+        
         return (
             <View>
                 <View>
