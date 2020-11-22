@@ -13,9 +13,9 @@ import Report from './Report'
 import {Icon} from 'react-native-elements'
 import { HeaderBackButton } from '@react-navigation/stack';
 import { StyleSheet, View } from 'react-native';
-// import ActionButton from 'react-native-action-button';
+import ActionButton from 'react-native-action-button';
 
-/////////////// navigation logic
+///////////// navigation logic
 const Stack = createStackNavigator();
 function MyStack({navigation}) {
   return (
@@ -145,48 +145,55 @@ const styles = StyleSheet.create({
 });
 
 // import * as React from 'react';
-// import { Button, Text, Image } from 'react-native';
-// import { NavigationContainer } from '@react-navigation/native';
-// import { createStackNavigator } from '@react-navigation/stack';
+// import { Button, Text, Image, View } from 'react-native';
+// import { Rating, AirbnbRating } from 'react-native-elements';
 
-// function LogoTitle() {
-//   return (
-//     <Image
-//       //style={{ width: 50, height: 50 }}
-//       source={require('./image/star.png')}
-//     />
-//   );
+
+// function ratingCompleted(rating) {
+//   console.log("Rating is: " + rating);
 // }
-
-// function HomeScreen({ navigation }) {
-//   const [count, setCount] = React.useState(0);
-
-//   React.useLayoutEffect(() => {
-//     navigation.setOptions({
-//       headerRight: () => (
-//         <Button onPress={() => setCount(c => c + 1)} title="Update count" />
-//       ),
-//     });
-//   }, [navigation, setCount]);
-
-//   return <Text>Count: {count}</Text>;
-// }
-
-// const Stack = createStackNavigator();
 
 // function App() {
+//   const WATER_IMAGE = require('./image/gator.png')
 //   return (
-//     <NavigationContainer>
-//       <Stack.Navigator>
-//         <Stack.Screen
-//           name="Home"
-//           component={HomeScreen}
-//           options={({ navigation, route }) => ({
-//             headerTitle: props => <LogoTitle {...props} />,
-//           })}
-//         />
-//       </Stack.Navigator>
-//     </NavigationContainer>
+//     <View>
+    
+//     <AirbnbRating />
+    
+//     <AirbnbRating
+//       count={11}
+//       reviews={["Terrible", "Bad", "Meh", "OK", "Good", "Hmm...", "Very Good", "Wow", "Amazing", "Unbelievable", "Jesus"]}
+//       defaultRating={11}
+//       size={20}
+//     />
+    
+//     <Rating
+//       showRating
+//       onFinishRating={ratingCompleted}
+//       style={{ paddingVertical: 10 }}
+//     />
+    
+//     <Rating
+//       type='heart'
+//       ratingCount={3}
+//       imageSize={60}
+//       showRating
+//       onFinishRating={ratingCompleted}
+//     />
+    
+    
+    
+//     <Rating
+//       type='custom'
+//       ratingImage={WATER_IMAGE}
+//       ratingColor='#3498db'
+//       ratingBackgroundColor='#c8c7c8'
+//       ratingCount={10}
+//       imageSize={30}
+//       onFinishRating={ratingCompleted}
+//       style={{ paddingVertical: 10 }}
+//     />
+//     </View>
 //   );
 // }
 

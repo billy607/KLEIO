@@ -5,7 +5,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { startClock } from 'react-native-reanimated';
 import College from './components/College'
 
-const titles = ['Reitz Union','Marston Library','Turlington Hall','Plaza of the Americas','Racquet','Ben Hill Griffin Stadium']
+const titles = ["Reitz Union","Marston Library","Turlington Hall","Plaza of the Americas","Racquet","Ben Hill Griffin Stadium"]
 
 const Degrees = [
                   'A four-year undergraduate program and combination-degree program with joint award of bachelor’s and master’s degrees. Minors available as well.',

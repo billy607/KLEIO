@@ -7,7 +7,9 @@ import {
     Dimensions,
     TouchableOpacity
 } from 'react-native';
-import {Icon} from 'react-native-elements';
+import AsyncStorage from '@react-native-community/async-storage'
+import { Rating, AirbnbRating } from 'react-native-elements';
+
 var {height, width} = Dimensions.get('window'); 
 
 export default class Panel extends Component {
@@ -24,12 +26,31 @@ export default class Panel extends Component {
         super(props);
         this.state = {
             show: this.props.show,
+            rate: AsyncStorage.getItem(this.props.title),
         };
-    }
-
-    render(){
-        console.log("style is :"+this.state.conte)
         
+    }
+    getRating(){
+        try {
+            const value =  AsyncStorage.getItem(this.props.title)
+            console.log('value '+value)
+            if(value !== null) {
+                return Number(value)
+            }
+          } catch(e) {
+              console.log(e)
+          }
+    }
+    ratingCompleted = async (rating) => {
+        console.log("Rating is: " + rating)
+        try {
+          await AsyncStorage.setItem(this.props.title, '3')
+        } catch (e) {
+          console.log(e)
+        }
+    }
+    render(){
+        console.log("style is :"+this.state.rate)
         return (
             <View>
                 <View>
@@ -70,13 +91,14 @@ export default class Panel extends Component {
                     </View>
                 }
                 
-                {this.props.stars&&
+                {/* {this.props.stars&&
                     <View>
                         <Text style={styles.subTitle}>
                             <Text style={{fontWeight: "bold"}}>Stars: </Text>{this.props.stars}
                         </Text>
                     </View>
-                }
+                } */}
+                <AirbnbRating onFinishRating={this.ratingCompleted} defaultRating={this.state.rate}/>
             </View>
         )
     }
