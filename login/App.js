@@ -13,6 +13,7 @@ import Report from './Report'
 import {Icon} from 'react-native-elements'
 import { HeaderBackButton } from '@react-navigation/stack';
 import { StyleSheet, View } from 'react-native';
+import Profile from './Profile'
 import ActionButton from 'react-native-action-button';
 
 ///////////// navigation logic
@@ -99,6 +100,22 @@ function MyStack({navigation}) {
           headerTintColor:'white', 
           headerTitleAlign:'center', 
           headerTitle:'Setting', 
+          headerStyle:{
+            height:50,           
+            backgroundColor:'darkorange',
+          }
+        })}/>
+        <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={() => ({
+          //headerShown:false
+          headerRight: (navigation) => (
+            <Icon name='edit' type='antdesign' color='white' underlayColor='darkorange' containerStyle={{padding:10}}/>
+          ),
+          headerTintColor:'white', 
+          headerTitleAlign:'center', 
+          headerTitle:'Profile', 
           headerStyle:{
             height:50,           
             backgroundColor:'darkorange',

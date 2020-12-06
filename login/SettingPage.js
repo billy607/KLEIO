@@ -9,7 +9,7 @@ import {
     {
       title: 'Profile',
       icon: 'account-circle',
-      type: 'MaterialIcons'
+      type: 'MaterialIcons',
     },
     {
       title: 'General',
@@ -26,6 +26,7 @@ import {
 var {height, width} = Dimensions.get('window'); 
 export default class SettingPage extends Component{
 
+
   render(){
     
     return (
@@ -38,6 +39,8 @@ export default class SettingPage extends Component{
         leftIcon={{ name: item.icon, type: item.type }}
         bottomDivider
         chevron
+        onPress={() => {
+          this.props.navigation.navigate(item.title);}}
       />
     ))
   }
