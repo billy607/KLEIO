@@ -14,6 +14,7 @@ import {Icon} from 'react-native-elements'
 import { HeaderBackButton } from '@react-navigation/stack';
 import { StyleSheet, View } from 'react-native';
 import Profile from './Profile'
+import RegisterQuestions from './RegisterQuestions'
 import ActionButton from 'react-native-action-button';
 
 ///////////// navigation logic
@@ -125,6 +126,19 @@ function MyStack({navigation}) {
         name="Report" 
         component={Report} 
         options={{headerShown:false}}/>
+        <Stack.Screen
+        name="Question"
+        component={RegisterQuestions}
+        options={() => ({
+          //headerShown:false
+          headerTintColor:'white', 
+          headerTitleAlign:'center', 
+          headerTitle:'Setting', 
+          headerStyle:{
+            height:50,           
+            backgroundColor:'darkorange',
+          }
+        })}/>
     {/* <Stack.Navigator initialRouteName='CollegesDetail' headerMode='none'>
       <Stack.Screen name="CollegesDetail" component={CollegesDetail} />
       <Stack.Screen name="Home" component={HelloWorldApp} />

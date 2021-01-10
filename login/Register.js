@@ -53,7 +53,7 @@ export default class RegisterPage extends Component {
                   <View style={{flex:1}}>
                     <Button title="REGISTER" titleStyle={{fontSize:15}} containerStyle={{width:width*0.3}}
                     onPress={() => {
-                      if(this.state.cPassword==this.state.password) this.props.navigation.goBack();
+                      if(this.state.cPassword==this.state.password) this.props.navigation.navigate('Question');
                       else alert("error")
                     }}/>
                   </View>

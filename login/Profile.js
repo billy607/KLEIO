@@ -16,13 +16,28 @@ export default class RegisterPage extends Component {
                         <Text style={{fontSize:15,}}>Country: US </Text> 
                         <Text style={{fontSize:15,}}>State: FL </Text>
                         <Text style={{fontSize:15,}}>Major of interest: CS </Text>
-                    </View>
-                    <View style={{borderColor:'lightgrey',borderTopWidth:1,marginTop:20,marginHorizontal:10}}>
-                        <Text style={{fontSize:15,}}/>
-                        <View style={{flexDirection:'row'}}>
-                            <CheckBox title='Ranking' checked={true} containerStyle={{ paddingHorizontal:5}}/>
+                    {/* </View>
+                    <View style={{borderColor:'lightgrey',borderTopWidth:1,marginTop:20,marginHorizontal:10}}> */}
+                        <Text style={{fontSize:5,}}/>
+                        <View style={{flexDirection:'row',flexWrap:'wrap'}}>
+                            <View style={{backgroundColor:'lightgrey', borderRadius:10, alignItems:'center',justifyContent:'center',margin:3}}>
+                                <Text style={{marginHorizontal:10,marginVertical:3}}>sports</Text>
+                            </View>
+                            <View style={{backgroundColor:'lightgrey', borderRadius:10, alignItems:'center',justifyContent:'center',margin:3}}>
+                                <Text style={{marginHorizontal:10,marginVertical:3}}>singing</Text>
+                            </View>
+                            <View style={{backgroundColor:'lightgrey', borderRadius:10, alignItems:'center',justifyContent:'center',margin:3}}>
+                                <Text style={{marginHorizontal:10,marginVertical:3}}>basketball</Text>
+                            </View>
+                            <View style={{backgroundColor:'lightgrey', borderRadius:10, alignItems:'center',justifyContent:'center',margin:3}}>
+                                <Text style={{marginHorizontal:10,marginVertical:3}}>computer science</Text>
+                            </View>
+                            <View style={{backgroundColor:'lightgrey', borderRadius:10, alignItems:'center',justifyContent:'center',margin:3}}>
+                                <Text style={{marginHorizontal:10,marginVertical:3}}>computer science</Text>
+                            </View>
+                            {/* <CheckBox title='Ranking' checked={true} containerStyle={{ paddingHorizontal:5}}/>
                             <CheckBox title='Sporting'containerStyle={{paddingHorizontal:5}}/>
-                            <CheckBox title='Studying'containerStyle={{ paddingHorizontal:5}}/>
+                            <CheckBox title='Studying'containerStyle={{ paddingHorizontal:5}}/> */}
                         </View>
                     </View>
                     <View style={{borderColor:'lightgrey',borderTopWidth:1,marginTop:20,marginHorizontal:10}}>
