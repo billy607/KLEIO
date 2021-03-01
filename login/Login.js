@@ -3,6 +3,8 @@ import { Text, View, Dimensions, StyleSheet, TouchableHighlight,BackHandler,Aler
 import { Input, SocialIcon, Button} from 'react-native-elements';
 /*import { Button } from "@material-ui/core";*/
 
+
+
 var {height, width} = Dimensions.get('window');
 export default class HelloWorldApp extends PureComponent {
     constructor(props) {
@@ -35,6 +37,7 @@ export default class HelloWorldApp extends PureComponent {
           this.backAction
         );
       });
+      
     }
     componentWillUnmount() {
       this.backHandler.remove();

@@ -44,7 +44,6 @@ const list = [
 
 const data = ['University of Florida', 'abc', 'bcd', 'fasdfa', 'afwee', 'kjfal;k',]
 
-
 export default class SearchPage extends Component {
   constructor(props) {
     super(props);
@@ -66,6 +65,17 @@ export default class SearchPage extends Component {
     return true;
   };
   componentDidMount() {
+    fetch('http://ec2-100-26-230-81.compute-1.amazonaws.com/api/v1/user/getAllUser')
+      .then((response) => response.json())
+      .then((json) => {
+        // this.setState({response: json.userName});
+        console.log("response: "+ json[0].userName);
+      })
+      .catch((error) => console.error(error))
+      .finally(() => {
+        console.log("finally!")
+      });
+
     this._unsubscribe = this.props.navigation.addListener('blur', () => {
       this.backHandler.remove();
     });
@@ -100,7 +110,7 @@ export default class SearchPage extends Component {
         <View style={styles.container}>
           <View style={{position:'absolute',top:height*0.05,left:width*0.1,width:width*0.8}}>
           <SearchBar
-            placeholder="Explore"
+            placeholder='Explore'
             onChangeText={this.updateSearch}
             value={search}
             inputContainerStyle={{backgroundColor: 'white'}}
