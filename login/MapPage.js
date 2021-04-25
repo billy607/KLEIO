@@ -21,6 +21,7 @@ import Sound from 'react-native-sound';
 import {HeaderBackButton,  } from '@react-navigation/stack'
 import PopupMenu from './components/PopupMenu'
 import MusicPlayer from './components/MusicPlayer'
+
 //Variable for drawing route on map
 
 // let sound1 = require('./sound/1.mp3');
@@ -29,6 +30,8 @@ import MusicPlayer from './components/MusicPlayer'
 // let sound4 = require('./sound/4.mp3');
 // let sound5 = require('./sound/5.mp3');//auditorium
 // let sound6 = require('./sound/6.mp3');
+
+
 const soundPath=[require('./sound/1.mp3'),require('./sound/2.mp3'),require('./sound/3.mp3'),require('./sound/4.mp3'),require('./sound/5.mp3'),require('./sound/6.mp3')]
 const numbers = [0, 1, 2, 3, 4, 5];
 const sounds = numbers.map((number) => 
@@ -55,9 +58,6 @@ const waypoints = [ {latitude:29.6463, longitude:-82.3477},     //RU
 
 const poiNames = ["RU", "Marston", "Turlington", "Plaza", "Racquet", "Griffin"];
 
-const origin1 = {latitude: 29.6463,  longitude: -82.3477};
-const origin = {latitude: 29.6480,  longitude: -82.3439};
-const destination = {latitude: 29.6499,  longitude: -82.3487};
 const GOOGLE_MAPS_APIKEY = 'AIzaSyAwEASOqU1llLDKrblaktUWaec_zGuJnwU';
 
 var {height, width} = Dimensions.get('window'); 
@@ -66,6 +66,50 @@ const LATITUDE = 29.6482;
 const LONGITUDE = -82.3458;
 const LATITUDE_DELTA = 0.010;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+
+const requestWritePermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: "write storage Permission",
+          message:
+            "write storage permission " +
+            "so you can take awesome pictures.",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK"
+        }
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("You can");
+      } else {
+        console.log("denied");
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  function downloadFile(url,fileName) {
+    const { config, fs } = RNFetchBlob;
+    const downloads = fs.dirs.DownloadDir;
+    return config({
+      // add this option that makes response data to be stored as a file,
+      // this is much more performant.
+      fileCache : true,
+      addAndroidDownloads : {
+        useDownloadManager : true,
+        notification : true,
+        path:  downloads + '/' + fileName + '.mp3',
+      }
+    })
+    .fetch('GET', url).then((res) => {
+        // do some magic here
+        console.log('download success')
+        console.log('The file saved to ', res.path())
+      });
+  }
 
 export default class MapPage extends Component {
     constructor(props) {

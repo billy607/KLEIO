@@ -17,7 +17,7 @@ import {
       type: 'font-awesome'
     },
     {
-      title: 'Note',
+      title: 'Test',
       icon: 'book',
       type: 'font-awesome'
     },

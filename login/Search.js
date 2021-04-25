@@ -7,11 +7,13 @@ import {
   ScrollView,
   BackHandler,
   Alert,
-  Text
+  Text,
+  Image
 } from 'react-native';
 import {Icon, SearchBar, ListItem, Header} from 'react-native-elements';
 import Autocomplete from 'react-native-autocomplete-input';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import RNFetchBlob from 'rn-fetch-blob'
 
 
 const image = require('./image/menu.png');
@@ -65,16 +67,46 @@ export default class SearchPage extends Component {
     return true;
   };
   componentDidMount() {
-    fetch('http://ec2-100-26-230-81.compute-1.amazonaws.com/api/v1/user/getAllUser')
-      .then((response) => response.json())
-      .then((json) => {
-        // this.setState({response: json.userName});
-        console.log("response: "+ json[0].userName);
-      })
-      .catch((error) => console.error(error))
-      .finally(() => {
-        console.log("finally!")
-      });
+
+
+    // const { config, fs } = RNFetchBlob
+    // let MusicDir = fs.dirs.MusicDir // this is the pictures directory. You can check the available directories in the wiki.
+    // let options = {
+    //   fileCache: true,
+    //   addAndroidDownloads : {
+    //     useDownloadManager : true, // setting it to true will use the device's native download manager and will be shown in the notification bar.
+    //     notification : false,
+    //     path:  MusicDir + "/liuziqi", // this is the path where your downloaded file will live in
+    //     description : 'Downloading music.'
+    //   }
+    // }
+    
+    // RNFetchBlob
+    // .config({
+    //   // add this option that makes response data to be stored as a file,
+    //   // this is much more performant.
+    //   fileCache : true,
+    //   appendExt : 'jpg'
+    // })
+    // .fetch('GET', "http://ec2-54-81-254-195.compute-1.amazonaws.com/api/v1/file/name/eva-004.mp3").then((res) => {
+    //   // do some magic here
+    //   console.log('download success')
+    //   console.log('The file saved to ', res.path())
+    //   imageView = <Image source={{ uri : Platform.OS === 'android' ? 'file://' + res.path() : '' + res.path() }}/>
+    // })
+    
+
+
+    // fetch('http://ec2-54-81-254-195.compute-1.amazonaws.com/api/v1/user/getAllUser')
+    //   .then((response) => response.json())
+    //   .then((json) => {
+    //     // this.setState({response: json.userName});
+    //     console.log("response: "+ json[0].userName);
+    //   })
+    //   .catch((error) => console.error(error))
+    //   .finally(() => {
+    //     console.log("finally!")
+    //   });
 
     this._unsubscribe = this.props.navigation.addListener('blur', () => {
       this.backHandler.remove();
@@ -92,6 +124,18 @@ export default class SearchPage extends Component {
   updateSearch = search =>{
     this.setState({search: search});
     this.setState({edit:true})
+  }
+  test = () =>{
+    fetch('https://maps.googleapis.com/maps/api/place/autocomplete/json?input=University&key=AIzaSyAwEASOqU1llLDKrblaktUWaec_zGuJnwU')
+      .then((response) => response.json())
+      .then((json) => {
+        // this.setState({response: json.userName});
+        console.log("response: "+ json.status);
+      })
+      .catch((error) => console.error(error))
+      .finally(() => {
+        console.log("finally!")
+      });
   }
   render() {
     const { search } = this.state;
@@ -143,6 +187,7 @@ export default class SearchPage extends Component {
               type='font-awesome'
               color='#f50'
               onPress={() => {
+                this.test(),
                 this.setState({show: true})
               }}/>
           </View>}
