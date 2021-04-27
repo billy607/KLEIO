@@ -67,50 +67,6 @@ const LONGITUDE = -82.3458;
 const LATITUDE_DELTA = 0.010;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-const requestWritePermission = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        {
-          title: "write storage Permission",
-          message:
-            "write storage permission " +
-            "so you can take awesome pictures.",
-          buttonNeutral: "Ask Me Later",
-          buttonNegative: "Cancel",
-          buttonPositive: "OK"
-        }
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log("You can");
-      } else {
-        console.log("denied");
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  };
-
-  function downloadFile(url,fileName) {
-    const { config, fs } = RNFetchBlob;
-    const downloads = fs.dirs.DownloadDir;
-    return config({
-      // add this option that makes response data to be stored as a file,
-      // this is much more performant.
-      fileCache : true,
-      addAndroidDownloads : {
-        useDownloadManager : true,
-        notification : true,
-        path:  downloads + '/' + fileName + '.mp3',
-      }
-    })
-    .fetch('GET', url).then((res) => {
-        // do some magic here
-        console.log('download success')
-        console.log('The file saved to ', res.path())
-      });
-  }
-
 export default class MapPage extends Component {
     constructor(props) {
         super(props);
@@ -147,7 +103,7 @@ export default class MapPage extends Component {
           index:1,
           visited:visited,
           current:-1,
-        //   sound: sounds[0],
+          sound: sounds[0],
           currentPOI: "",
         };
         this.onPoiClick = this.onPoiClick.bind(this);
@@ -171,24 +127,28 @@ export default class MapPage extends Component {
 
         Boundary.on(Events.ENTER, id => {
         // Prints 'Get out of my Chipotle!!'
+            var s=new Sound('file:/storage/emulated/0/Download/test.mp3',null,(error) => {
+                if (error) {
+                    console.log('failed');
+                    return;
+                }
+            })
+            setTimeout(() =>  {
             console.log(`Get out of my ${id}!!`);
             var ls=this.state.visited.map((item,index)=>
                 (index+1).toString()==id?1:item
             );
-            // console.log('indexof '+this.state.order.indexOf(parseInt(id,10)))
-            // if(this.state.order.indexOf(parseInt(id,10))==-1){
-            //     var position=this.state.order.indexOf(0);
-            //     var orderLs=this.state.order;
-            //     orderLs[position]=parseInt(id,10);
-            //     this.setState({order:orderLs});
-            // }
-            // this.setState({sound:sounds[parseInt(id,10)-1]})
             this.setState({current:parseInt(id,10)-1})
             this.setState({entergeo:true});
             this.setState({visited:ls})
             this.setState({currentPOI:poiNames[parseInt(id,10)-1]})
-            // console.log('mapVisited '+this.state.visited)
-            Alert.alert('You have entered ' + poiNames[parseInt(id,10)-1])
+        
+        
+            this.setState({sound: s})
+            
+            }, 3000);
+            console.log('sound: '+this.state.sound.getDuration())
+            // Alert.alert('You have entered ' + poiNames[parseInt(id,10)-1])
         });
         
         Boundary.on(Events.EXIT, id => {
@@ -350,7 +310,7 @@ export default class MapPage extends Component {
             </View>
         </Overlay>
 
-        {this.state.current!=-1&&<MusicPlayer enter={this.state.entergeo} sounds={sounds} poiName={poiNames} current={this.state.current}/>}
+        {this.state.current!=-1&&<MusicPlayer enter={this.state.entergeo} sound={this.state.sound} poiName={poiNames} current={this.state.current}/>}
        </View>
     )};
 }
