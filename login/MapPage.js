@@ -21,6 +21,7 @@ import Sound from 'react-native-sound';
 import {HeaderBackButton,  } from '@react-navigation/stack'
 import PopupMenu from './components/PopupMenu'
 import MusicPlayer from './components/MusicPlayer'
+import TrackPlayer from 'react-native-track-player';
 
 //Variable for drawing route on map
 
@@ -31,7 +32,7 @@ import MusicPlayer from './components/MusicPlayer'
 // let sound5 = require('./sound/5.mp3');//auditorium
 // let sound6 = require('./sound/6.mp3');
 
-
+var soundQueue=new Array()
 const soundPath=[require('./sound/1.mp3'),require('./sound/2.mp3'),require('./sound/3.mp3'),require('./sound/4.mp3'),require('./sound/5.mp3'),require('./sound/6.mp3')]
 const numbers = [0, 1, 2, 3, 4, 5];
 const sounds = numbers.map((number) => 
@@ -66,7 +67,8 @@ const LATITUDE = 29.6482;
 const LONGITUDE = -82.3458;
 const LATITUDE_DELTA = 0.010;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
+var t=null;
+const testduration=[79,134]
 export default class MapPage extends Component {
     constructor(props) {
         super(props);
@@ -103,7 +105,7 @@ export default class MapPage extends Component {
           index:1,
           visited:visited,
           current:-1,
-          sound: sounds[0],
+          sound: "",
           currentPOI: "",
         };
         this.onPoiClick = this.onPoiClick.bind(this);
@@ -127,28 +129,19 @@ export default class MapPage extends Component {
 
         Boundary.on(Events.ENTER, id => {
         // Prints 'Get out of my Chipotle!!'
-            var s=new Sound('file:/storage/emulated/0/Download/test.mp3',null,(error) => {
-                if (error) {
-                    console.log('failed');
-                    return;
-                }
-            })
-            setTimeout(() =>  {
+            
             console.log(`Get out of my ${id}!!`);
             var ls=this.state.visited.map((item,index)=>
                 (index+1).toString()==id?1:item
             );
+            this.setState({sound:poiNames[parseInt(id,10)-1]})
+            this.Loadaudio(this.state.sound)
             this.setState({current:parseInt(id,10)-1})
             this.setState({entergeo:true});
             this.setState({visited:ls})
             this.setState({currentPOI:poiNames[parseInt(id,10)-1]})
-        
-        
-            this.setState({sound: s})
             
-            }, 3000);
-            console.log('sound: '+this.state.sound.getDuration())
-            // Alert.alert('You have entered ' + poiNames[parseInt(id,10)-1])
+            Alert.alert('You have entered ' + poiNames[parseInt(id,10)-1])
         });
         
         Boundary.on(Events.EXIT, id => {
@@ -167,16 +160,24 @@ export default class MapPage extends Component {
             .then(() => console.log('Remove boundary on RU'))
             .catch(e => console.log('Failed to delete RU :)', e))
         ))
-
-
-        // Remove the events
-        
-        // s.stop()
-    
-        // // Remove the boundary from native API´s
-        // Boundary.remove('Reitz Union')
-        //   .then(() => console.log('Remove boundary on RU'))
-        //   .catch(e => console.log('Failed to delete RU :)', e))
+    }
+    Loadaudio=async(sound)=>{
+        console.log('sound: '+sound)
+        TrackPlayer.setupPlayer().then(() => {
+            // The player is ready to be used
+        });
+        var d=0;
+        if(sound=='RN') d=testduration[0]
+        else d=testduration[1]
+        await TrackPlayer.add([{
+            id: sound, // Must be a string, required
+            url: 'http://ec2-54-81-254-195.compute-1.amazonaws.com/api/v1/file/name/'+sound+'.mp3', // Load media from the network
+            title: sound,
+            artist: 'kleio',
+            duration: d
+        }]);
+        // console.log('Duration'+await TrackPlayer.getDuration())
+        // await TrackPlayer.skip(sound);
     }
     onPoiClick(e) {
         const poi = e.nativeEvent;
@@ -310,7 +311,7 @@ export default class MapPage extends Component {
             </View>
         </Overlay>
 
-        {this.state.current!=-1&&<MusicPlayer enter={this.state.entergeo} sound={this.state.sound} poiName={poiNames} current={this.state.current}/>}
+        {this.state.current!=-1&&<MusicPlayer entergeo={this.state.entergeo} sound={TrackPlayer} poiNames={poiNames} current={this.state.current}/>}
        </View>
     )};
 }

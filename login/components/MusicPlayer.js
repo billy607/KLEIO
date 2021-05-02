@@ -1,3 +1,4 @@
+///04,28实现了导入音频，进入POI播放离开POI暂停，实现了如果去之前去过的地点app不会添加重复的音频到trackplayer里面
 import React, {Component} from 'react';
 import {
     StyleSheet,
@@ -9,106 +10,94 @@ import {
   } from 'react-native';
 import Slider from '@react-native-community/slider';
 import {Icon} from 'react-native-elements';
+import TrackPlayer from 'react-native-track-player';
 
 var {height, width} = Dimensions.get('window'); 
-// let demoAudio = require('../sound/test.mp3');
-// const this.props.sound = new Sound(demoAudio,(error) => {
-//   if (error) {
-//       console.log('failed');
-//       return;
-//   }
-//   console.log('start');
-//   console.log('duration in seconds: ' + this.props.sound.getDuration() + 'number of channels: ' + this.props.sound.getNumberOfChannels());
-// })
+// TrackPlayer.setupPlayer().then(() => {
+//     // The player is ready to be used
+// });
 var before=false;
+var n=0;
+var enter=false
+var soundQueue=new Array()
+var poiQueue=new Array()
 export default class MusicPlayer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          sound: this.props.sounds[this.props.current],
+          currentsound: null,
           audioState:'paused', //playing, paused
           audioSeconds: 0,
-          audioDuration: this.props.sounds[this.props.current].getDuration(),
+          audioDuration: 0,
           audioSpeed: 1,
           note:false,
           noteContent:null,
           maximize:false,
           order:[-1,-1,-1,-1,-1,-1],
-          currentPlay: this.props.current,
+          currentPlay: null,
         };
         this.sliderEditing = false;
-        console.log('duration: '+ this.props.sounds[this.props.current].getDuration())
     }
-    componentDidMount() {
-        // console.log("audioState:"+this.props.entergeo);
-        // this.props.entergeo==true?this.setState({audioState:'playing'}):this.setState({audioState:'paused'});
+    componentDidMount(){
         this.timeout = setInterval(() => {
-            if(this.state.audioState == 'playing' && !this.sliderEditing){
-                this.state.sound.getCurrentTime((seconds) => {
-                    this.setState({audioSeconds:seconds});
-                })
+            if(this.state.audioState == 'playing' && !this.sliderEditing&&this.state.currentsound!=null){
+                this.getPos(this.state.currentsound)
             }
         }, 100);
+       
+        
     }
     componentDidUpdate(preProps){
-        if(preProps.current!=this.props.current) {
-            this.state.sound.setCurrentTime(0);
-            this.setState({
-                sound: this.props.sounds[this.props.current],
-                audioDuration: this.props.sounds[this.props.current].getDuration(),
-                currentPlay: this.props.current
-            })
-        }
-        if(this.props.enter!=preProps.enter){
-            before=this.props.enter;
-            if(before) this.Playaudio("press play button")
+        if(this.props.entergeo!=preProps.entergeo){///enter不同说明进入或离开POI
+            // this.checksoundname(soundQueue[0])
+            enter=!enter
+            if(enter){
+                if(!soundQueue.includes(this.props.sound)){
+                    // poiQueue.push(this.props.poiNames[this.props.current])
+                    soundQueue.push(this.props.sound)
+                }  
+                else{
+                    var duplicate=soundQueue.indexOf(this.props.sound)
+                    soundQueue.splice(duplicate,1)
+                    soundQueue.push(this.props.sound)
+                } 
+                this.Playaudio(this.props.sound)
+            }
             else{
-                this.pauseAudio();
+                this.pauseAudio(this.props.sound)
             }
-            console.log('indexof '+this.state.order.indexOf(this.props.current))
-            if(this.state.order.indexOf(this.props.current)==-1){
-                var position=this.state.order.indexOf(-1);
-                var orderLs=this.state.order;
-                orderLs[position]=this.props.current;
-                this.setState({order:orderLs});
-            }
-            console.log('order '+this.state.order)
         }
+        // else if(this.props.entergeo!=preProps.entergeo&&preProps.sound==null){
+        //     console.log('lalal')
+        //     enter=!enter
+        //     soundQueue.push(this.props.sound)
+        //     console.log('不在: '+soundQueue.length)
+        //     this.Playaudio(this.props.sound)
+        // }
     }
-    Playaudio=async(param)=>{
-        console.log(param)
-        if(this.state.sound){
-            console.log('playing')
-            console.log(this.state.audioDuration);
-            this.state.sound.play(this.playComplete);
-            this.setState({audioState: 'playing'});   
-        }else{
-            console.log("audio loaded failed");
-        }
+    checksoundname=async(sound)=>{
+        const title = await sound.getCurrentTrack();
+        console.log('checkname: '+title)
     }
-    playComplete = (success) => {
-        if(this.state.sound){
-            if (success) {
-                console.log('successfully finished playing');
-            } else {
-                console.log('playback failed due to audio decoding errors');
-                Alert.alert('Notice', 'audio file error. (Error code : 2)');
-            }
-            this.setState({audioState:'paused', audioSeconds:0});
-            this.state.sound.setCurrentTime(0);
-        }
+    setsoundname=async(sound)=>{
+        const title = await sound.getCurrentTrack();
+        this.setState({currentPlay: title})
+        const duration= await sound.getDuration()
+        this.setState({audioDuration: duration})
+        console.log('currentplay: '+title)
     }
-    Stopaudio=()=>{
-        if(this.state.sound){
-            console.log('sound stop!!!')
-            this.state.sound.stop();
+    Playaudio(sound){
+        if(sound!=null){
+            sound.play();
+            this.setState({currentsound: sound})
+            this.setState({audioState: 'playing'});
+            this.setsoundname(sound) 
+             
         }
-        this.setState({audioState:'paused'});
+        
     }
-    pauseAudio=()=>{
-        if(this.state.sound){
-            this.state.sound.pause();
-        }
+    pauseAudio=(sound)=>{
+        sound.pause();
         this.setState({audioState:'paused'});
     }
     onSliderEditStart = () => {
@@ -116,60 +105,63 @@ export default class MusicPlayer extends Component {
     }
     onSliderEditEnd = (value) => {
         this.sliderEditing = false;
-        if(this.state.sound){
-            this.state.sound.setCurrentTime(value);
-            this.setState({audioSeconds:value});
-        }
+        this.state.currentsound.seekTo(value)
+        this.setState({audioSeconds:value});
     }
-    jumpPrevSeconds = () => {this.jumpSeconds(-10);}
-    jumpNextSeconds = () => {this.jumpSeconds(10);}
-    jumpSeconds = (secsDelta) => {
-        if(this.state.sound){
-            this.state.sound.getCurrentTime((secs) => {
-                let nextSecs = secs + secsDelta;
-                if(nextSecs < 0) nextSecs = 0;
-                else if(nextSecs > this.state.audioDuration) nextSecs = this.state.audioDuration;
-                this.state.sound.setCurrentTime(nextSecs);
-                this.setState({audioSeconds:nextSecs});
-            })
+    getPos=async(sound)=>{
+        var position = await sound.getPosition();
+        this.setState({audioSeconds: position})
+    }
+    jumpPrev = (sound) => {
+        // console.log('jumpprevseconds')
+        if(sound!=null){
+            this.getPos(sound)
         }
+        sound.seekTo(Math.max(this.state.audioSeconds-10,0));
+    }
+    jumpNextSeconds = (sound) => {
+        if(sound!=null){
+            this.getPos(sound)
+        }
+        console.log('duration: '+this.state.audioDuration)
+        sound.seekTo(Math.min(this.state.audioSeconds+10,this.state.audioDuration));
     }
 
-    speedUp = () =>{
+    speedUp = (sound) =>{
         var speed = this.state.audioSpeed
         if(speed>=2){
             speed = 1;
         }else{
             speed = speed + 0.5;
         }
-        console.log(speed);
-        this.state.sound.setSpeed(speed);
-        if(!this.state.sound.isPlaying()) this.state.sound.pause();
+        sound.setRate(speed)
         this.setState({audioSpeed: speed});
     }
-    backward = () =>{
-        this.Stopaudio()
+    backward = (sound) =>{
         console.log('this is backward!!! currentplay '+ this.state.currentPlay)
-        var index=this.state.order.indexOf(this.state.currentPlay);  //[2 4 0 -1 -1 -1]
+        var index=soundQueue.indexOf([this.state.currentPlay,sound])
+        console.log('index: '+index)
         if(index>0){
+            sound.stop()
             this.setState({
-                sound:this.props.sounds[this.state.order[index-1]],
-                currentPlay:this.state.order[index-1]
+                currentsound:soundQueue[index-1][1]
             })
+            this.setsoundname(this.state.currentsound)
+            this.Playaudio(this.state.currentsound)
         }
-        // this.Playaudio()
     }
-    forward = () =>{
-        this.Stopaudio()
+    forward = (sound) =>{
         console.log('this is forward!!! currentplay '+ this.state.currentPlay)
-        var index=this.state.order.indexOf(this.state.currentPlay);  //[2 4 0 -1 -1 -1]
-        if(index<5){
+        var index=soundQueue.indexOf([this.state.currentPlay,sound])
+        console.log('index: '+index)
+        if(index<soundQueue.length-1){
+            sound.stop()
             this.setState({
-                sound:this.props.sounds[this.state.order[index+1]],
-                currentPlay:this.state.order[index+1]
+                currentsound:soundQueue[index+1][1]
             })
+            this.setsoundname(this.state.currentsound)
+            this.Playaudio(this.state.currentsound)
         }
-        // this.Playaudio()
     }
 
 
@@ -178,13 +170,14 @@ export default class MusicPlayer extends Component {
             return (
                 <TouchableOpacity activeOpacity={0.8} style={{position:'absolute', bottom:0}} onPress={()=>{this.setState({maximize:true})}}>
                     <View style={{flex:1, backgroundColor: 'darkorange',flexDirection:'row',width:width,height:50,alignItems:'center',paddingHorizontal:width*0.05}}>
-                        <Text style={{flex:8,}}>{this.props.poiName[this.state.currentPlay]}</Text>
-                        <Icon name='replay-10' type='material' underlayColor='darkorange' color='white' size={35} containerStyle={{flex:1,}} onPress={this.jumpPrevSeconds}/> 
-                        <View style={{flex:0.5}}/>
+                        <Text style={{flex:8,}}>{this.state.currentPlay}</Text>
+                         
+                        {/* <View style={{flex:0.5}}/> */}
                         {this.state.audioState=='playing'?
-                            <Icon name='pause' type='font-awesome' underlayColor='darkorange' color='white' onPress={this.pauseAudio} containerStyle={{flex:1}}/>:
-                            <Icon name='play' type='font-awesome' underlayColor='darkorange' color='white' onPress={()=>this.Playaudio("press play button")} containerStyle={{flex:1}}/>
+                            <Icon name='pause' type='font-awesome' underlayColor='darkorange' color='white' onPress={()=>this.pauseAudio(this.state.currentsound)} containerStyle={{flex:1}}/>:
+                            <Icon name='play' type='font-awesome' underlayColor='darkorange' color='white' onPress={()=>this.Playaudio(this.state.currentsound)} containerStyle={{flex:1}}/>
                         }
+                        {/* <Icon name='replay-10' type='material' underlayColor='darkorange' color='white' size={35} containerStyle={{flex:1,}} onPress={this.jumpPrev(this.state.currentsound)}/> */}
                     </View> 
                 </TouchableOpacity>
             )
@@ -199,7 +192,7 @@ export default class MusicPlayer extends Component {
                         <View style={{flex:8}}>
                             <View style={{flex:1}}/>
                             <Image source={require('../image/Alachua_sculpture.jpg')} style={{flex:1.5, width:undefined, height:undefined}} resizeMode='stretch'/>
-                            <Text style={{flex:1, textAlign:'center', textAlignVertical:'center', fontSize:18, fontFamily:'monospace'}}>{this.props.poiName[this.state.currentPlay]}</Text>
+                            <Text style={{flex:1, textAlign:'center', textAlignVertical:'center', fontSize:18, fontFamily:'monospace'}}>{this.props.poiNames[this.state.currentPlay]}</Text>
                         </View>
                         <View style={{flex:2}}/>
                     </View>
@@ -217,16 +210,16 @@ export default class MusicPlayer extends Component {
                     />
                     <View style={{flex:1,flexDirection:'row'}}>
                         <View style={{flex:1}}/>
-                        <Icon name='step-backward' type='font-awesome'color='white' size={30} containerStyle={{flex:1}} onPress={this.backward}/>
-                        <Icon name='replay-10' type='material' color='white' size={40} containerStyle={{flex:1}} onPress={this.jumpPrevSeconds}/> 
+                        <Icon name='step-backward' type='font-awesome'color='white' size={30} containerStyle={{flex:1}} onPress={()=>this.backward(this.state.currentsound)}/>
+                        <Icon name='replay-10' type='material' color='white' size={40} containerStyle={{flex:1}} onPress={()=>this.jumpPrev(this.state.currentsound)}/> 
                         {this.state.audioState=='playing'?
-                            <Icon name='pause-circle' type='font-awesome' color='white' size={60} onPress={this.pauseAudio} containerStyle={{flex:1}}/>:
-                            <Icon name='play-circle' type='font-awesome' color='steelblue' size={60} onPress={()=>this.Playaudio("press play button")} containerStyle={{flex:1}}/>
+                            <Icon name='pause-circle' type='font-awesome' color='white' size={60} onPress={()=>this.pauseAudio(this.state.currentsound)} containerStyle={{flex:1}}/>:
+                            <Icon name='play-circle' type='font-awesome' color='steelblue' size={60} onPress={()=>this.Playaudio(this.state.currentsound)} containerStyle={{flex:1}}/>
                         }
-                        <Icon name='forward-10' type='material' color='white' size={40} containerStyle={{flex:1}} onPress={this.jumpNextSeconds}/>
-                        <Icon name='step-forward' type='font-awesome' color='white' size={30} containerStyle={{flex:1}} onPress={this.forward}/>
+                        <Icon name='forward-10' type='material' color='white' size={40} containerStyle={{flex:1}} onPress={()=>this.jumpNextSeconds(this.state.currentsound)}/>
+                        <Icon name='step-forward' type='font-awesome' color='white' size={30} containerStyle={{flex:1}} onPress={()=>this.forward(this.state.currentsound)}/>
                         <View style={{flex:1, alignItems:'center'}}>
-                            <View style={styles.speedup}><Text style={{textAlign:'center',fontWeight: 'bold'}} onPress={this.speedUp}>x{this.state.audioSpeed}</Text></View>
+                            <View style={styles.speedup}><Text style={{textAlign:'center',fontWeight: 'bold'}} onPress={()=>this.speedUp(this.state.currentsound)}>x{this.state.audioSpeed}</Text></View>
                         </View>
                     </View>
                 </View>
