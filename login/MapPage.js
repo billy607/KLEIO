@@ -23,29 +23,24 @@ import PopupMenu from './components/PopupMenu'
 import MusicPlayer from './components/MusicPlayer'
 import TrackPlayer from 'react-native-track-player';
 
-//Variable for drawing route on map
-
-// let sound1 = require('./sound/1.mp3');
-// let sound2 = require('./sound/2.mp3');
-// let sound3 = require('./sound/3.mp3');
-// let sound4 = require('./sound/4.mp3');
-// let sound5 = require('./sound/5.mp3');//auditorium
-// let sound6 = require('./sound/6.mp3');
-
 var soundQueue=new Array()
-const soundPath=[require('./sound/1.mp3'),require('./sound/2.mp3'),require('./sound/3.mp3'),require('./sound/4.mp3'),require('./sound/5.mp3'),require('./sound/6.mp3')]
-const numbers = [0, 1, 2, 3, 4, 5];
-const sounds = numbers.map((number) => 
-    new Sound(soundPath[number],(error) => {
-        if (error) {
-            console.log('failed');
-            return;
-        }
-        console.log('start');
-        // console.log('duration in seconds: ' +  this.s.getDuration() + 'number of channels: ' +  this.s.getNumberOfChannels());
-        }
-    )
-);
+// const soundPath=[require('./sound/1.mp3'),require('./sound/2.mp3'),require('./sound/3.mp3'),require('./sound/4.mp3'),require('./sound/5.mp3'),require('./sound/6.mp3')]
+// const numbers = [0, 1, 2, 3, 4, 5];
+// const sounds = numbers.map((number) => 
+//     new Sound(soundPath[number],(error) => {
+//         if (error) {
+//             console.log('failed');
+//             return;
+//         }
+//         console.log('MapPage.js:    sounds load success ' + number);
+//         // console.log('duration in seconds: ' +  this.s.getDuration() + 'number of channels: ' +  this.s.getNumberOfChannels());
+//         }
+//     )
+// );
+
+var myPoints = []
+
+
 
 
 const waypoints = [ {latitude:29.6463, longitude:-82.3477},     //RU
@@ -68,7 +63,11 @@ const LONGITUDE = -82.3458;
 const LATITUDE_DELTA = 0.010;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 var t=null;
-const testduration=[79,134]
+const testduration=[134, 56, 108, 50, 16, 68]
+
+TrackPlayer.setupPlayer().then(() => {
+    // The player is ready to be used
+});
 export default class MapPage extends Component {
     constructor(props) {
         super(props);
@@ -113,6 +112,7 @@ export default class MapPage extends Component {
 
     componentDidMount() {
         console.log("call componentDidMount!!!!!!!!");
+        // TODO: fetch waypoints from BE
         waypoints.map((marker,index) => (
             index += 1,
             console.log(index.toString()),
@@ -128,14 +128,13 @@ export default class MapPage extends Component {
         ))
 
         Boundary.on(Events.ENTER, id => {
-        // Prints 'Get out of my Chipotle!!'
             
             console.log(`Get out of my ${id}!!`);
             var ls=this.state.visited.map((item,index)=>
                 (index+1).toString()==id?1:item
             );
             this.setState({sound:poiNames[parseInt(id,10)-1]})
-            this.Loadaudio(this.state.sound)
+            this.Loadaudio(id)
             this.setState({current:parseInt(id,10)-1})
             this.setState({entergeo:true});
             this.setState({visited:ls})
@@ -161,22 +160,19 @@ export default class MapPage extends Component {
             .catch(e => console.log('Failed to delete RU :)', e))
         ))
     }
-    Loadaudio=async(sound)=>{
-        console.log('sound: '+sound)
-        TrackPlayer.setupPlayer().then(() => {
-            // The player is ready to be used
-        });
-        var d=0;
-        if(sound=='RN') d=testduration[0]
-        else d=testduration[1]
+    Loadaudio=async(soundId)=>{
+        console.log('sound: '+soundId)
+
+        var audioLength = 0;
+        audioLength = testduration[parseInt(soundId,10)-1]
         await TrackPlayer.add([{
-            id: sound, // Must be a string, required
-            url: 'http://ec2-54-81-254-195.compute-1.amazonaws.com/api/v1/file/name/'+sound+'.mp3', // Load media from the network
-            title: sound,
+            id: poiNames[parseInt(soundId,10)-1], // Must be a string, required ec2-54-81-254-195.compute-1.amazonaws.com
+            url: 'http://ec2-54-174-141-206.compute-1.amazonaws.com/api/v1/file/name/'+soundId+'.mp3', // Load media from the network
+            title: poiNames[parseInt(soundId,10)-1],
             artist: 'kleio',
-            duration: d
+            duration: audioLength
         }]);
-        // console.log('Duration'+await TrackPlayer.getDuration())
+         console.log('MapPage.js finish add...')
         // await TrackPlayer.skip(sound);
     }
     onPoiClick(e) {
@@ -311,7 +307,7 @@ export default class MapPage extends Component {
             </View>
         </Overlay>
 
-        {this.state.current!=-1&&<MusicPlayer entergeo={this.state.entergeo} sound={TrackPlayer} poiNames={poiNames} current={this.state.current}/>}
+        {this.state.current!=-1&&<MusicPlayer entergeo={this.state.entergeo} player={TrackPlayer} poiNames={poiNames} current={this.state.current} soundId={this.state.current}/>}
        </View>
     )};
 }

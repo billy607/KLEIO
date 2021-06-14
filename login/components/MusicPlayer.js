@@ -21,6 +21,8 @@ var n=0;
 var enter=false
 var soundQueue=new Array()
 var poiQueue=new Array()
+
+const poiNames = ["RU", "Marston", "Turlington", "Plaza", "Racquet", "Griffin"];
 export default class MusicPlayer extends Component {
     constructor(props) {
         super(props);
@@ -49,52 +51,57 @@ export default class MusicPlayer extends Component {
     }
     componentDidUpdate(preProps){
         if(this.props.entergeo!=preProps.entergeo){///enter不同说明进入或离开POI
-            // this.checksoundname(soundQueue[0])
             enter=!enter
             if(enter){
-                if(!soundQueue.includes(this.props.sound)){
+                if(!soundQueue.includes(this.props.soundId)){
                     // poiQueue.push(this.props.poiNames[this.props.current])
-                    soundQueue.push(this.props.sound)
+                    soundQueue.push(this.props.soundId)
                 }  
                 else{
-                    var duplicate=soundQueue.indexOf(this.props.sound)
-                    soundQueue.splice(duplicate,1)
-                    soundQueue.push(this.props.sound)
+                    var soundPreviousIndex=soundQueue.indexOf(this.props.soundId)
+                    this.props.player.remove([soundPreviousIndex])
+                    soundQueue.splice(soundPreviousIndex,1)
+                    soundQueue.push(this.props.soundId)
                 } 
-                this.Playaudio(this.props.sound)
+                this.Playaudio(this.props.player)
             }
             else{
-                this.pauseAudio(this.props.sound)
+                this.pauseAudio(this.props.player)
             }
         }
         // else if(this.props.entergeo!=preProps.entergeo&&preProps.sound==null){
         //     console.log('lalal')
         //     enter=!enter
-        //     soundQueue.push(this.props.sound)
+        //     soundQueue.push(this.props.player)
         //     console.log('不在: '+soundQueue.length)
-        //     this.Playaudio(this.props.sound)
+        //     this.Playaudio(this.props.player)
         // }
     }
+
     checksoundname=async(sound)=>{
         const title = await sound.getCurrentTrack();
         console.log('checkname: '+title)
     }
+    
+    Playaudio = async(player) =>{
+        if(player!=null){
+            const tracks = await player.getQueue();
+            if (tracks.length > 1) {
+                await player.skipToNext();
+            }
+            player.play();
+            this.setState({currentsound: player})
+            this.setState({audioState: 'playing'});
+            this.setsoundname(player) 
+        }
+    }
+
     setsoundname=async(sound)=>{
         const title = await sound.getCurrentTrack();
         this.setState({currentPlay: title})
         const duration= await sound.getDuration()
         this.setState({audioDuration: duration})
         console.log('currentplay: '+title)
-    }
-    Playaudio(sound){
-        if(sound!=null){
-            sound.play();
-            this.setState({currentsound: sound})
-            this.setState({audioState: 'playing'});
-            this.setsoundname(sound) 
-             
-        }
-        
     }
     pauseAudio=(sound)=>{
         sound.pause();
@@ -112,14 +119,14 @@ export default class MusicPlayer extends Component {
         var position = await sound.getPosition();
         this.setState({audioSeconds: position})
     }
-    jumpPrev = (sound) => {
+    jumpPrev15Secs = (sound) => {
         // console.log('jumpprevseconds')
         if(sound!=null){
             this.getPos(sound)
         }
         sound.seekTo(Math.max(this.state.audioSeconds-10,0));
     }
-    jumpNextSeconds = (sound) => {
+    jumpNext15Secs = (sound) => {
         if(sound!=null){
             this.getPos(sound)
         }
@@ -137,31 +144,23 @@ export default class MusicPlayer extends Component {
         sound.setRate(speed)
         this.setState({audioSpeed: speed});
     }
-    backward = (sound) =>{
+    backward = async(sound) =>{
+        await this.props.player.skipToPrevious();
         console.log('this is backward!!! currentplay '+ this.state.currentPlay)
-        var index=soundQueue.indexOf([this.state.currentPlay,sound])
-        console.log('index: '+index)
-        if(index>0){
-            sound.stop()
-            this.setState({
-                currentsound:soundQueue[index-1][1]
-            })
-            this.setsoundname(this.state.currentsound)
-            this.Playaudio(this.state.currentsound)
-        }
+        // var index=soundQueue.indexOf([this.state.currentPlay,sound])
+        // console.log('index: '+index)
+        // if(index>0){
+        //     sound.stop()
+        //     this.setState({
+        //         currentsound:soundQueue[index-1][1]
+        //     })
+        //     this.setsoundname(this.state.currentsound)
+        //     this.Playaudio(this.state.currentsound)
+        // }
     }
-    forward = (sound) =>{
+    forward = async(sound) =>{
+        await this.props.player.skipToNext();
         console.log('this is forward!!! currentplay '+ this.state.currentPlay)
-        var index=soundQueue.indexOf([this.state.currentPlay,sound])
-        console.log('index: '+index)
-        if(index<soundQueue.length-1){
-            sound.stop()
-            this.setState({
-                currentsound:soundQueue[index+1][1]
-            })
-            this.setsoundname(this.state.currentsound)
-            this.Playaudio(this.state.currentsound)
-        }
     }
 
 
@@ -211,12 +210,12 @@ export default class MusicPlayer extends Component {
                     <View style={{flex:1,flexDirection:'row'}}>
                         <View style={{flex:1}}/>
                         <Icon name='step-backward' type='font-awesome'color='white' size={30} containerStyle={{flex:1}} onPress={()=>this.backward(this.state.currentsound)}/>
-                        <Icon name='replay-10' type='material' color='white' size={40} containerStyle={{flex:1}} onPress={()=>this.jumpPrev(this.state.currentsound)}/> 
+                        <Icon name='replay-10' type='material' color='white' size={40} containerStyle={{flex:1}} onPress={()=>this.jumpPrev15Secs(this.state.currentsound)}/> 
                         {this.state.audioState=='playing'?
                             <Icon name='pause-circle' type='font-awesome' color='white' size={60} onPress={()=>this.pauseAudio(this.state.currentsound)} containerStyle={{flex:1}}/>:
                             <Icon name='play-circle' type='font-awesome' color='steelblue' size={60} onPress={()=>this.Playaudio(this.state.currentsound)} containerStyle={{flex:1}}/>
                         }
-                        <Icon name='forward-10' type='material' color='white' size={40} containerStyle={{flex:1}} onPress={()=>this.jumpNextSeconds(this.state.currentsound)}/>
+                        <Icon name='forward-10' type='material' color='white' size={40} containerStyle={{flex:1}} onPress={()=>this.jumpNext15Secs(this.state.currentsound)}/>
                         <Icon name='step-forward' type='font-awesome' color='white' size={30} containerStyle={{flex:1}} onPress={()=>this.forward(this.state.currentsound)}/>
                         <View style={{flex:1, alignItems:'center'}}>
                             <View style={styles.speedup}><Text style={{textAlign:'center',fontWeight: 'bold'}} onPress={()=>this.speedUp(this.state.currentsound)}>x{this.state.audioSpeed}</Text></View>
