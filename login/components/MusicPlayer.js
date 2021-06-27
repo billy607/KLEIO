@@ -159,7 +159,7 @@ export default class MusicPlayer extends Component {
             return (
                 <TouchableOpacity activeOpacity={0.8} style={{position:'absolute', bottom:0}} onPress={()=>{this.setState({maximize:true})}}>
                     <View style={{flex:1, backgroundColor: 'darkorange',flexDirection:'row',width:width,height:50,alignItems:'center',paddingHorizontal:width*0.05}}>
-                        <Text style={{flex:8,}}>{this.state.currentPlay}</Text>
+                        <Text style={{flex:8,}}>{this.props.poiNames[this.state.currentPlay - 1]}</Text>
                          
                         {/* <View style={{flex:0.5}}/> */}
                         {this.state.audioState=='playing'?
@@ -181,7 +181,7 @@ export default class MusicPlayer extends Component {
                         <View style={{flex:8}}>
                             <View style={{flex:1}}/>
                             <Image source={require('../image/Alachua_sculpture.jpg')} style={{flex:1.5, width:undefined, height:undefined}} resizeMode='stretch'/>
-                            <Text style={{flex:1, textAlign:'center', textAlignVertical:'center', fontSize:18, fontFamily:'monospace'}}>{this.props.poiNames[this.state.currentPlay]}</Text>
+                            <Text style={{flex:1, textAlign:'center', textAlignVertical:'center', fontSize:18, fontFamily:'monospace'}}>{this.props.poiNames[this.state.currentPlay - 1]}</Text>
                         </View>
                         <View style={{flex:2}}/>
                     </View>

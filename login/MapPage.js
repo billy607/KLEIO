@@ -24,35 +24,6 @@ import MusicPlayer from './components/MusicPlayer'
 import TrackPlayer from 'react-native-track-player';
 
 var soundQueue=new Array()
-// const soundPath=[require('./sound/1.mp3'),require('./sound/2.mp3'),require('./sound/3.mp3'),require('./sound/4.mp3'),require('./sound/5.mp3'),require('./sound/6.mp3')]
-// const numbers = [0, 1, 2, 3, 4, 5];
-// const sounds = numbers.map((number) => 
-//     new Sound(soundPath[number],(error) => {
-//         if (error) {
-//             console.log('failed');
-//             return;
-//         }
-//         console.log('MapPage.js:    sounds load success ' + number);
-//         // console.log('duration in seconds: ' +  this.s.getDuration() + 'number of channels: ' +  this.s.getNumberOfChannels());
-//         }
-//     )
-// );
-
-var myPoints = []
-
-
-
-
-const waypoints = [ {latitude:29.6463, longitude:-82.3477},     //RU
-                    //{latitude:29.6477, longitude:-82.3459},     //Help point on grass
-                    {latitude:29.6481, longitude:-82.3437},     //Marston
-                    {latitude:29.6489, longitude:-82.3441},     //Turlington
-                    {latitude:29.6498, longitude:-82.3429},     //Plaza
-                    {latitude:29.6500, longitude:-82.3462},     //Racquet
-                    {latitude:29.6499, longitude:-82.3487}    //Griffin
-                ];
-
-const poiNames = ["RU", "Marston", "Turlington", "Plaza", "Racquet", "Griffin"];
 
 const GOOGLE_MAPS_APIKEY = 'AIzaSyAwEASOqU1llLDKrblaktUWaec_zGuJnwU';
 
@@ -97,84 +68,115 @@ export default class MapPage extends Component {
                   latitudeDelta: LATITUDE_DELTA,
                   longitudeDelta: LONGITUDE_DELTA,
                 },
-          poi: null,
+          chosenPoi: null,
           entergeo: false,
           note:false,
           noteContent:null,
-          index:1,
           visited:visited,
           current:-1,
-          sound: "",
-          currentPOI: "",
+          universityId: 1,
+          poiInformation: null,
+          isPoiLoaded: false
         };
         this.onPoiClick = this.onPoiClick.bind(this);
     }
 
     componentDidMount() {
         console.log("call componentDidMount!!!!!!!!");
-        // TODO: fetch waypoints from BE
-        waypoints.map((marker,index) => (
-            index += 1,
-            console.log(index.toString()),
-            Boundary.add(
-                {
-                    lat: marker.latitude,
-                    lng: marker.longitude,
-                    radius: 50, // in meters
-                    id: index.toString(),
-                })
-                .then(() => console.log("success!"))
-                .catch(e => console.error("error :(", e))
-        ))
-
-        Boundary.on(Events.ENTER, id => {
-            
-            console.log(`Get out of my ${id}!!`);
-            var ls=this.state.visited.map((item,index)=>
-                (index+1).toString()==id?1:item
-            );
-            this.setState({sound:poiNames[parseInt(id,10)-1]})
-            this.Loadaudio(id)
-            this.setState({current:parseInt(id,10)-1})
-            this.setState({entergeo:true});
-            this.setState({visited:ls})
-            this.setState({currentPOI:poiNames[parseInt(id,10)-1]})
-            
-            Alert.alert('You have entered ' + poiNames[parseInt(id,10)-1])
-        });
-        
-        Boundary.on(Events.EXIT, id => {
-        // Prints 'Ya! You better get out of my Chipotle!!'
-            console.log(`Ya! You better get out of my ${id}!!`);
-            this.setState({entergeo:false});
-        });
+        // TODO: add order for poi
+        this.fetchAndAssignPoiInformation();
     }
+
     componentWillUnmount() {
         Boundary.off(Events.ENTER)
         Boundary.off(Events.EXIT)
-        waypoints.map((marker,index) => (
+        this.state.poiInformation.map((marker,index) => (
             index += 1,
-            console.log(index.toString()),
             Boundary.remove(index.toString())
-            .then(() => console.log('Remove boundary on RU'))
-            .catch(e => console.log('Failed to delete RU :)', e))
+            .then(() => console.log('Remove boundary on' + marker.get('name')))
+            .catch(e => console.log('Failed to delete' + marker.get('name') + ': )', e))
         ))
     }
+
+    fetchAndAssignPoiInformation() {
+        fetch('http://ec2-54-174-141-206.compute-1.amazonaws.com/api/v1/poi/' + this.state.universityId)
+            .then((response) => response.json())
+            .then((json) => {
+                this.initializePoiInfo(json);
+            })
+            //create boundries
+            .then(() => {
+                this.state.poiInformation.map((marker,index) => (
+                    index += 1,
+                    console.log(index.toString() + ": " + marker.get('name') + "{" + marker.get('latitude') + "," + marker.get('longitude') + "}"),
+                    Boundary.add(
+                        {
+                            lat: marker.get('latitude'),
+                            lng: marker.get('longitude'),
+                            radius: 50, // in meters
+                            id: index.toString(),
+                        })
+                        .then(() => console.log("success!"))
+                        .catch(e => console.error("error :(", e))
+                ))
+            })
+            //set boundry function
+            .then(() => {
+                Boundary.on(Events.ENTER, id => {
+                    console.log(`Get out of my ${id}!!`);
+                    var ls=this.state.visited.map((item,index)=>
+                        (index+1).toString()==id?1:item
+                    );
+                    this.Loadaudio(id)
+                    this.setState({current:parseInt(id,10)-1})
+                    this.setState({entergeo:true});
+                    this.setState({visited:ls})
+                    
+                    Alert.alert('You have entered ' + this.state.poiInformation[parseInt(id,10)-1].get('name'))
+                });
+            })
+            .then(() => {
+                Boundary.on(Events.EXIT, id => {
+                    // Prints 'Ya! You better get out of my Chipotle!!'
+                    console.log(`Ya! You better get out of my ${id}!!`);
+                    this.setState({entergeo:false});
+                })
+            })
+            .catch((error) => console.error(error))
+            .finally(() => {
+                console.log("finally!")
+            });
+    }
+
+    initializePoiInfo = (json) => {
+        let poiInfo = [];
+        json.map(obj => {
+            let tempPoi = new Map();
+            tempPoi.set('longitude', obj.longitude);
+            tempPoi.set('latitude', obj.latitude);
+            tempPoi.set('name', obj.name);
+            poiInfo.push(tempPoi);
+        })
+        this.setState({poiInformation: poiInfo});
+        this.setState({isPoiLoaded: true});
+    }
+
     Loadaudio=async(soundId)=>{
         console.log('sound: '+soundId)
 
         var audioLength = 0;
         audioLength = testduration[parseInt(soundId,10)-1]
         await TrackPlayer.add([{
-            id: poiNames[parseInt(soundId,10)-1], // Must be a string, required ec2-54-81-254-195.compute-1.amazonaws.com
+            id: soundId, // Must be a string, required ec2-54-81-254-195.compute-1.amazonaws.com
             url: 'http://ec2-54-174-141-206.compute-1.amazonaws.com/api/v1/file/name/'+soundId+'.mp3', // Load media from the network
-            title: poiNames[parseInt(soundId,10)-1],
+            title: this.state.poiInformation[parseInt(soundId,10)-1].get('name'),
             artist: 'kleio',
             duration: audioLength
         }]);
          console.log('MapPage.js finish add...')
         // await TrackPlayer.skip(sound);
     }
+
     onPoiClick(e) {
         const poi = e.nativeEvent;
         this.setState({
@@ -187,6 +189,7 @@ export default class MapPage extends Component {
           poi:poi,
         });
     }
+
     onScreenClick= (e) => {
         const loc = e.nativeEvent;
         this.setState({
@@ -203,6 +206,7 @@ export default class MapPage extends Component {
         //To hide the ActionBar/NavigationBar
         header: null,
     };
+
     storeData = async () => {
         try {
             console.log('store')
@@ -212,6 +216,7 @@ export default class MapPage extends Component {
           console.log(e)
         }
     };
+
     getData = async () => {
         this.setState({note:true})
         try {
@@ -224,6 +229,7 @@ export default class MapPage extends Component {
             console.log(e)
         }
     };
+
     render() {
         return (
         <View style={styles.mapcontainer}>
@@ -240,24 +246,23 @@ export default class MapPage extends Component {
            onPoiClick={this.onPoiClick}
            onPress={this.onScreenClick}
         >
-            {this.state.poi && (
+            {this.state.chosenPoi && (
             <Marker 
-              coordinate={this.state.poi.coordinate}
+              coordinate={this.state.chosenPoi.coordinate}
               title={"title"}
               description={"description"}
               onPress={()=>console.log('hello')}>
             </Marker>
             )}
             
-            {
-            waypoints.map((marker,index) => (
+            {this.state.isPoiLoaded && this.state.poiInformation.map((marker,index) => (
                 // console.log(index),
                 // console.log("\n"),
                 
                 index += 1,
                 <Marker
                     key={index}
-                    coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
+                    coordinate={{ latitude: marker.get('latitude'), longitude: marker.get('longitude') }}
                     //title={marker.title}
                     // description={marker.description}
                 >
@@ -307,7 +312,7 @@ export default class MapPage extends Component {
             </View>
         </Overlay>
 
-        {this.state.current!=-1&&<MusicPlayer entergeo={this.state.entergeo} player={TrackPlayer} poiNames={poiNames} current={this.state.current} soundId={this.state.current}/>}
+        {this.state.current!=-1&&<MusicPlayer entergeo={this.state.entergeo} player={TrackPlayer} poiNames={this.state.poiInformation.map((obj) => {return obj.get('name')})} current={this.state.current} soundId={this.state.current}/>}
        </View>
     )};
 }
