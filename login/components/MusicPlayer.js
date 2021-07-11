@@ -36,7 +36,6 @@ export default class MusicPlayer extends Component {
           maximize:false,
           order:[-1,-1,-1,-1,-1,-1],
           currentPlay: null,
-          currentQueueIndex: 0 //the index of current track in the player queue (start from 0)
         };
         this.sliderEditing = false;
     }
@@ -44,20 +43,15 @@ export default class MusicPlayer extends Component {
     componentDidMount(){
         this.timeout = setInterval(() => {
             if(this.state.audioState == 'playing' && !this.sliderEditing && this.props.player!=null){
-                this.getPos(this.props.player)
+                this.updateAudioInfo();
             }
         }, 100);
     }
 
     componentDidUpdate(preProps){
         if(this.props.entergeo!=preProps.entergeo){///enter不同说明进入或离开POI
-            enter=!enter
-            if(enter){
-                this.forward()
+            if(this.state.audioState != 'playing'){
                 this.Playaudio(this.props.player)
-            }
-            else{
-                this.pauseAudio(this.props.player)
             }
         }
     }
@@ -71,7 +65,7 @@ export default class MusicPlayer extends Component {
         if(player!=null){
             player.play();
             this.setState({audioState: 'playing'});
-            this.updateAudioInfo(this.state.currentQueueIndex) 
+            this.updateAudioInfo() 
         }
     }
 
@@ -124,9 +118,9 @@ export default class MusicPlayer extends Component {
     }
 
     backward = async() =>{
-        if (this.state.currentQueueIndex > 0) {
+        if (this.state.currentPlay > 1) {
             await this.props.player.skipToPrevious();
-            this.updateAudioInfo(this.state.currentQueueIndex - 1);
+            this.updateAudioInfo();
             console.log('this is backward!!! currentplay '+ this.state.currentPlay);
         } else {
             console.log("this is the first audio");
@@ -135,22 +129,22 @@ export default class MusicPlayer extends Component {
 
     forward = async() =>{
         const tracks = await this.props.player.getQueue();
-        if (tracks.length > 1 && this.state.currentQueueIndex < tracks.length - 1) {
+        if (tracks.length > 1 && this.state.currentPlay < tracks.length) {
             await this.props.player.skipToNext();
-            this.updateAudioInfo(this.state.currentQueueIndex + 1);
+            this.updateAudioInfo();
             console.log('this is forward!!! currentplay '+ this.state.currentPlay)
         } else {
             console.log("this is the last audio");
         }
     }
 
-    updateAudioInfo = async(newQueueIndex) => {
-        this.setState({currentQueueIndex: newQueueIndex});
+    updateAudioInfo = async() => {
         const trackId = await this.props.player.getCurrentTrack();
         this.setState({currentPlay: trackId})
         const track = await this.props.player.getTrack(trackId)
         this.setState({audioDuration: track.duration})
-        console.log('currentplay: '+trackId + " duration: " + track.duration)
+        const position = await this.props.player.getPosition();
+        this.setState({audioSeconds: position})
     }
 
 

@@ -37,6 +37,7 @@ var t=null;
 const testduration=[134, 56, 108, 50, 16, 68]
 
 TrackPlayer.setupPlayer().then(() => {
+    TrackPlayer.setRepeatMode(RepeatMode.Off)
     // The player is ready to be used
 });
 export default class MapPage extends Component {
@@ -168,7 +169,7 @@ export default class MapPage extends Component {
         audioLength = testduration[parseInt(soundId,10)-1]
         await TrackPlayer.add([{
             id: soundId, // Must be a string, required ec2-54-81-254-195.compute-1.amazonaws.com
-            url: 'http://ec2-54-174-141-206.compute-1.amazonaws.com/api/v1/file/name/'+soundId+'.mp3', // Load media from the network
+            url: 'http://ec2-54-174-141-206.compute-1.amazonaws.com/api/v1/file/name/'+soundId+'.m4a', // Load media from the network
             title: this.state.poiInformation[parseInt(soundId,10)-1].get('name'),
             artist: 'kleio',
             duration: audioLength
