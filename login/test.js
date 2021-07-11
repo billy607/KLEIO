@@ -16,7 +16,12 @@ import {Icon, SearchBar, ListItem, Header} from 'react-native-elements';
 import Autocomplete from 'react-native-autocomplete-input';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import RNFetchBlob from 'rn-fetch-blob'
+import Sound from 'react-native-sound';
+// file:/storage/emulated/0/Download/test.mp3
 
+                
+const { config, fs } = RNFetchBlob;
+const downloads = Platform.OS == 'android' ? fs.dirs.DownloadDir:fs.dirs.DocumentDir;
 const requestWritePermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -41,9 +46,31 @@ const requestWritePermission = async () => {
     }
   };
 
+  const requestReadPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        {
+          title: "READ storage Permission",
+          message:
+            "READ storage permission " +
+            "so you can take awesome pictures.",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK"
+        }
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("You can");
+      } else {
+        console.log("denied");
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
 function downloadFile(url,fileName) {
-    const { config, fs } = RNFetchBlob;
-    const downloads = fs.dirs.DownloadDir;
     return config({
       // add this option that makes response data to be stored as a file,
       // this is much more performant.
@@ -51,7 +78,7 @@ function downloadFile(url,fileName) {
       addAndroidDownloads : {
         useDownloadManager : true,
         notification : true,
-        path:  downloads + '/' + fileName + '.mp3',
+        path:  downloads + '/' + fileName + '.mp4',
       }
     })
     .fetch('GET', url).then((res) => {
@@ -60,7 +87,20 @@ function downloadFile(url,fileName) {
         console.log('The file saved to ', res.path())
       });
   }
-
+function createaudio(){
+    var sound=new Sound('file:/storage/emulated/0/Download/test.mp3',null,(error) => {
+      if (error) {
+          console.log('failed');
+          return;
+      }
+      })
+    setTimeout(function () {
+        sound.play()
+    console.log(sound.isPlaying())
+    console.log(sound.getDuration())
+    }, 5000);
+      
+  }
 export default class TestPage extends Component {
   constructor(props) {
     super(props);
@@ -68,9 +108,19 @@ export default class TestPage extends Component {
       path: null,
     };
   }
+  Playaudio=async(param)=>{
+    console.log(param)
+    if(this.state.sound){
+        console.log('playing')
+        console.log(this.state.audioDuration);
+        this.state.sound.play(this.playComplete);
+        this.setState({audioState: 'playing'});   
+    }else{
+        console.log("audio loaded failed");
+    }
+}
   
   componentDidMount() {
-    
     // downloadFile('http://ec2-54-81-254-195.compute-1.amazonaws.com/api/v1/file/name/eva-004.mp3','eva-004')
     // RNFetchBlob
     // .config({
@@ -86,16 +136,22 @@ export default class TestPage extends Component {
     //   this.setState({path: res.path()})
     //   console.log('statepath: '+this.state.path)
     // })
+    
+    
   }
   
   render() {
 
     return (
       <View>
+        {createaudio()}
           <Text>This is test page</Text>
-          <Button title="request permissions" onPress={() => {
+          <Button title="request write permissions" onPress={() => {
           requestWritePermission();}} />
-          <Button title="download" onPress={() => {downloadFile('http://ec2-54-81-254-195.compute-1.amazonaws.com/api/v1/file/name/test.mp3','testaudio')} }/>
+          <Button title="download" onPress={() => {downloadFile('http://ec2-54-81-254-195.compute-1.amazonaws.com/api/v1/file/name/test.mp3','test')} }/>
+          <Button title="request read permissions" onPress={() => {
+          requestReadPermission();}} />
+          <Image source={{width:200,height:200,uri:'file://'+ downloads + '/' + 'eva-004.jpg'}}/> 
       </View>
     );
   }

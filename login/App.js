@@ -15,6 +15,7 @@ import { HeaderBackButton } from '@react-navigation/stack';
 import { StyleSheet, View } from 'react-native';
 import Profile from './Profile'
 import Test from './test'
+import Trackplayertest from './Trackplayertest'
 import RegisterQuestions from './RegisterQuestions'
 
 import ActionButton from 'react-native-action-button';
@@ -140,6 +141,22 @@ function MyStack({navigation}) {
             backgroundColor:'darkorange',
           }
         })}/>
+        <Stack.Screen
+        name="Trackplayertest"
+        component={Trackplayertest}
+        options={() => ({
+          //headerShown:false
+          headerRight: (navigation) => (
+            <Icon name='edit' type='antdesign' color='white' underlayColor='darkorange' containerStyle={{padding:10}}/>
+          ),
+          headerTintColor:'white', 
+          headerTitleAlign:'center', 
+          headerTitle:'Test', 
+          headerStyle:{
+            height:50,           
+            backgroundColor:'darkorange',
+          }
+        })}/>
        <Stack.Screen 
         name="Report" 
         component={Report} 
@@ -184,6 +201,7 @@ export default class App extends React.Component {
       )
   }
 }
+
 
 const styles = StyleSheet.create({
   actionButtonIcon: {
